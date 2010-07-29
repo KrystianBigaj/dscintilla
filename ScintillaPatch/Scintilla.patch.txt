@@ -1,0 +1,36 @@
+Scintilla source code must be patched (only one small change) to make
+notifications works correctly in TDScintilla without any additional code.
+
+Scintilla by default sends notification messages to parent window,
+but TDScintilla	expects them to be send to own window.
+
+If you know how to easy catch such messages please let me know.
+I think that's impossible (but maybe someone know nice tricks ;)
+Email: krystian.bigaj@gmail.com
+
+
+You need comment/delete one method call:
+	::GetParent
+
+from ScintillaWin::NotifyParen (file scintilla/win32/ScintillaWin.cxx)
+like in patch below.
+
+
+*** scintilla/win32/ScintillaWin.cxx	Thu Jul 29 14:39:49 2010
+--- scintilla/win32/ScintillaWin.cxx	Thu Jul 29 18:44:21 2010
+***************
+*** 1279,1285 ****
+  void ScintillaWin::NotifyParent(SCNotification scn) {
+  	scn.nmhdr.hwndFrom = MainHWND();
+  	scn.nmhdr.idFrom = GetCtrlID();
+! 	::SendMessage(/*::GetParent*/(MainHWND()), WM_NOTIFY,
+  	              GetCtrlID(), reinterpret_cast<LPARAM>(&scn));
+  }
+
+--- 1279,1285 ----
+  void ScintillaWin::NotifyParent(SCNotification scn) {
+  	scn.nmhdr.hwndFrom = MainHWND();
+  	scn.nmhdr.idFrom = GetCtrlID();
+! 	::SendMessage(::GetParent(MainHWND()), WM_NOTIFY,
+  	              GetCtrlID(), reinterpret_cast<LPARAM>(&scn));
+  }
