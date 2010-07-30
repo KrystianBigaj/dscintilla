@@ -76,36 +76,36 @@ type
     FOnAutoCSelection: TDSciAutoCSelectionEvent;
 
   protected
-    // Handles notification messages from Scintilla,
-    // only if using patched Scintilla (eg. DScintilla.dll/DSciLexer.dll)
-    // http://code.google.com/p/dscintilla/source/browse/trunk/Scintilla.patch.txt
-    // In other case you need handle it from parent window, see HandleWMNotify.
+    /// <summary>Handles notification messages from Scintilla,
+    /// only if using patched Scintilla (eg. DScintilla.dll/DSciLexer.dll)
+    /// http://code.google.com/p/dscintilla/source/browse/trunk/Scintilla.patch.txt
+    /// In other case you need handle it from parent window, see HandleWMNotify.</summary>
     procedure WMNotify(var AMessage: TWMNotify); message WM_NOTIFY;
 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    // Handles Scintilla notification messages.
-    // Returns True, if message was handled.
-    // If returns False, you must pass-through message
-    // by calling inherited; see TDScintilla.WMNotify.
-    //
-    // You don't need to call that function if you are using
-    // patched Scintilla (eg. DScintilla.dll/DSciLexer.dll)
-    // http://code.google.com/p/dscintilla/source/browse/trunk/Scintilla.patch.txt
-    // In such case it's handled in TDScintilla.WMNotify
-    //
-    // In case if you want use original (unpatched) Scintilla,
-    // you must catch WM_NOTIFY from parent window of TDScintilla
-    // similar to TDScintilla.WMNotify:
-    //
-    //    // If TDScintilla in directly on Form, you can write code like this:
-    //    procedure TForm1.WMNotify(var AMessage: TWMNotify);
-    //    begin
-    //      if not DScintilla1.HandleWMNotify(AMessage) then
-    //        inherited;
-    //    end;
+    /// <summary>Handles Scintilla notification messages.
+    /// Returns True, if message was handled.
+    /// If returns False, you must pass-through message
+    /// by calling inherited; see TDScintilla.WMNotify.
+    ///
+    /// You don't need to call that function if you are using
+    /// patched Scintilla (eg. DScintilla.dll/DSciLexer.dll)
+    /// http://code.google.com/p/dscintilla/source/browse/trunk/Scintilla.patch.txt
+    /// In such case it's handled in TDScintilla.WMNotify
+    ///
+    /// In case if you want use original (unpatched) Scintilla,
+    /// you must catch WM_NOTIFY from parent window of TDScintilla
+    /// similar to TDScintilla.WMNotify:
+    ///
+    ///    If TDScintilla in directly on Form, you can write code like this:
+    ///    procedure TForm1.WMNotify(var AMessage: TWMNotify);
+    ///    begin
+    ///      if not DScintilla1.HandleWMNotify(AMessage) then
+    ///        inherited;
+    ///    end;</summary>
     function HandleWMNotify(var AMessage: TWMNotify): Boolean;
 
   published
@@ -168,7 +168,7 @@ var
 
   function DoGetStr(P: PAnsiChar): String;
   begin
-    if SendEditor(2137{SCI_GETCODEPAGE}, 0, 0) = 65001{SC_CP_UTF8} then
+    if SendEditor(SCI_GETCODEPAGE, 0, 0) = SC_CP_UTF8 then
       Result := String(UTF8String(P))
     else
       Result := String(AnsiString(P));
