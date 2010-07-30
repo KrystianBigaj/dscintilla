@@ -80,10 +80,24 @@ type
 
     procedure DefaultHandler(var Message); override;
 
+    /// <summary>Sends message to Scintilla control.
+    /// For list of commands see DScintillaTypes.pas and documentation at:
+    /// http://www.scintilla.org/ScintillaDoc.html</summary>
     function SendEditor(AMessage: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
 
   published
+
+    /// <summary>Name of Scintilla Dll which will be used.
+    /// Changing DllModule recreates control!</summary>
     property DllModule: String read FSciDllModule write SetSciDllModule;
+
+    /// <summary>Access method to Scintilla contol. Note from documentation:
+    /// On Windows, the message-passing scheme used to communicate
+    /// between the container and Scintilla is mediated by the operating system
+    /// SendMessage function and can lead to bad performance
+    /// when calling intensively.
+    ///
+    /// By default TDScintilla uses smDirect mode</summary>
     property AccessMethod: TDScintillaMethod read FAccessMethod write FAccessMethod default smDirect;
 
   published
@@ -169,11 +183,11 @@ end;
 
 procedure TDScintillaCustom.CreateWnd;
 const
-  // Retrieve a pointer to a function that processes messages for this Scintilla.
+  /// <summary>Retrieve a pointer to a function that processes messages for this Scintilla.</summary>
   SCI_GETDIRECTFUNCTION = 2184;
 
-  // Retrieve a pointer value to use as the first argument when calling
-  // the function returned by GetDirectFunction.
+  /// <summary>Retrieve a pointer value to use as the first argument when calling
+  /// the function returned by GetDirectFunction.</summary>
   SCI_GETDIRECTPOINTER = 2185;
 
 begin
