@@ -195,7 +195,7 @@ const
 
 { Scintilla consts and method codes }
 
-  /// <summary>The INVALID_POSITION constant (-1) 
+  /// <summary>The INVALID_POSITION constant (-1)
   /// represents an invalid position within the document.</summary>
   INVALID_POSITION = -1;
 
@@ -1881,6 +1881,10 @@ const
   /// <summary>Stop the caret preferred x position changing when the user types.</summary>
   SCI_SETCARETSTICKY = 2458;
 
+  SC_CARETSTICKY_OFF = 0;
+  SC_CARETSTICKY_ON = 1;
+  SC_CARETSTICKY_WHITESPACE = 2;
+
   /// <summary>Switch between sticky and non-sticky: meant to be bound to a key.</summary>
   SCI_TOGGLECARETSTICKY = 2459;
 
@@ -2172,6 +2176,10 @@ const
   /// <summary>Swap that caret and anchor of the main selection.</summary>
   SCI_SWAPMAINANCHORCARET = 2607;
 
+  /// <summary>Indicate that the internal state of a lexer has changed over a range and therefore
+  /// there may be a need to redraw.</summary>
+  SCI_CHANGELEXERSTATE = 2617;
+
   /// <summary>Start notifying the container of all key presses and commands.</summary>
   SCI_STARTRECORD = 3001;
 
@@ -2220,6 +2228,25 @@ const
   /// Return the length of the text.</summary>
   SCI_GETLEXERLANGUAGE = 4012;
 
+  /// <summary>For private communication between an application and a known lexer.</summary>
+  SCI_PRIVATELEXERCALL = 4013;
+
+  /// <summary>Retrieve a '\n' separated list of properties understood by the current lexer.</summary>
+  SCI_PROPERTYNAMES = 4014;
+
+  SC_TYPE_BOOLEAN = 0;
+  SC_TYPE_INTEGER = 1;
+  SC_TYPE_STRING = 2;
+
+  /// <summary>Retrieve the type of a property.</summary>
+  SCI_PROPERTYTYPE = 4015;
+
+  /// <summary>Describe a property.</summary>
+  SCI_DESCRIBEPROPERTY = 4016;
+
+  /// <summary>Retrieve a '\n' separated list of descriptions of the keyword sets understood by the current lexer.</summary>
+  SCI_DESCRIBEKEYWORDSETS = 4017;
+
   /// <summary>Notifications
   /// Type of modification and the action which caused the modification.
   /// These are defined as a bit mask to make it easy to specify which notifications are wanted.
@@ -2243,7 +2270,8 @@ const
   SC_MOD_CHANGEMARGIN = $10000;
   SC_MOD_CHANGEANNOTATION = $20000;
   SC_MOD_CONTAINER = $40000;
-  SC_MODEVENTMASKALL = $7FFFF;
+  SC_MOD_LEXERSTATE = $80000;
+  SC_MODEVENTMASKALL = $FFFFF;
 
   /// <summary>For compatibility, these go through the COMMAND notification rather than NOTIFY
   /// and should have had exactly the same values as the EN_* constants.
@@ -2378,6 +2406,7 @@ const
   SCLEX_NIMROD = 96;
   SCLEX_SML = 97;
   SCLEX_MARKDOWN = 98;
+  SCLEX_TXT2TAGS = 99;
 
   /// <summary>When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
   /// value assigned in sequence from SCLEX_AUTOMATIC+1.</summary>
@@ -3710,6 +3739,9 @@ const
   SCE_POWERSHELL_KEYWORD = 8;
   SCE_POWERSHELL_CMDLET = 9;
   SCE_POWERSHELL_ALIAS = 10;
+  SCE_POWERSHELL_FUNCTION = 11;
+  SCE_POWERSHELL_USER1 = 12;
+  SCE_POWERSHELL_COMMENTSTREAM = 13;
 
   /// <summary>Lexical state for SCLEX_MYSQL</summary>
   SCE_MYSQL_DEFAULT = 0;
@@ -3834,6 +3866,34 @@ const
   SCE_MARKDOWN_CODE = 19;
   SCE_MARKDOWN_CODE2 = 20;
   SCE_MARKDOWN_CODEBK = 21;
+
+  /// <summary>Lexical state for SCLEX_TXT2TAGS</summary>
+  SCE_TXT2TAGS_DEFAULT = 0;
+  SCE_TXT2TAGS_LINE_BEGIN = 1;
+  SCE_TXT2TAGS_STRONG1 = 2;
+  SCE_TXT2TAGS_STRONG2 = 3;
+  SCE_TXT2TAGS_EM1 = 4;
+  SCE_TXT2TAGS_EM2 = 5;
+  SCE_TXT2TAGS_HEADER1 = 6;
+  SCE_TXT2TAGS_HEADER2 = 7;
+  SCE_TXT2TAGS_HEADER3 = 8;
+  SCE_TXT2TAGS_HEADER4 = 9;
+  SCE_TXT2TAGS_HEADER5 = 10;
+  SCE_TXT2TAGS_HEADER6 = 11;
+  SCE_TXT2TAGS_PRECHAR = 12;
+  SCE_TXT2TAGS_ULIST_ITEM = 13;
+  SCE_TXT2TAGS_OLIST_ITEM = 14;
+  SCE_TXT2TAGS_BLOCKQUOTE = 15;
+  SCE_TXT2TAGS_STRIKEOUT = 16;
+  SCE_TXT2TAGS_HRULE = 17;
+  SCE_TXT2TAGS_LINK = 18;
+  SCE_TXT2TAGS_CODE = 19;
+  SCE_TXT2TAGS_CODE2 = 20;
+  SCE_TXT2TAGS_CODEBK = 21;
+  SCE_TXT2TAGS_COMMENT = 22;
+  SCE_TXT2TAGS_OPTION = 23;
+  SCE_TXT2TAGS_PREPROC = 24;
+  SCE_TXT2TAGS_POSTPROC = 25;
 
 implementation
 
