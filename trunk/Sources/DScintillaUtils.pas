@@ -82,6 +82,8 @@ type
 
     function IsUTF8: Boolean;
 
+    function GetStrFromPtr(ABuf: PAnsiChar): UnicodeString;
+
     function GetText(AMessage: Integer; AParam1: Integer; var AText: UnicodeString): Integer;
     function SetText(AMessage: Integer; AParam1: Integer; const AText: UnicodeString): Integer;
     function GetTextLen(AMessage: Integer; var AText: UnicodeString): Integer;
@@ -125,9 +127,12 @@ type
   end;
 
 {$IFDEF UNICODE}
-// TODO:
+type
+  // Compiler 'magic' will do conversion
+  UTF8StringFromUStr = UTF8String;
 {$ELSE}
 function UTF8ToUnicodeString(const S: PAnsiChar): UnicodeString;
+function UTF8StringFromUStr(const S: UnicodeString): UTF8String;
 {$ENDIF}
 
 implementation
@@ -142,7 +147,9 @@ var
   lUStr: UnicodeString;
 begin
   Result := '';
-  if S = '' then Exit;
+  if S = '' then
+    Exit;
+
   lLen := _strlenA(S);
   SetLength(lUStr, lLen);
 
@@ -152,6 +159,11 @@ begin
   else
     lUStr := '';
   Result := lUStr;
+end;
+
+function UTF8StringFromUStr(const S: UnicodeString): UTF8String;
+begin
+  Result := UTF8Encode(S);
 end;
 {$ENDIF}
 
@@ -174,6 +186,14 @@ begin
   Result := SendEditor(SCI_GETCODEPAGE) = SC_CP_UTF8;
 end;
 
+function TDSciHelper.GetStrFromPtr(ABuf: PAnsiChar): UnicodeString;
+begin
+  if IsUTF8 then
+    Result := UTF8ToUnicodeString(ABuf)
+  else
+    Result:= UnicodeString(ABuf);
+end;
+
 function TDSciHelper.GetText(AMessage, AParam1: Integer;
   var AText: UnicodeString): Integer;
 var
@@ -182,12 +202,7 @@ begin
   lBuf := AllocMem(SendEditor(AMessage, AParam1) + 1);
   try
     Result := SendEditor(AMessage, AParam1, Integer(lBuf));
-
-    if IsUTF8 then
-      AText := UTF8ToUnicodeString(lBuf)
-    else
-      AText := UnicodeString(AnsiString(lBuf));
-
+    AText := GetStrFromPtr(lBuf);
   finally
     FreeMem(lBuf);
   end;
@@ -197,7 +212,7 @@ function TDSciHelper.SetText(AMessage, AParam1: Integer;
   const AText: UnicodeString): Integer;
 begin
   if IsUTF8 then
-    Result := SendEditor(AMessage, AParam1, Integer(UTF8String(AText)))
+    Result := SendEditor(AMessage, AParam1, Integer(UTF8StringFromUStr(AText)))
   else
     Result := SendEditor(AMessage, AParam1, Integer(AnsiString(AText)));
 end;
@@ -213,12 +228,7 @@ begin
   lBuf := AllocMem(lLen + 1);
   try
     Result := SendEditor(AMessage, lLen + 1, Integer(lBuf));
-
-    if IsUTF8 then
-      AText := UTF8ToUnicodeString(lBuf)
-    else
-      AText := UnicodeString(lBuf);
-
+    AText := GetStrFromPtr(lBuf);
   finally
     FreeMem(lBuf);
   end;
@@ -232,7 +242,7 @@ var
 begin
   if IsUTF8 then
   begin
-    lUTF8 := UTF8String(AText);
+    lUTF8 := UTF8StringFromUStr(AText);
     Result := SendEditor(AMessage, System.Length(lUTF8), Integer(lUTF8));
   end else
   begin
@@ -286,12 +296,7 @@ begin
   lBuf := AllocMem(lLen + 1);
   try
     FHelper.SendEditor(SCI_GETTEXT, lLen + 1, Integer(lBuf));
-
-    if FHelper.IsUTF8 then
-      Result := UTF8ToUnicodeString(lBuf)
-    else
-      Result := UnicodeString(lBuf);
-
+    Result := FHelper.GetStrFromPtr(lBuf);
   finally
     FreeMem(lBuf);
   end;
@@ -299,10 +304,7 @@ end;
 
 procedure TDSciLines.SetTextStr(const AValue: UnicodeString);
 begin
-  if FHelper.IsUTF8 then
-    FHelper.SendEditor(SCI_SETTEXT, 0, Integer(UTF8String(AValue)))
-  else
-    FHelper.SendEditor(SCI_SETTEXT, 0, Integer(AnsiString(AValue)));
+  FHelper.SetText(SCI_SETTEXT, 0, AValue);
 end;
 
 function TDSciLines.GetCount: Integer;
@@ -331,12 +333,7 @@ begin
   try
     lTextRange.lpstrText := PAnsiChar(lBuf);
     FHelper.SendEditor(SCI_GETTEXTRANGE, 0, Integer(@lTextRange));
-
-    if FHelper.IsUTF8 then
-      Result := UTF8ToUnicodeString(lBuf)
-    else
-      Result := UnicodeString(lBuf);
-
+    Result := FHelper.GetStrFromPtr(lBuf);
   finally
     FreeMem(lBuf);
   end;

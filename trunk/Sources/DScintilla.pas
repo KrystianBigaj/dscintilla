@@ -181,15 +181,6 @@ end;
 function TDScintilla.HandleWMNotify(var AMessage: TWMNotify): Boolean;
 var
   lSciNotify: PDSciSCNotification;
-
-  function DoGetStr(P: PAnsiChar): UnicodeString;
-  begin
-    if SendEditor(SCI_GETCODEPAGE, 0, 0) = SC_CP_UTF8 then
-      Result := UTF8ToUnicodeString(P)
-    else
-      Result := UnicodeString(AnsiString(P));
-  end;
-
 begin
   Result := HandleAllocated and (AMessage.NMHdr^.hwndFrom = Self.Handle);
 
@@ -226,7 +217,7 @@ begin
   SCN_MODIFIED:
     if Assigned(FOnModified) then
       FOnModified(Self, lSciNotify^.position, lSciNotify^.modificationType,
-        DoGetStr(lSciNotify^.text), lSciNotify^.length, lSciNotify^.linesAdded, lSciNotify^.line,
+        FHelper.GetStrFromPtr(lSciNotify^.text), lSciNotify^.length, lSciNotify^.linesAdded, lSciNotify^.line,
         lSciNotify^.foldLevelNow, lSciNotify^.foldLevelPrev);
 
   SCN_MACRORECORD:
@@ -247,11 +238,11 @@ begin
 
   SCN_USERLISTSELECTION:
     if Assigned(FOnUserListSelection) then
-      FOnUserListSelection(Self, lSciNotify^.listType, DoGetStr(lSciNotify^.text));
+      FOnUserListSelection(Self, lSciNotify^.listType, FHelper.GetStrFromPtr(lSciNotify^.text));
 
   SCN_URIDROPPED:
     if Assigned(FOnURIDropped) then
-      FOnURIDropped(Self, DoGetStr(lSciNotify^.text));
+      FOnURIDropped(Self, FHelper.GetStrFromPtr(lSciNotify^.text));
 
   SCN_DWELLSTART:
     if Assigned(FOnDwellStart) then
@@ -279,7 +270,7 @@ begin
 
   SCN_AUTOCSELECTION:
     if Assigned(FOnAutoCSelection) then
-      FOnAutoCSelection(Self, DoGetStr(lSciNotify^.text));
+      FOnAutoCSelection(Self, FHelper.GetStrFromPtr(lSciNotify^.text));
 
   SCN_INDICATORCLICK:
     if Assigned(FOnIndicatorClick) then
