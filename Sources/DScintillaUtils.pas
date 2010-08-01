@@ -59,14 +59,21 @@ type
 {$IFDEF UNICODE}
   // D2009+
   TDSciUnicodeStrings = TStrings;
-{$ELSE}         
+{$ELSE}       
+  
   {$IF CompilerVersion > 17}
+
   // D2006, D2007
   TDSciUnicodeStrings = WideStrings.TWideStrings;
+
   {$ELSE}
+
   // D6/D7
+  {$DEFINE DSCI_JCLWIDESTRINGS}
   TDSciUnicodeStrings = JclWideStrings.TJclWideStrings;
+
   {$IFEND}
+
 {$ENDIF}
 
 { TDSciHelper }
@@ -96,15 +103,27 @@ type
 
   TDSciLines = class(TDSciUnicodeStrings)
   protected
-    FHelper: TDSciHelper;
+    FHelper: TDSciHelper;   
+{$IFDEF DSCI_JCLWIDESTRINGS}
+    FLastGetP: UnicodeString;
+{$ENDIF}
 
     function GetTextStr: UnicodeString; override;
     procedure SetTextStr(const AValue: UnicodeString); override;
 
     function GetCount: Integer; override;
 
-    function Get(AIndex: Integer): UnicodeString; {$IF CompilerVersion > 17}override;{$IFEND} // TJclWideStrings.Get is not virtual
+{$IFDEF DSCI_JCLWIDESTRINGS}
+    // DON'T CALL GetP DIRECTLY
+    // After second call, pointer from first call is invalid!
+    function GetP(AIndex: Integer): PWideString; override;
+    function Get(AIndex: Integer): UnicodeString;
+{$ELSE}
+    function Get(AIndex: Integer): UnicodeString; override;
+{$ENDIF}
+
     procedure Put(AIndex: Integer; const AString: UnicodeString); override;
+    procedure PutObject(Index: Integer; AObject: TObject); override;
 
     procedure SetUpdateState(Updating: Boolean); override;
 
@@ -123,7 +142,12 @@ type
 {$ENDIF}
 
     procedure Delete(AIndex: Integer); override;
+{$IFDEF DSCI_JCLWIDESTRINGS}
+    procedure InsertObject(AIndex: Integer; const AString: UnicodeString;
+      AObject: TObject); override;
+{$ELSE}
     procedure Insert(AIndex: Integer; const AString: UnicodeString); override;
+{$ENDIF}
   end;
 
 {$IFDEF UNICODE}
@@ -316,6 +340,14 @@ begin
       Result := 0;
 end;
 
+{$IFDEF DSCI_JCLWIDESTRINGS}
+function TDSciLines.GetP(AIndex: Integer): PWideString;
+begin
+  FLastGetP := Get(AIndex);
+  Result := @FLastGetP;
+end;
+{$ENDIF}
+
 function TDSciLines.Get(AIndex: Integer): UnicodeString;
 var
   lBuf: PAnsiChar;
@@ -343,6 +375,11 @@ procedure TDSciLines.Put(AIndex: Integer; const AString: UnicodeString);
 begin
   if FHelper.SetTargetLine(AIndex) then
     FHelper.SetTextLen(SCI_REPLACETARGET, AString);
+end;
+
+procedure TDSciLines.PutObject(Index: Integer; AObject: TObject);
+begin
+  // Objects in TDSciLines are not supported
 end;
 
 procedure TDSciLines.SetUpdateState(Updating: Boolean);
@@ -403,7 +440,12 @@ begin
     FHelper.SendEditor(SCI_REPLACETARGET, 0, 0);
 end;
 
+{$IFDEF DSCI_JCLWIDESTRINGS}
+procedure TDSciLines.InsertObject(AIndex: Integer; const AString: UnicodeString;
+  AObject: TObject);
+{$ELSE}
 procedure TDSciLines.Insert(AIndex: Integer; const AString: UnicodeString);
+{$ENDIF}
 var
   lEOL: UnicodeString;
   lLinePos: Integer;
