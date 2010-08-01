@@ -123,8 +123,12 @@ type
     property OnDragOver;
     property OnDragDrop;
     property OnMouseDown;
+
+    //Delphi 7 VCL doesn't have OnMouseEnter
+    {$IF CompilerVersion > 15}
     property OnMouseEnter;
     property OnMouseLeave;
+    {$IFEND}
     property OnMouseMove;
     property OnMouseUp;
     property OnMouseWheel;
