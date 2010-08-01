@@ -124,8 +124,8 @@ type
     property OnDragDrop;
     property OnMouseDown;
 
-    //Delphi 7 VCL doesn't have OnMouseEnter
-    {$IF CompilerVersion > 15}
+    // OnMouseEnter/OnMouseLeave added in D2006
+    {$IF CompilerVersion >= 18}
     property OnMouseEnter;
     property OnMouseLeave;
     {$IFEND}
