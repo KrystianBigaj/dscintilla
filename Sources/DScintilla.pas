@@ -50,6 +50,7 @@ type
 
   TDScintilla = class(TDScintillaCustom)
   private
+    FHelper: TDSciHelper;
     FLines: TDSciLines;
 
     FOnUpdateUI: TDSciUpdateUIEvent;
@@ -150,7 +151,8 @@ implementation
 
 constructor TDScintilla.Create(AOwner: TComponent);
 begin
-  FLines := TDSciLines.Create(SendEditor);
+  FHelper := TDSciHelper.Create(SendEditor);
+  FLines := TDSciLines.Create(FHelper);
 
   inherited Create(AOwner);
 
@@ -159,9 +161,10 @@ end;
 
 destructor TDScintilla.Destroy;
 begin
-  inherited Destroy;
-
   FLines.Free;
+  FHelper.Free;
+
+  inherited Destroy;
 end;
 
 procedure TDScintilla.SetLines(const Value: TDSciLines);
@@ -179,16 +182,16 @@ function TDScintilla.HandleWMNotify(var AMessage: TWMNotify): Boolean;
 var
   lSciNotify: PDSciSCNotification;
 
-  function DoGetStr(P: PAnsiChar): String;
+  function DoGetStr(P: PAnsiChar): UnicodeString;
   begin
     if SendEditor(SCI_GETCODEPAGE, 0, 0) = SC_CP_UTF8 then
-      Result := String(UTF8String(P))
+      Result := UTF8ToUnicodeString(P)
     else
-      Result := String(AnsiString(P));
+      Result := UnicodeString(AnsiString(P));
   end;
 
 begin
-  Result := Assigned(Self) and HandleAllocated and (AMessage.NMHdr^.hwndFrom = Self.Handle);
+  Result := HandleAllocated and (AMessage.NMHdr^.hwndFrom = Self.Handle);
 
   if not Result then
     Exit;

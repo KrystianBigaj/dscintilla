@@ -44,6 +44,10 @@ uses
 
 type
 
+{$IFNDEF UNICODE}
+  UnicodeString = WideString;
+{$ENDIF}
+
 { TDSciSendEditor }
 
   TDSciSendEditor = function(AMessage: Integer;
@@ -52,14 +56,6 @@ type
 { TDSciDocument }
 
   TDSciDocument = type Pointer;
-
-{ TDSciString }
-
-{$IFDEF UNICODE}
-  TDSciString = UnicodeString;
-{$ELSE}
-  TDSciString = WideString;
-{$ENDIF}
 
 { TDSciCell }
 
@@ -152,21 +148,21 @@ type
   // evt  DoubleClick=2006()
   TDSciUpdateUIEvent = procedure(ASender: TObject) of object;
   TDSciModifiedEvent = procedure(ASender: TObject; APosition: Integer; AModificationType: Integer;
-    AText: String; ALength: Integer; ALinesAdded: Integer; ALine: Integer;
+    AText: UnicodeString; ALength: Integer; ALinesAdded: Integer; ALine: Integer;
     AFoldLevelNow: Integer; AFoldLevelPrev: Integer) of object;
   TDSciMacroRecordEvent = procedure(ASender: TObject; AMessage: Integer; AWParam: Integer; ALParam: Integer) of object;
   TDSciMarginClickEvent = procedure(ASender: TObject; AModifiers: Integer; APosition: Integer; AMargin: Integer) of object;
   TDSciNeedShownEvent = procedure(ASender: TObject; APosition: Integer; ALength: Integer) of object;
   TDSciPaintedEvent = procedure(ASender: TObject) of object;
-  TDSciUserListSelectionEvent = procedure(ASender: TObject; AListType: Integer; AText: String) of object;
-  TDSciURIDroppedEvent = procedure(ASender: TObject; AText: String) of object;
+  TDSciUserListSelectionEvent = procedure(ASender: TObject; AListType: Integer; AText: UnicodeString) of object;
+  TDSciURIDroppedEvent = procedure(ASender: TObject; AText: UnicodeString) of object;
   TDSciDwellStartEvent = procedure(ASender: TObject; APosition: Integer) of object;
   TDSciDwellEndEvent = procedure(ASender: TObject; APosition: Integer) of object;
   TDSciZoomEvent = procedure(ASender: TObject) of object;
   TDSciHotSpotClickEvent = procedure(ASender: TObject; AModifiers: Integer; APosition: Integer) of object;
   TDSciHotSpotDoubleClickEvent = procedure(ASender: TObject; AModifiers: Integer; APosition: Integer) of object;
   TDSciCallTipClickEvent = procedure(ASender: TObject; APosition: Integer) of object;
-  TDSciAutoCSelectionEvent = procedure(ASender: TObject; AText: String) of object;
+  TDSciAutoCSelectionEvent = procedure(ASender: TObject; AText: UnicodeString) of object;
   TDSciIndicatorClickEvent = procedure(ASender: TObject; AModifiers: Integer; APosition: Integer) of object;
   TDSciIndicatorReleaseEvent = procedure(ASender: TObject; AModifiers: Integer; APosition: Integer) of object;
   TDSciAutoCCancelledEvent = procedure(ASender: TObject) of object;

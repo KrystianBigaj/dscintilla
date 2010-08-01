@@ -42,115 +42,191 @@ interface
 uses
   DScintillaTypes,
 
+{$IFNDEF UNICODE}
+  // D2006, D2007
+  {$IF CompilerVersion > 17}
+  WideStrings,
+  {$ELSE}
+  // D6/D7 requires JCL (JEDI)
+  JclWideStrings,
+  {$IFEND}
+{$ENDIF}
+
   SysUtils, Classes;
 
 type
 
-{ TDSciLines }
+{$IFDEF UNICODE}
+  // D2009+
+  TDSciUnicodeStrings = TStrings;
+{$ELSE}         
+  {$IF CompilerVersion > 17}
+  // D2006, D2007
+  TDSciUnicodeStrings = WideStrings.TWideStrings;
+  {$ELSE}
+  // D6/D7
+  TDSciUnicodeStrings = JclWideStrings.TJclWideStrings;
+  {$IFEND}
+{$ENDIF}
 
-  TDSciLines = class(TStrings)
-  protected
+{ TDSciHelper }
+
+  TDSciHelper = class
+  private
     FSendEditor: TDSciSendEditor;
+  public
+    constructor Create(ASendEditor: TDSciSendEditor);
+
+    function SendEditor(AMessage: Integer;
+      WParam: Integer = 0; LParam: Integer = 0): Integer;
 
     function IsUTF8: Boolean;
 
-    function InternalGetText(AMessage: Integer; AParam1: Integer; var AText: TDSciString): Integer;
-    function InternalSetText(AMessage: Integer; AParam1: Integer; const AText: TDSciString): Integer;
-    function InternalGetTextLen(AMessage: Integer; var AText: TDSciString): Integer;
-    function InternalSetTextLen(AMessage: Integer; const AText: TDSciString): Integer;
+    function GetText(AMessage: Integer; AParam1: Integer; var AText: UnicodeString): Integer;
+    function SetText(AMessage: Integer; AParam1: Integer; const AText: UnicodeString): Integer;
+    function GetTextLen(AMessage: Integer; var AText: UnicodeString): Integer;
+    function SetTextLen(AMessage: Integer; const AText: UnicodeString): Integer;
 
-    function InternalSetTargetLine(ALine: Integer): Boolean;
+    function SetTargetLine(ALine: Integer): Boolean;
+  end;
 
-    function GetTextStr: String; override;
-    procedure SetTextStr(const AValue: string); override;
+{ TDSciLines }
+
+  TDSciLines = class(TDSciUnicodeStrings)
+  protected
+    FHelper: TDSciHelper;
+
+    function GetTextStr: UnicodeString; override;
+    procedure SetTextStr(const AValue: UnicodeString); override;
 
     function GetCount: Integer; override;
 
-    function Get(AIndex: Integer): String; override;
-    procedure Put(AIndex: Integer; const AString: String); override;
+    function Get(AIndex: Integer): UnicodeString; override;
+    procedure Put(AIndex: Integer; const AString: UnicodeString); override;
 
     procedure SetUpdateState(Updating: Boolean); override;
 
   public
-    constructor Create(ASendEditor: TDSciSendEditor);
+    constructor Create(AHelper: TDSciHelper);
     procedure Clear; override;
-
-    procedure LoadFromFileUTF8(const AFileName: string); virtual;
+                 
+{$IFDEF UNICODE}
+    procedure LoadFromFileUTF8(const AFileName: UnicodeString); virtual;
     procedure LoadFromStreamUTF8(AStream: TStream); virtual;
 
-    procedure SaveToFileUTF8(const AFileName: string;
+    procedure SaveToFileUTF8(const AFileName: UnicodeString;
       APreamble: Boolean = False); virtual;
     procedure SaveToStreamUTF8(AStream: TStream;
       APreamble: Boolean = False); virtual;
+{$ENDIF}
 
     procedure Delete(AIndex: Integer); override;
-    procedure Insert(AIndex: Integer; const AString: string); override;
+    procedure Insert(AIndex: Integer; const AString: UnicodeString); override;
   end;
+
+{$IFDEF UNICODE}
+// TODO:
+{$ELSE}
+function UTF8ToUnicodeString(const S: PAnsiChar): UnicodeString;
+function UTF8ToUnicodeString(const S: PAnsiChar): UnicodeString;
+{$ENDIF}
 
 implementation
 
-{ TDSciLines }
+{$IFNDEF UNICODE}
+function _strlenA(lpString: PAnsiChar): Integer; stdcall;
+  external 'kernel32.dll' name 'lstrlenA';
 
-constructor TDSciLines.Create(ASendEditor: TDSciSendEditor);
+function UTF8ToUnicodeString(const S: PAnsiChar): UnicodeString;
+var
+  lLen: Integer;
+  lUStr: UnicodeString;
+begin
+  Result := '';
+  if S = '' then Exit;
+  lLen := _strlenA(S);
+  SetLength(lUStr, lLen);
+
+  lLen := Utf8ToUnicode(PWideChar(lUStr), lLen + 1, S, lLen);
+  if lLen > 0 then
+    SetLength(lUStr, lLen - 1)
+  else
+    lUStr := '';
+  Result := lUStr;
+end;
+{$ENDIF}
+
+{ TDSciHelper }
+
+constructor TDSciHelper.Create(ASendEditor: TDSciSendEditor);
 begin
   FSendEditor := ASendEditor;
 
   inherited Create;
 end;
 
-function TDSciLines.IsUTF8: Boolean;
+function TDSciHelper.SendEditor(AMessage, WParam, LParam: Integer): Integer;
 begin
-  Result := FSendEditor(SCI_GETCODEPAGE) = SC_CP_UTF8;
+  Result := FSendEditor(AMessage, WParam, LParam);
 end;
 
-function TDSciLines.InternalGetText(AMessage: Integer; AParam1: Integer; var AText: TDSciString): Integer;
+function TDSciHelper.IsUTF8: Boolean;
+begin
+  Result := SendEditor(SCI_GETCODEPAGE) = SC_CP_UTF8;
+end;
+
+function TDSciHelper.GetText(AMessage, AParam1: Integer;
+  var AText: UnicodeString): Integer;
 var
   lBuf: PAnsiChar;
 begin
-  lBuf := AllocMem(FSendEditor(AMessage, AParam1) + 1);
+  lBuf := AllocMem(SendEditor(AMessage, AParam1) + 1);
   try
-    Result := FSendEditor(AMessage, AParam1, Integer(lBuf));
+    Result := SendEditor(AMessage, AParam1, Integer(lBuf));
 
     if IsUTF8 then
       AText := UTF8ToUnicodeString(lBuf)
     else
-      AText := String(lBuf);
+      AText := UnicodeString(AnsiString(lBuf));
 
   finally
     FreeMem(lBuf);
   end;
 end;
 
-function TDSciLines.InternalSetText(AMessage: Integer; AParam1: Integer; const AText: TDSciString): Integer;
+function TDSciHelper.SetText(AMessage, AParam1: Integer;
+  const AText: UnicodeString): Integer;
 begin
   if IsUTF8 then
-    Result := FSendEditor(AMessage, AParam1, Integer(UTF8String(AText)))
+    Result := SendEditor(AMessage, AParam1, Integer(UTF8String(AText)))
   else
-    Result := FSendEditor(AMessage, AParam1, Integer(AnsiString(AText)));
+    Result := SendEditor(AMessage, AParam1, Integer(AnsiString(AText)));
 end;
 
-function TDSciLines.InternalGetTextLen(AMessage: Integer; var AText: String): Integer;
+function TDSciHelper.GetTextLen(AMessage: Integer;
+  var AText: UnicodeString): Integer;
 var
   lBuf: PAnsiChar;
   lLen: Integer;
 begin
-  lLen := FSendEditor(AMessage);
+  lLen := SendEditor(AMessage);
 
   lBuf := AllocMem(lLen + 1);
   try
-    Result := FSendEditor(AMessage, lLen + 1, Integer(lBuf));
+    Result := SendEditor(AMessage, lLen + 1, Integer(lBuf));
 
     if IsUTF8 then
       AText := UTF8ToUnicodeString(lBuf)
     else
-      AText := String(lBuf);
+      AText := UnicodeString(lBuf);
 
   finally
     FreeMem(lBuf);
   end;
 end;
 
-function TDSciLines.InternalSetTextLen(AMessage: Integer; const AText: TDSciString): Integer;
+function TDSciHelper.SetTextLen(AMessage: Integer;
+  const AText: UnicodeString): Integer;
 var
   lUTF8: UTF8String;
   lAnsi: AnsiString;
@@ -158,122 +234,136 @@ begin
   if IsUTF8 then
   begin
     lUTF8 := UTF8String(AText);
-    Result := FSendEditor(AMessage, System.Length(lUTF8), Integer(lUTF8));
+    Result := SendEditor(AMessage, System.Length(lUTF8), Integer(lUTF8));
   end else
   begin
     lAnsi := AnsiString(AText);
-    Result := FSendEditor(AMessage, System.Length(lAnsi), Integer(lAnsi));
+    Result := SendEditor(AMessage, System.Length(lAnsi), Integer(lAnsi));
   end;
 end;
 
-function TDSciLines.InternalSetTargetLine(ALine: Integer): Boolean;
+function TDSciHelper.SetTargetLine(ALine: Integer): Boolean;
 var
   lLineStart, lLineEnd: Integer;
 begin
-  lLineStart := FSendEditor(SCI_POSITIONFROMLINE, ALine);
-  if lLineStart = INVALID_POSITION then
-    Exit(False);
+  Result := False;
 
-  if (lLineStart = FSendEditor(SCI_GETLENGTH)) and (ALine > 0) then
+  lLineStart := SendEditor(SCI_POSITIONFROMLINE, ALine);
+  if lLineStart = INVALID_POSITION then
+    Exit;
+
+  if (lLineStart = SendEditor(SCI_GETLENGTH)) and (ALine > 0) then
   begin
     lLineEnd := lLineStart;
-    lLineStart := FSendEditor(SCI_GETLINEENDPOSITION, ALine - 1);
+    lLineStart := SendEditor(SCI_GETLINEENDPOSITION, ALine - 1);
   end else
-    lLineEnd := lLineStart + FSendEditor(SCI_LINELENGTH, ALine);
+    lLineEnd := lLineStart + SendEditor(SCI_LINELENGTH, ALine);
 
   if lLineEnd = INVALID_POSITION then
-    Exit(False);
+    Exit;
 
-  FSendEditor(SCI_SETTARGETSTART, lLineStart);
-  FSendEditor(SCI_SETTARGETEND, lLineEnd);
+  SendEditor(SCI_SETTARGETSTART, lLineStart);
+  SendEditor(SCI_SETTARGETEND, lLineEnd);
 
   Result := True;
 end;
 
-function TDSciLines.GetTextStr: String;
+{ TDSciLines }
+
+constructor TDSciLines.Create(AHelper: TDSciHelper);
+begin
+  FHelper := AHelper;
+
+  inherited Create;
+end;
+
+function TDSciLines.GetTextStr: UnicodeString;
 var
   lBuf: PAnsiChar;
   lLen: Integer;
 begin
-  lLen := FSendEditor(SCI_GETLENGTH);
+  lLen := FHelper.SendEditor(SCI_GETLENGTH);
 
   lBuf := AllocMem(lLen + 1);
   try
-    FSendEditor(SCI_GETTEXT, lLen + 1, Integer(lBuf));
+    FHelper.SendEditor(SCI_GETTEXT, lLen + 1, Integer(lBuf));
 
-    if IsUTF8 then
+    if FHelper.IsUTF8 then
       Result := UTF8ToUnicodeString(lBuf)
     else
-      Result := String(lBuf);
+      Result := UnicodeString(lBuf);
 
   finally
     FreeMem(lBuf);
   end;
 end;
 
-procedure TDSciLines.SetTextStr(const AValue: string);
+procedure TDSciLines.SetTextStr(const AValue: UnicodeString);
 begin
-  if IsUTF8 then
-    FSendEditor(SCI_SETTEXT, 0, Integer(UTF8String(AValue)))
+  if FHelper.IsUTF8 then
+    FHelper.SendEditor(SCI_SETTEXT, 0, Integer(UTF8String(AValue)))
   else
-    FSendEditor(SCI_SETTEXT, 0, Integer(AnsiString(AValue)));
+    FHelper.SendEditor(SCI_SETTEXT, 0, Integer(AnsiString(AValue)));
 end;
 
 function TDSciLines.GetCount: Integer;
 begin
-  Result := FSendEditor(SCI_GETLINECOUNT);
+  Result := FHelper.SendEditor(SCI_GETLINECOUNT);
 
   if Result = 1 then
-    if FSendEditor(SCI_GETLENGTH) = 0 then
+    if FHelper.SendEditor(SCI_GETLENGTH) = 0 then
       Result := 0;
 end;
 
-function TDSciLines.Get(AIndex: Integer): String;
+function TDSciLines.Get(AIndex: Integer): UnicodeString;
 var
   lBuf: PAnsiChar;
   lTextRange: TDSciTextRange;
 begin
-  lTextRange.chrg.cpMin := FSendEditor(SCI_POSITIONFROMLINE, AIndex);
-  lTextRange.chrg.cpMax := FSendEditor(SCI_GETLINEENDPOSITION, AIndex);
+  Result := '';
+
+  lTextRange.chrg.cpMin := FHelper.SendEditor(SCI_POSITIONFROMLINE, AIndex);
+  lTextRange.chrg.cpMax := FHelper.SendEditor(SCI_GETLINEENDPOSITION, AIndex);
 
   if (lTextRange.chrg.cpMin = INVALID_POSITION) or (lTextRange.chrg.cpMax = INVALID_POSITION) then
-    Exit('');
+    Exit;
 
   lBuf := AllocMem(lTextRange.chrg.cpMax - lTextRange.chrg.cpMin  + 1);
   try
     lTextRange.lpstrText := PAnsiChar(lBuf);
-    FSendEditor(SCI_GETTEXTRANGE, 0, Integer(@lTextRange));
+    FHelper.SendEditor(SCI_GETTEXTRANGE, 0, Integer(@lTextRange));
 
-    if IsUTF8 then
+    if FHelper.IsUTF8 then
       Result := UTF8ToUnicodeString(lBuf)
     else
-      Result := String(lBuf);
+      Result := UnicodeString(lBuf);
 
   finally
     FreeMem(lBuf);
   end;
 end;
 
-procedure TDSciLines.Put(AIndex: Integer; const AString: String);
+procedure TDSciLines.Put(AIndex: Integer; const AString: UnicodeString);
 begin
-  if InternalSetTargetLine(AIndex) then
-    InternalSetTextLen(SCI_REPLACETARGET, AString);
+  if FHelper.SetTargetLine(AIndex) then
+    FHelper.SetTextLen(SCI_REPLACETARGET, AString);
 end;
 
 procedure TDSciLines.SetUpdateState(Updating: Boolean);
 begin
   if Updating then
-    FSendEditor(SCI_BEGINUNDOACTION)
+    FHelper.SendEditor(SCI_BEGINUNDOACTION)
   else
-    FSendEditor(SCI_ENDUNDOACTION);
+    FHelper.SendEditor(SCI_ENDUNDOACTION);
 end;
 
 procedure TDSciLines.Clear;
 begin
-  FSendEditor(SCI_CLEARALL);
+  FHelper.SendEditor(SCI_CLEARALL);
 end;
 
-procedure TDSciLines.LoadFromFileUTF8(const AFileName: string);
+{$IFDEF UNICODE}
+procedure TDSciLines.LoadFromFileUTF8(const AFileName: UnicodeString);
 begin
   LoadFromFile(AFileName, TEncoding.UTF8);
 end;
@@ -283,7 +373,7 @@ begin
   LoadFromStream(AStream, TEncoding.UTF8);
 end;
 
-procedure TDSciLines.SaveToFileUTF8(const AFileName: string;
+procedure TDSciLines.SaveToFileUTF8(const AFileName: UnicodeString;
   APreamble: Boolean);
 var
   lStream: TStream;
@@ -309,24 +399,25 @@ begin
       AStream.WriteBuffer(lBuffer[0], Length(lBuffer));
   end;
 end;
+{$ENDIF}
 
 procedure TDSciLines.Delete(AIndex: Integer);
 begin
-  if InternalSetTargetLine(AIndex) then
-    FSendEditor(SCI_REPLACETARGET, 0, 0);
+  if FHelper.SetTargetLine(AIndex) then
+    FHelper.SendEditor(SCI_REPLACETARGET, 0, 0);
 end;
 
-procedure TDSciLines.Insert(AIndex: Integer; const AString: string);
+procedure TDSciLines.Insert(AIndex: Integer; const AString: UnicodeString);
 var
-  lEOL: String;
+  lEOL: UnicodeString;
   lLinePos: Integer;
 begin
-  lLinePos := FSendEditor(SCI_POSITIONFROMLINE, AIndex);
+  lLinePos := FHelper.SendEditor(SCI_POSITIONFROMLINE, AIndex);
 
   if lLinePos = INVALID_POSITION then
     Exit;
 
-  case FSendEditor(SCI_GETEOLMODE) of
+  case FHelper.SendEditor(SCI_GETEOLMODE) of
   SC_EOL_CRLF:
     lEOL := #13#10;
 
@@ -339,19 +430,19 @@ begin
     lEOL := ''; //??
   end;
 
-  FSendEditor(SCI_SETTARGETSTART, lLinePos);
-  FSendEditor(SCI_SETTARGETEND, lLinePos);
+  FHelper.SendEditor(SCI_SETTARGETSTART, lLinePos);
+  FHelper.SendEditor(SCI_SETTARGETEND, lLinePos);
 
-  if lLinePos = FSendEditor(SCI_GETLENGTH) then
+  if lLinePos = FHelper.SendEditor(SCI_GETLENGTH) then
   begin
 
     if lLinePos = 0 then
-      InternalSetTextLen(SCI_REPLACETARGET, AString)
+      FHelper.SetTextLen(SCI_REPLACETARGET, AString)
     else
-      InternalSetTextLen(SCI_REPLACETARGET, lEOL + AString);
+      FHelper.SetTextLen(SCI_REPLACETARGET, lEOL + AString);
 
   end else
-    InternalSetTextLen(SCI_REPLACETARGET, AString + lEOL);
+    FHelper.SetTextLen(SCI_REPLACETARGET, AString + lEOL);
 end;
 
 end.
