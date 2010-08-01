@@ -125,7 +125,7 @@ type
     property OnMouseDown;
 
     // OnMouseEnter/OnMouseLeave added in D2006
-    {$IF CompilerVersion >= 18}
+    {$IF CompilerVersion > 17}
     property OnMouseEnter;
     property OnMouseLeave;
     {$IFEND}
