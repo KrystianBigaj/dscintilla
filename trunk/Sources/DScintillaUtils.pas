@@ -129,30 +129,6 @@ begin
     Result := FSendEditor(AMessage, AParam1, Integer(AnsiString(AText)));
 end;
 
-function TDSciLines.InternalSetTargetLine(ALine: Integer): Boolean;
-var
-  lLineStart, lLineEnd: Integer;
-begin
-  lLineStart := FSendEditor(SCI_POSITIONFROMLINE, ALine);
-  if lLineStart = INVALID_POSITION then
-    Exit(False);
-
-  if (lLineStart = FSendEditor(SCI_GETLENGTH)) and (ALine > 0) then
-  begin
-    lLineEnd := lLineStart;
-    lLineStart := FSendEditor(SCI_GETLINEENDPOSITION, ALine - 1);
-  end else
-    lLineEnd := lLineStart + FSendEditor(SCI_LINELENGTH, ALine);
-
-  if lLineEnd = INVALID_POSITION then
-    Exit(False);
-
-  FSendEditor(SCI_SETTARGETSTART, lLineStart);
-  FSendEditor(SCI_SETTARGETEND, lLineEnd);
-
-  Result := True;
-end;
-
 function TDSciLines.InternalGetTextLen(AMessage: Integer; var AText: String): Integer;
 var
   lBuf: PAnsiChar;
@@ -190,25 +166,66 @@ begin
   end;
 end;
 
-procedure TDSciLines.LoadFromFileUTF8(const AFileName: string);
+function TDSciLines.InternalSetTargetLine(ALine: Integer): Boolean;
+var
+  lLineStart, lLineEnd: Integer;
 begin
-  LoadFromFile(AFileName, TEncoding.UTF8);
+  lLineStart := FSendEditor(SCI_POSITIONFROMLINE, ALine);
+  if lLineStart = INVALID_POSITION then
+    Exit(False);
+
+  if (lLineStart = FSendEditor(SCI_GETLENGTH)) and (ALine > 0) then
+  begin
+    lLineEnd := lLineStart;
+    lLineStart := FSendEditor(SCI_GETLINEENDPOSITION, ALine - 1);
+  end else
+    lLineEnd := lLineStart + FSendEditor(SCI_LINELENGTH, ALine);
+
+  if lLineEnd = INVALID_POSITION then
+    Exit(False);
+
+  FSendEditor(SCI_SETTARGETSTART, lLineStart);
+  FSendEditor(SCI_SETTARGETEND, lLineEnd);
+
+  Result := True;
 end;
 
-procedure TDSciLines.LoadFromStreamUTF8(AStream: TStream);
+function TDSciLines.GetTextStr: String;
+var
+  lBuf: PAnsiChar;
+  lLen: Integer;
 begin
-  LoadFromStream(AStream, TEncoding.UTF8);
+  lLen := FSendEditor(SCI_GETLENGTH);
+
+  lBuf := AllocMem(lLen + 1);
+  try
+    FSendEditor(SCI_GETTEXT, lLen + 1, Integer(lBuf));
+
+    if IsUTF8 then
+      Result := UTF8ToUnicodeString(lBuf)
+    else
+      Result := String(lBuf);
+
+  finally
+    FreeMem(lBuf);
+  end;
 end;
 
-procedure TDSciLines.Clear;
+procedure TDSciLines.SetTextStr(const AValue: string);
 begin
-  FSendEditor(SCI_CLEARALL);
+  if IsUTF8 then
+    FSendEditor(SCI_SETTEXT, 0, Integer(UTF8String(AValue)))
+  else
+    FSendEditor(SCI_SETTEXT, 0, Integer(AnsiString(AValue)));
 end;
 
-procedure TDSciLines.Delete(AIndex: Integer);
+function TDSciLines.GetCount: Integer;
 begin
-  if InternalSetTargetLine(AIndex) then
-    FSendEditor(SCI_REPLACETARGET, 0, 0);
+  Result := FSendEditor(SCI_GETLINECOUNT);
+
+  if Result = 1 then
+    if FSendEditor(SCI_GETLENGTH) = 0 then
+      Result := 0;
 end;
 
 function TDSciLines.Get(AIndex: Integer): String;
@@ -237,34 +254,66 @@ begin
   end;
 end;
 
-function TDSciLines.GetCount: Integer;
+procedure TDSciLines.Put(AIndex: Integer; const AString: String);
 begin
-  Result := FSendEditor(SCI_GETLINECOUNT);
-
-  if Result = 1 then
-    if FSendEditor(SCI_GETLENGTH) = 0 then
-      Result := 0;
+  if InternalSetTargetLine(AIndex) then
+    InternalSetTextLen(SCI_REPLACETARGET, AString);
 end;
 
-function TDSciLines.GetTextStr: String;
-var
-  lBuf: PAnsiChar;
-  lLen: Integer;
+procedure TDSciLines.SetUpdateState(Updating: Boolean);
 begin
-  lLen := FSendEditor(SCI_GETLENGTH);
+  if Updating then
+    FSendEditor(SCI_BEGINUNDOACTION)
+  else
+    FSendEditor(SCI_ENDUNDOACTION);
+end;
 
-  lBuf := AllocMem(lLen + 1);
+procedure TDSciLines.Clear;
+begin
+  FSendEditor(SCI_CLEARALL);
+end;
+
+procedure TDSciLines.LoadFromFileUTF8(const AFileName: string);
+begin
+  LoadFromFile(AFileName, TEncoding.UTF8);
+end;
+
+procedure TDSciLines.LoadFromStreamUTF8(AStream: TStream);
+begin
+  LoadFromStream(AStream, TEncoding.UTF8);
+end;
+
+procedure TDSciLines.SaveToFileUTF8(const AFileName: string;
+  APreamble: Boolean);
+var
+  lStream: TStream;
+begin
+  lStream := TFileStream.Create(AFileName, fmCreate);
   try
-    FSendEditor(SCI_GETTEXT, lLen + 1, Integer(lBuf));
-
-    if IsUTF8 then
-      Result := UTF8ToUnicodeString(lBuf)
-    else
-      Result := String(lBuf);
-
+    SaveToStreamUTF8(lStream, APreamble);
   finally
-    FreeMem(lBuf);
+    lStream.Free;
   end;
+end;
+
+procedure TDSciLines.SaveToStreamUTF8(AStream: TStream; APreamble: Boolean);
+var
+  lBuffer: TBytes;
+begin
+  if APreamble then
+    SaveToStream(AStream, TEncoding.UTF8)
+  else
+  begin
+    lBuffer := TEncoding.UTF8.GetBytes(GetTextStr);
+    if Length(lBuffer) > 0 then
+      AStream.WriteBuffer(lBuffer[0], Length(lBuffer));
+  end;
+end;
+
+procedure TDSciLines.Delete(AIndex: Integer);
+begin
+  if InternalSetTargetLine(AIndex) then
+    FSendEditor(SCI_REPLACETARGET, 0, 0);
 end;
 
 procedure TDSciLines.Insert(AIndex: Integer; const AString: string);
@@ -303,55 +352,6 @@ begin
 
   end else
     InternalSetTextLen(SCI_REPLACETARGET, AString + lEOL);
-end;
-
-procedure TDSciLines.Put(AIndex: Integer; const AString: String);
-begin
-  if InternalSetTargetLine(AIndex) then
-    InternalSetTextLen(SCI_REPLACETARGET, AString);
-end;
-
-procedure TDSciLines.SaveToFileUTF8(const AFileName: string;
-  APreamble: Boolean);
-var
-  lStream: TStream;
-begin
-  lStream := TFileStream.Create(AFileName, fmCreate);
-  try
-    SaveToStreamUTF8(lStream, APreamble);
-  finally
-    lStream.Free;
-  end;
-end;
-
-procedure TDSciLines.SaveToStreamUTF8(AStream: TStream; APreamble: Boolean);
-var
-  lBuffer: TBytes;
-begin
-  if APreamble then
-    SaveToStream(AStream, TEncoding.UTF8)
-  else
-  begin
-    lBuffer := TEncoding.UTF8.GetBytes(GetTextStr);
-    if Length(lBuffer) > 0 then
-      AStream.WriteBuffer(lBuffer[0], Length(lBuffer));
-  end;
-end;
-
-procedure TDSciLines.SetTextStr(const AValue: string);
-begin
-  if IsUTF8 then
-    FSendEditor(SCI_SETTEXT, 0, Integer(UTF8String(AValue)))
-  else
-    FSendEditor(SCI_SETTEXT, 0, Integer(AnsiString(AValue)));
-end;
-
-procedure TDSciLines.SetUpdateState(Updating: Boolean);
-begin
-  if Updating then
-    FSendEditor(SCI_BEGINUNDOACTION)
-  else
-    FSendEditor(SCI_ENDUNDOACTION);
 end;
 
 end.
