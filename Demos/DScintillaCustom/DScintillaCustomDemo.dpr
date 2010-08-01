@@ -9,7 +9,9 @@ uses
 
 begin
   Application.Initialize;
-  {$IF CompilerVersion > 15}
+
+  // Application.MainFormOnTaskbar added in D2007
+  {$IF CompilerVersion >= 18.5}
   Application.MainFormOnTaskbar := True;
   {$IFEND}
   Application.CreateForm(TfrmMain, frmMain);
