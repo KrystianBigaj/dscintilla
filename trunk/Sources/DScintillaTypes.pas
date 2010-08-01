@@ -44,9 +44,22 @@ uses
 
 type
 
+{ TDSciSendEditor }
+
+  TDSciSendEditor = function(AMessage: Integer;
+    WParam: Integer = 0; LParam: Integer = 0): Integer of object;
+
 { TDSciDocument }
 
   TDSciDocument = type Pointer;
+
+{ TDSciString }
+
+{$IFDEF UNICODE}
+  TDSciString = UnicodeString;
+{$ELSE}
+  TDSciString = WideString;
+{$ENDIF}
 
 { TDSciCell }
 
