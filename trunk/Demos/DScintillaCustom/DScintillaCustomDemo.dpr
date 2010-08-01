@@ -9,7 +9,9 @@ uses
 
 begin
   Application.Initialize;
+  {$IF CompilerVersion > 15}
   Application.MainFormOnTaskbar := True;
+  {$IFEND}
   Application.CreateForm(TfrmMain, frmMain);
   Application.Run;
 end.
