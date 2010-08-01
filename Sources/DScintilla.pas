@@ -40,7 +40,7 @@ unit DScintilla;
 interface
 
 uses
-  DScintillaCustom, DScintillaTypes,
+  DScintillaCustom, DScintillaTypes, DScintillaUtils,
 
   SysUtils, Classes, Messages, Graphics;
 
@@ -50,6 +50,8 @@ type
 
   TDScintilla = class(TDScintillaCustom)
   private
+    FLines: TDSciLines;
+
     FOnUpdateUI: TDSciUpdateUIEvent;
     FOnSavePointReached: TDSciSavePointReachedEvent;
     FOnZoom: TDSciZoomEvent;
@@ -74,6 +76,8 @@ type
     FOnDwellStart: TDSciDwellStartEvent;
     FOnIndicatorClick: TDSciIndicatorClickEvent;
     FOnAutoCSelection: TDSciAutoCSelectionEvent;
+
+    procedure SetLines(const Value: TDSciLines);
 
   protected
     /// <summary>Handles notification messages from Scintilla,
@@ -109,6 +113,9 @@ type
     function HandleWMNotify(var AMessage: TWMNotify): Boolean;
 
   published
+
+    property Lines: TDSciLines read FLines write SetLines;
+
     // Scintilla events - see documentation at http://www.scintilla.org/ScintillaDoc.html#Notifications
 
     property OnStyleNeeded: TDSciStyleNeededEvent read FOnStyleNeeded write FOnStyleNeeded;
@@ -116,9 +123,6 @@ type
     property OnSavePointReached: TDSciSavePointReachedEvent read FOnSavePointReached write FOnSavePointReached;
     property OnSavePointLeft: TDSciSavePointLeftEvent read FOnSavePointLeft write FOnSavePointLeft;
     property OnModifyAttemptRO: TDSciModifyAttemptROEvent read FOnModifyAttemptRO write FOnModifyAttemptRO;
-    // # GTK+ Specific to work around focus and accelerator problems:
-    // evt  Key=2005(Integer ch; Integer modifiers)
-    // evt  DoubleClick=2006()
     property OnUpdateUI: TDSciUpdateUIEvent read FOnUpdateUI write FOnUpdateUI;
     property OnModified: TDSciModifiedEvent read FOnModified write FOnModified;
     property OnMacroRecord: TDSciMacroRecordEvent read FOnMacroRecord write FOnMacroRecord;
@@ -146,6 +150,8 @@ implementation
 
 constructor TDScintilla.Create(AOwner: TComponent);
 begin
+  FLines := TDSciLines.Create(SendEditor);
+
   inherited Create(AOwner);
 
   DllModule := cDSciLexerDll;
@@ -154,6 +160,13 @@ end;
 destructor TDScintilla.Destroy;
 begin
   inherited Destroy;
+
+  FLines.Free;
+end;
+
+procedure TDScintilla.SetLines(const Value: TDSciLines);
+begin
+  FLines.Assign(Value);
 end;
 
 procedure TDScintilla.WMNotify(var AMessage: TWMNotify);
@@ -202,10 +215,6 @@ begin
   SCN_MODIFYATTEMPTRO:
     if Assigned(FOnModifyAttemptRO) then
       FOnModifyAttemptRO(Self);
-
-  // # GTK+ Specific to work around focus and accelerator problems:
-  // evt  Key=2005(Integer ch; Integer modifiers)
-  // evt  DoubleClick=2006()
 
   SCN_UPDATEUI:
     if Assigned(FOnUpdateUI) then
