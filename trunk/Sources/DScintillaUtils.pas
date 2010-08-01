@@ -128,7 +128,6 @@ type
 // TODO:
 {$ELSE}
 function UTF8ToUnicodeString(const S: PAnsiChar): UnicodeString;
-function UTF8ToUnicodeString(const S: PAnsiChar): UnicodeString;
 {$ENDIF}
 
 implementation
