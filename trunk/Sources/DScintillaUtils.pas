@@ -101,7 +101,7 @@ type
 
     function GetCount: Integer; override;
 
-    function Get(AIndex: Integer): UnicodeString; override;
+    function Get(AIndex: Integer): UnicodeString; {$IF CompilerVersion > 17}override;{$IFEND} // TJclWideStrings.Get is not virtual
     procedure Put(AIndex: Integer; const AString: UnicodeString); override;
 
     procedure SetUpdateState(Updating: Boolean); override;
