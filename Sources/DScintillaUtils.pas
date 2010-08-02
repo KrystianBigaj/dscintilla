@@ -37,44 +37,36 @@
 
 unit DScintillaUtils;
 
+{$IF CompilerVersion < 16}
+  {$DEFINE DSCI_JCLWIDESTRINGS}
+{$ELSEIF CompilerVersion < 19}
+  {$DEFINE DSCI_WIDESTRINGS}
+{$IFEND}
+
 interface
 
 uses
   DScintillaTypes,
 
-{$IFNDEF UNICODE}
-  // D2006, D2007
-  {$IF CompilerVersion > 17}
-  WideStrings,
-  {$ELSE}
-  // D6/D7 requires JCL (JEDI)
+{$IF Defined(DSCI_JCLWIDESTRINGS)}
   JclWideStrings,
-  {$IFEND}
-{$ENDIF}
+{$ELSEIF Defined(DSCI_WIDESTRINGS)}
+  WideStrings,
+{$IFEND}
 
   SysUtils, Classes;
 
 type
 
-{$IFDEF UNICODE}
-  // D2009+
-  TDSciUnicodeStrings = TStrings;
-{$ELSE}       
-  
-  {$IF CompilerVersion > 17}
+{ TDSciUnicodeStrings }
 
-  // D2006, D2007
-  TDSciUnicodeStrings = WideStrings.TWideStrings;
-
-  {$ELSE}
-
-  // D6/D7
-  {$DEFINE DSCI_JCLWIDESTRINGS}
+{$IF Defined(DSCI_JCLWIDESTRINGS)}
   TDSciUnicodeStrings = JclWideStrings.TJclWideStrings;
-
-  {$IFEND}
-
-{$ENDIF}
+{$ELSEIF Defined(DSCI_WIDESTRINGS)}
+  TDSciUnicodeStrings = WideStrings.TWideStrings;
+{$ELSE}
+  TDSciUnicodeStrings = TStrings;
+{$IFEND}
 
 { TDSciHelper }
 
@@ -130,8 +122,8 @@ type
   public
     constructor Create(AHelper: TDSciHelper);
     procedure Clear; override;
-                 
-{$IFDEF UNICODE}
+
+{$IF CompilerVersion > 19}
     procedure LoadFromFileUTF8(const AFileName: UnicodeString); virtual;
     procedure LoadFromStreamUTF8(AStream: TStream); virtual;
 
@@ -139,7 +131,10 @@ type
       APreamble: Boolean = False); virtual;
     procedure SaveToStreamUTF8(AStream: TStream;
       APreamble: Boolean = False); virtual;
-{$ENDIF}
+{$ELSE}
+    procedure LoadFromStream(Stream: TStream); override;     
+    procedure SaveToStream(Stream: TStream); override;
+{$IFEND}
 
     procedure Delete(AIndex: Integer); override;
 {$IFDEF DSCI_JCLWIDESTRINGS}
@@ -150,18 +145,18 @@ type
 {$ENDIF}
   end;
 
-{$IFDEF UNICODE}
+{$IF CompilerVersion > 19}
 type
   // Compiler 'magic' will do conversion
-  UTF8StringFromUStr = UTF8String;
+  UnicodeStringToUTF8 = UTF8String;
 {$ELSE}
 function UTF8ToUnicodeString(const S: PAnsiChar): UnicodeString;
-function UTF8StringFromUStr(const S: UnicodeString): UTF8String;
-{$ENDIF}
+function UnicodeStringToUTF8(const S: UnicodeString): UTF8String;
+{$IFEND}
 
 implementation
 
-{$IFNDEF UNICODE}
+{$IF CompilerVersion < 20}
 function _strlenA(lpString: PAnsiChar): Integer; stdcall;
   external 'kernel32.dll' name 'lstrlenA';
 
@@ -185,11 +180,11 @@ begin
   Result := lUStr;
 end;
 
-function UTF8StringFromUStr(const S: UnicodeString): UTF8String;
+function UnicodeStringToUTF8(const S: UnicodeString): UTF8String;
 begin
   Result := UTF8Encode(S);
 end;
-{$ENDIF}
+{$IFEND}
 
 { TDSciHelper }
 
@@ -236,7 +231,7 @@ function TDSciHelper.SetText(AMessage, AParam1: Integer;
   const AText: UnicodeString): Integer;
 begin
   if IsUTF8 then
-    Result := SendEditor(AMessage, AParam1, Integer(UTF8StringFromUStr(AText)))
+    Result := SendEditor(AMessage, AParam1, Integer(UnicodeStringToUTF8(AText)))
   else
     Result := SendEditor(AMessage, AParam1, Integer(AnsiString(AText)));
 end;
@@ -266,7 +261,7 @@ var
 begin
   if IsUTF8 then
   begin
-    lUTF8 := UTF8StringFromUStr(AText);
+    lUTF8 := UnicodeStringToUTF8(AText);
     Result := SendEditor(AMessage, System.Length(lUTF8), Integer(lUTF8));
   end else
   begin
@@ -395,7 +390,7 @@ begin
   FHelper.SendEditor(SCI_CLEARALL);
 end;
 
-{$IFDEF UNICODE}
+{$IF CompilerVersion > 19}
 procedure TDSciLines.LoadFromFileUTF8(const AFileName: UnicodeString);
 begin
   LoadFromFile(AFileName, TEncoding.UTF8);
@@ -432,7 +427,17 @@ begin
       AStream.WriteBuffer(lBuffer[0], Length(lBuffer));
   end;
 end;
-{$ENDIF}
+{$ELSE}
+procedure TDSciLines.LoadFromStream(Stream: TStream);
+begin
+  raise Exception.Create('TODO: TDSciLines.LoadFromStream');
+end;
+
+procedure TDSciLines.SaveToStream(Stream: TStream);
+begin
+  raise Exception.Create('TODO: TDSciLines.SaveToStream');
+end;
+{$IFEND}
 
 procedure TDSciLines.Delete(AIndex: Integer);
 begin

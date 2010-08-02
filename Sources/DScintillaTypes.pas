@@ -44,9 +44,13 @@ uses
 
 type
 
-{$IFNDEF UNICODE}
+{$IF CompilerVersion < 20}
   UnicodeString = WideString;
-{$ENDIF}
+{$IFEND}
+
+{$IF CompilerVersion < 18.5}
+  TBytes = array of Byte;
+{$IFEND}
 
 { TDSciSendEditor }
 
