@@ -131,10 +131,12 @@ type
       APreamble: Boolean = False); virtual;
     procedure SaveToStreamUTF8(AStream: TStream;
       APreamble: Boolean = False); virtual;
-{$ELSE}
+{$IFEND}
+
+{$IFDEF DSCI_WIDESTRINGS}
     procedure LoadFromStream(Stream: TStream); override;     
     procedure SaveToStream(Stream: TStream); override;
-{$IFEND}
+{$ENDIF}
 
     procedure Delete(AIndex: Integer); override;
 {$IFDEF DSCI_JCLWIDESTRINGS}
@@ -427,7 +429,9 @@ begin
       AStream.WriteBuffer(lBuffer[0], Length(lBuffer));
   end;
 end;
-{$ELSE}
+{$IFEND}
+
+{$IFDEF DSCI_WIDESTRINGS}
 procedure TDSciLines.LoadFromStream(Stream: TStream);
 begin
   raise Exception.Create('TODO: TDSciLines.LoadFromStream');
@@ -437,7 +441,7 @@ procedure TDSciLines.SaveToStream(Stream: TStream);
 begin
   raise Exception.Create('TODO: TDSciLines.SaveToStream');
 end;
-{$IFEND}
+{$ENDIF}
 
 procedure TDSciLines.Delete(AIndex: Integer);
 begin
