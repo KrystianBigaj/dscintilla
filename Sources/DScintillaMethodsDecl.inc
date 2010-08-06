@@ -108,7 +108,7 @@
 
     /// <summary>Get the font of a style.
     /// Returns the length of the fontName</summary>
-    function StyleGetFont(AStyle: Integer; const AFontName: UnicodeString): Integer;
+    function StyleGetFont(AStyle: Integer): UnicodeString;
 
     /// <summary>Set the foreground colour of the main and additional selections and whether to use this setting.</summary>
     procedure SetSelFore(AUseSetting: Boolean; AFore: TColor);
@@ -177,7 +177,7 @@
     function FindText(AFlags: Integer; const AText: UnicodeString; var ARange: TDSciCharacterRange): Integer;
 
     /// <summary>On Windows, will draw the document into a display context such as a printer.</summary>
-    function FormatRange(ADraw: Boolean; AFr: PDSciRangeToFormat): Integer;
+    function FormatRange(ADraw: Boolean; var AFr: TDSciRangeToFormat): Integer;
 
     /// <summary>Retrieve the contents of a line.
     /// Returns the length of the line.</summary>
@@ -334,7 +334,7 @@
     procedure AppendText(const AText: UnicodeString);
 
     /// <summary>Retrieve the value of a tag from a regular expression search.</summary>
-    function GetTag(ATagNumber: Integer; ATagValue: PAnsiChar): Integer;
+    function GetTag(ATagNumber: Integer): UnicodeString;
 
     /// <summary>Make the target range start and end be the same as the selection range start and end.</summary>
     procedure TargetFromSelection;
@@ -562,13 +562,13 @@
 
     /// <summary>Create a new document object.
     /// Starts with reference count of 1 and not selected into editor.</summary>
-    function CreateDocument: Pointer;
+    function CreateDocument: TDSciDocument;
 
     /// <summary>Extend life of document.</summary>
-    procedure AddRefDocument(ADoc: Pointer);
+    procedure AddRefDocument(ADoc: TDSciDocument);
 
     /// <summary>Release a reference to the document, deleting document if it fades to black.</summary>
-    procedure ReleaseDocument(ADoc: Pointer);
+    procedure ReleaseDocument(ADoc: TDSciDocument);
 
     /// <summary>Move to the previous change in capitalisation.</summary>
     procedure WordPartLeft;
@@ -698,7 +698,7 @@
 
     /// <summary>Get currently selected item text in the auto-completion list
     /// Returns the length of the item text</summary>
-    function AutoCGetCurrentText(AString: PByte): Integer;
+    function AutoCGetCurrentText: UnicodeString;
 
     /// <summary>Enlarge the document to a particular size of text bytes.</summary>
     procedure Allocate(ABytes: Integer);
@@ -814,14 +814,14 @@
     function PrivateLexerCall(AOperation: Integer; APointer: Integer): Integer;
 
     /// <summary>Retrieve a '\n' separated list of properties understood by the current lexer.</summary>
-    function PropertyNames(ANames: PAnsiChar): Integer;
+    function PropertyNames: UnicodeString;
 
     /// <summary>Retrieve the type of a property.</summary>
-    function PropertyType(AName: PAnsiChar): Integer;
+    function PropertyType(AName: UnicodeString): Integer;
 
     /// <summary>Describe a property.</summary>
-    function DescribeProperty(AName: PAnsiChar; ADescription: PAnsiChar): Integer;
+    function DescribeProperty(AName: UnicodeString): UnicodeString;
 
     /// <summary>Retrieve a '\n' separated list of descriptions of the keyword sets understood by the current lexer.</summary>
-    function DescribeKeyWordSets(ADescriptions: PAnsiChar): Integer;
+    function DescribeKeyWordSets: UnicodeString;
 

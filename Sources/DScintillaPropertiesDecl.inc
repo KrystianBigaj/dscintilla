@@ -800,7 +800,7 @@
     procedure MarginSetStyles(ALine: Integer; const AStyles: TDSciStyles);
 
     /// <summary>Get the styles in the text margin for a line</summary>
-    function MarginGetStyles(ALine: Integer; AStyles: PAnsiChar): Integer;
+    function MarginGetStyles(ALine: Integer): TDSciStyles;
 
     /// <summary>Get the start of the range of style numbers used for margin text</summary>
     procedure MarginSetStyleOffset(AStyle: Integer);
@@ -824,7 +824,7 @@
     procedure AnnotationSetStyles(ALine: Integer; const AStyles: TDSciStyles);
 
     /// <summary>Get the annotation styles for a line</summary>
-    function AnnotationGetStyles(ALine: Integer; AStyles: PAnsiChar): Integer;
+    function AnnotationGetStyles(ALine: Integer): TDSciStyles;
 
     /// <summary>Get the number of annotation lines for a line</summary>
     function AnnotationGetLines(ALine: Integer): Integer;
@@ -965,5 +965,5 @@
 
     /// <summary>Retrieve the name of the lexer.
     /// Return the length of the text.</summary>
-    function GetLexerLanguage(AText: PByte): Integer;
+    function GetLexerLanguage: UnicodeString;
 

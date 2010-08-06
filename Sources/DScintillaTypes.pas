@@ -106,8 +106,8 @@ type
   TDSciRangeToFormat = record
     hdc: HDC;                         // The HDC (device context) we print to
     hdcTarget: HDC;                   // The HDC we use for measuring (may be same as hdc)
-    rc: PRect;                        // Rectangle in which to print
-    rcPage: PRect;                    // Physically printable page size
+    rc: TRect;                        // Rectangle in which to print
+    rcPage: TRect;                    // Physically printable page size
     chrg: TDSciCharacterRange;        // Range of characters to print
   end;
 

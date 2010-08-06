@@ -182,9 +182,9 @@ begin
   SendEditor(SCI_STYLERESETDEFAULT, 0, 0);
 end;
 
-function TDScintilla.StyleGetFont(AStyle: Integer; const AFontName: UnicodeString): Integer;
+function TDScintilla.StyleGetFont(AStyle: Integer): UnicodeString;
 begin
-  Result := SendEditor(SCI_STYLEGETFONT, AStyle, Integer(AnsiString(AFontName)));
+  FHelper.GetText(SCI_STYLEGETFONT, AStyle, Result);
 end;
 
 procedure TDScintilla.SetSelFore(AUseSetting: Boolean; AFore: TColor);
@@ -279,7 +279,8 @@ end;
 
 procedure TDScintilla.RegisterImage(AType: Integer; const AXpmData: TBytes);
 begin
-  SendEditor(SCI_REGISTERIMAGE, AType, Integer(AXpmData));
+  if Length(AXpmData) > 0 then
+    SendEditor(SCI_REGISTERIMAGE, AType, Integer(AXpmData));
 end;
 
 procedure TDScintilla.ClearRegisteredImages;
@@ -305,9 +306,10 @@ begin
   if Result > INVALID_POSITION then
     ARange := lRange.chrgText;
 end;
-function TDScintilla.FormatRange(ADraw: Boolean; AFr: PDSciRangeToFormat): Integer;
+
+function TDScintilla.FormatRange(ADraw: Boolean; var AFr: TDSciRangeToFormat): Integer;
 begin
-  Result := SendEditor(SCI_FORMATRANGE, Integer(ADraw), Integer(AFr));
+  Result := SendEditor(SCI_FORMATRANGE, Integer(ADraw), Integer(@AFr));
 end;
 
 function TDScintilla.GetLine(ALine: Integer): UnicodeString;
@@ -328,14 +330,17 @@ end;
 function TDScintilla.GetTextRange(AStart, AEnd: Integer): UnicodeString;
 var
   lRange: TDSciTextRange;
-  lChars: array of Char;
+  lChars: TDSciChars;
 begin
   Result := '';
 
   if AEnd = -1 then
-    AEnd := GetLength;
+    AEnd := GetLength
+  else
+    if AEnd > GetLength then
+      Exit;
 
-  if AStart >= AEnd then
+  if (AStart < 0) or (AEnd < 0) or (AStart >= AEnd) then
     Exit;
 
   SetLength(lChars, AEnd - AStart);
@@ -349,6 +354,7 @@ begin
   lChars[Length(lChars) - 1] := #0;
   Result := FHelper.GetStrFromPtr(@lChars[0]);
 end;
+
 procedure TDScintilla.HideSelection(ANormal: Boolean);
 begin
   SendEditor(SCI_HIDESELECTION, Integer(ANormal), 0);
@@ -438,22 +444,27 @@ procedure TDScintilla.SetText(const AText: UnicodeString);
 begin
   FHelper.SetTextLen(SCI_SETTEXT, AText);
 end;
+
 function TDScintilla.GetText: UnicodeString;
 begin
   FHelper.GetTextLen(SCI_GETTEXT, Result);
 end;
+
 function TDScintilla.ReplaceTarget(const AText: UnicodeString): Integer;
 begin
   Result := FHelper.SetTextLen(SCI_REPLACETARGET, AText);
 end;
+
 function TDScintilla.ReplaceTargetRE(const AText: UnicodeString): Integer;
 begin
   Result := FHelper.SetTextLen(SCI_REPLACETARGETRE, AText);
 end;
+
 function TDScintilla.SearchInTarget(const AText: UnicodeString): Integer;
 begin
   Result := FHelper.SetTextLen(SCI_SEARCHINTARGET, AText);
 end;
+
 procedure TDScintilla.CallTipShow(APos: Integer; const ADefinition: UnicodeString);
 begin
   if ADefinition = '' then
@@ -556,9 +567,10 @@ procedure TDScintilla.AppendText(const AText: UnicodeString);
 begin
   FHelper.SetTextLen(SCI_APPENDTEXT, AText);
 end;
-function TDScintilla.GetTag(ATagNumber: Integer; ATagValue: PAnsiChar): Integer;
+
+function TDScintilla.GetTag(ATagNumber: Integer): UnicodeString;
 begin
-  Result := SendEditor(SCI_GETTAG, ATagNumber, Integer(ATagValue));
+  FHelper.GetText(SCI_GETTAG, ATagNumber, Result);
 end;
 
 procedure TDScintilla.TargetFromSelection;
@@ -910,10 +922,12 @@ function TDScintilla.SearchNext(AFlags: Integer; const AText: UnicodeString): In
 begin
   Result := FHelper.SetText(SCI_SEARCHNEXT, AFlags, AText);
 end;
+
 function TDScintilla.SearchPrev(AFlags: Integer; const AText: UnicodeString): Integer;
 begin
   Result := FHelper.SetText(SCI_SEARCHPREV, AFlags, AText);
 end;
+
 function TDScintilla.LinesOnScreen: Integer;
 begin
   Result := SendEditor(SCI_LINESONSCREEN, 0, 0);
@@ -929,19 +943,21 @@ begin
   Result := Boolean(SendEditor(SCI_SELECTIONISRECTANGLE, 0, 0));
 end;
 
-function TDScintilla.CreateDocument: Pointer;
+function TDScintilla.CreateDocument: TDSciDocument;
 begin
-  Result := Pointer(SendEditor(SCI_CREATEDOCUMENT, 0, 0));
+  Result := TDSciDocument(SendEditor(SCI_CREATEDOCUMENT, 0, 0));
 end;
 
-procedure TDScintilla.AddRefDocument(ADoc: Pointer);
+procedure TDScintilla.AddRefDocument(ADoc: TDSciDocument);
 begin
-  SendEditor(SCI_ADDREFDOCUMENT, 0, Integer(ADoc));
+  if ADoc <>  nil then
+    SendEditor(SCI_ADDREFDOCUMENT, 0, Integer(ADoc));
 end;
 
-procedure TDScintilla.ReleaseDocument(ADoc: Pointer);
+procedure TDScintilla.ReleaseDocument(ADoc: TDSciDocument);
 begin
-  SendEditor(SCI_RELEASEDOCUMENT, 0, Integer(ADoc));
+  if ADoc <> nil then
+    SendEditor(SCI_RELEASEDOCUMENT, 0, Integer(ADoc));
 end;
 
 procedure TDScintilla.WordPartLeft;
@@ -1143,9 +1159,9 @@ begin
   Result := SendEditor(SCI_AUTOCGETCURRENT, 0, 0);
 end;
 
-function TDScintilla.AutoCGetCurrentText(AString: PByte): Integer;
+function TDScintilla.AutoCGetCurrentText: UnicodeString;
 begin
-  Result := SendEditor(SCI_AUTOCGETCURRENTTEXT, 0, Integer(AString));
+  FHelper.GetText(SCI_AUTOCGETCURRENTTEXT, 0, Result);
 end;
 
 procedure TDScintilla.Allocate(ABytes: Integer);
@@ -1310,12 +1326,18 @@ end;
 
 function TDScintilla.GetProperty(const AKey: UnicodeString): UnicodeString;
 begin
-  FHelper.GetText(SCI_GETPROPERTY, Integer(AnsiString(AKey)), Result);
+  if AKey = '' then
+    Result := ''
+  else
+    FHelper.GetText(SCI_GETPROPERTY, Integer(AnsiString(AKey)), Result);
 end;
 
 function TDScintilla.GetPropertyExpanded(const AKey: UnicodeString): UnicodeString;
 begin
-  FHelper.GetText(SCI_GETPROPERTYEXPANDED, Integer(AnsiString(AKey)), Result);
+  if AKey = '' then
+    Result := ''
+  else
+    FHelper.GetText(SCI_GETPROPERTYEXPANDED, Integer(AnsiString(AKey)), Result);
 end;
 
 function TDScintilla.PrivateLexerCall(AOperation: Integer; APointer: Integer): Integer;
@@ -1323,23 +1345,29 @@ begin
   Result := SendEditor(SCI_PRIVATELEXERCALL, AOperation, APointer);
 end;
 
-function TDScintilla.PropertyNames(ANames: PAnsiChar): Integer;
+function TDScintilla.PropertyNames: UnicodeString;
 begin
-  Result := SendEditor(SCI_PROPERTYNAMES, 0, Integer(ANames));
+  FHelper.GetText(SCI_PROPERTYNAMES, 0, Result);
 end;
 
-function TDScintilla.PropertyType(AName: PAnsiChar): Integer;
+function TDScintilla.PropertyType(AName: UnicodeString): Integer;
 begin
-  Result := SendEditor(SCI_PROPERTYTYPE, Integer(AName), 0);
+  if AName = '' then
+    Result := -1
+  else
+    Result := SendEditor(SCI_PROPERTYTYPE, Integer(UnicodeStringToUTF8(AName)), 0);
 end;
 
-function TDScintilla.DescribeProperty(AName: PAnsiChar; ADescription: PAnsiChar): Integer;
+function TDScintilla.DescribeProperty(AName: UnicodeString): UnicodeString;
 begin
-  Result := SendEditor(SCI_DESCRIBEPROPERTY, Integer(AName), Integer(ADescription));
+  if AName = '' then
+    Result := ''
+  else
+    FHelper.GetText(SCI_DESCRIBEPROPERTY, Integer(UnicodeStringToUTF8(AName)), Result);
 end;
 
-function TDScintilla.DescribeKeyWordSets(ADescriptions: PAnsiChar): Integer;
+function TDScintilla.DescribeKeyWordSets: UnicodeString;
 begin
-  Result := SendEditor(SCI_DESCRIBEKEYWORDSETS, 0, Integer(ADescriptions));
+  FHelper.GetText(SCI_DESCRIBEKEYWORDSETS, 0, Result);
 end;
 

@@ -955,7 +955,8 @@ end;
 
 procedure TDScintilla.SetDocPointer(APointer:Pointer);
 begin
-  SendEditor(SCI_SETDOCPOINTER, 0, Integer(APointer));
+  if APointer <> nil then
+    SendEditor(SCI_SETDOCPOINTER, 0, Integer(APointer));
 end;
 
 procedure TDScintilla.SetModEventMask(AMask: Integer);
@@ -1273,9 +1274,11 @@ begin
   SendEditor(SCI_MARGINSETSTYLES, ALine, Integer(AStyles));
 end;
 
-function TDScintilla.MarginGetStyles(ALine: Integer; AStyles: PAnsiChar): Integer;
+function TDScintilla.MarginGetStyles(ALine: Integer): TDSciStyles;
 begin
-  Result := SendEditor(SCI_MARGINGETSTYLES, ALine, Integer(AStyles));
+  SetLength(Result, SendEditor(SCI_MARGINGETSTYLES, ALine));
+  if Length(Result) > 0 then
+    SendEditor(SCI_MARGINGETSTYLES, ALine, Integer(Result));
 end;
 
 procedure TDScintilla.MarginSetStyleOffset(AStyle: Integer);
@@ -1312,9 +1315,11 @@ begin
   SendEditor(SCI_ANNOTATIONSETSTYLES, ALine, Integer(AStyles));
 end;
 
-function TDScintilla.AnnotationGetStyles(ALine: Integer; AStyles: PAnsiChar): Integer;
+function TDScintilla.AnnotationGetStyles(ALine: Integer): TDSciStyles;
 begin
-  Result := SendEditor(SCI_ANNOTATIONGETSTYLES, ALine, Integer(AStyles));
+  SetLength(Result, SendEditor(SCI_ANNOTATIONGETSTYLES, ALine));
+  if Length(Result) > 0 then
+    SendEditor(SCI_ANNOTATIONGETSTYLES, ALine, Integer(Result));
 end;
 
 function TDScintilla.AnnotationGetLines(ALine: Integer): Integer;
@@ -1399,62 +1404,86 @@ end;
 
 procedure TDScintilla.SetSelectionNCaret(ASelection: Integer; APos: Integer);
 begin
-  SendEditor(SCI_SETSELECTIONNCARET, ASelection, APos);
+  if (ASelection >= 0) and (ASelection < GetSelections) then
+    SendEditor(SCI_SETSELECTIONNCARET, ASelection, APos);
 end;
 
 function TDScintilla.GetSelectionNCaret(ASelection: Integer): Integer;
 begin
-  Result := SendEditor(SCI_GETSELECTIONNCARET, ASelection, 0);
+  if (ASelection >= 0) and (ASelection < GetSelections) then
+    Result := SendEditor(SCI_GETSELECTIONNCARET, ASelection, 0)
+  else
+    Result := INVALID_POSITION;
 end;
 
 procedure TDScintilla.SetSelectionNAnchor(ASelection: Integer; APosAnchor: Integer);
 begin
-  SendEditor(SCI_SETSELECTIONNANCHOR, ASelection, APosAnchor);
+  if (ASelection >= 0) and (ASelection < GetSelections) then
+    SendEditor(SCI_SETSELECTIONNANCHOR, ASelection, APosAnchor);
 end;
 
 function TDScintilla.GetSelectionNAnchor(ASelection: Integer): Integer;
 begin
-  Result := SendEditor(SCI_GETSELECTIONNANCHOR, ASelection, 0);
+  if (ASelection >= 0) and (ASelection < GetSelections) then
+    Result := SendEditor(SCI_GETSELECTIONNANCHOR, ASelection, 0)
+  else
+    Result := INVALID_POSITION;
 end;
 
 procedure TDScintilla.SetSelectionNCaretVirtualSpace(ASelection: Integer; ASpace: Integer);
 begin
-  SendEditor(SCI_SETSELECTIONNCARETVIRTUALSPACE, ASelection, ASpace);
+  if (ASelection >= 0) and (ASelection < GetSelections) then
+    SendEditor(SCI_SETSELECTIONNCARETVIRTUALSPACE, ASelection, ASpace);
 end;
 
 function TDScintilla.GetSelectionNCaretVirtualSpace(ASelection: Integer): Integer;
 begin
-  Result := SendEditor(SCI_GETSELECTIONNCARETVIRTUALSPACE, ASelection, 0);
+  if (ASelection >= 0) and (ASelection < GetSelections) then
+    Result := SendEditor(SCI_GETSELECTIONNCARETVIRTUALSPACE, ASelection, 0)
+  else
+    Result := INVALID_POSITION;
 end;
 
 procedure TDScintilla.SetSelectionNAnchorVirtualSpace(ASelection: Integer; ASpace: Integer);
 begin
-  SendEditor(SCI_SETSELECTIONNANCHORVIRTUALSPACE, ASelection, ASpace);
+  if (ASelection >= 0) and (ASelection < GetSelections) then
+    SendEditor(SCI_SETSELECTIONNANCHORVIRTUALSPACE, ASelection, ASpace);
 end;
 
 function TDScintilla.GetSelectionNAnchorVirtualSpace(ASelection: Integer): Integer;
 begin
-  Result := SendEditor(SCI_GETSELECTIONNANCHORVIRTUALSPACE, ASelection, 0);
+  if (ASelection >= 0) and (ASelection < GetSelections) then
+    Result := SendEditor(SCI_GETSELECTIONNANCHORVIRTUALSPACE, ASelection, 0)
+  else
+    Result := INVALID_POSITION;
 end;
 
 procedure TDScintilla.SetSelectionNStart(ASelection: Integer; APos: Integer);
 begin
-  SendEditor(SCI_SETSELECTIONNSTART, ASelection, APos);
+  if (ASelection >= 0) and (ASelection < GetSelections) then
+    SendEditor(SCI_SETSELECTIONNSTART, ASelection, APos);
 end;
 
 function TDScintilla.GetSelectionNStart(ASelection: Integer): Integer;
 begin
-  Result := SendEditor(SCI_GETSELECTIONNSTART, ASelection, 0);
+  if (ASelection >= 0) and (ASelection < GetSelections) then
+    Result := SendEditor(SCI_GETSELECTIONNSTART, ASelection, 0)
+  else
+    Result := INVALID_POSITION;
 end;
 
 procedure TDScintilla.SetSelectionNEnd(ASelection: Integer; APos: Integer);
 begin
-  SendEditor(SCI_SETSELECTIONNEND, ASelection, APos);
+  if (ASelection >= 0) and (ASelection < GetSelections) then
+    SendEditor(SCI_SETSELECTIONNEND, ASelection, APos);
 end;
 
 function TDScintilla.GetSelectionNEnd(ASelection: Integer): Integer;
 begin
-  Result := SendEditor(SCI_GETSELECTIONNEND, ASelection, 0);
+  if (ASelection >= 0) and (ASelection < GetSelections) then
+    Result := SendEditor(SCI_GETSELECTIONNEND, ASelection, 0)
+  else
+    Result := INVALID_POSITION;
 end;
 
 procedure TDScintilla.SetRectangularSelectionCaret(APos: Integer);
@@ -1559,12 +1588,16 @@ end;
 
 procedure TDScintilla.SetProperty(const AKey: UnicodeString; const AValue: UnicodeString);
 begin
-  SendEditor(SCI_SETPROPERTY, Integer(AnsiString(AKey)), Integer(AnsiString(AValue)));
+  if AKey <> '' then
+    SendEditor(SCI_SETPROPERTY, Integer(AnsiString(AKey)), Integer(AnsiString(AValue)));
 end;
 
 function TDScintilla.GetPropertyInt(const AKey: UnicodeString; ADefault: Integer): Integer;
 begin
-  Result := SendEditor(SCI_GETPROPERTYINT, Integer(AnsiString(AKey)), ADefault);
+  if AKey = '' then
+    Result := ADefault
+  else
+    Result := SendEditor(SCI_GETPROPERTYINT, Integer(AnsiString(AKey)), ADefault);
 end;
 
 function TDScintilla.GetStyleBitsNeeded: Integer;
@@ -1572,8 +1605,8 @@ begin
   Result := SendEditor(SCI_GETSTYLEBITSNEEDED, 0, 0);
 end;
 
-function TDScintilla.GetLexerLanguage(AText: PByte): Integer;
+function TDScintilla.GetLexerLanguage: UnicodeString;
 begin
-  Result := SendEditor(SCI_GETLEXERLANGUAGE, 0, Integer(AText));
+  FHelper.GetText(SCI_GETLEXERLANGUAGE, 0, Result);
 end;
 

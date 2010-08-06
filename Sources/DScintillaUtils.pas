@@ -56,6 +56,9 @@ uses
 
   SysUtils, Classes;
 
+const
+  cDSCI_NULL: AnsiChar = #0;
+
 type
 
 { TDSciUnicodeStrings }
@@ -209,10 +212,13 @@ end;
 
 function TDSciHelper.GetStrFromPtr(ABuf: PAnsiChar): UnicodeString;
 begin
-  if IsUTF8 then
-    Result := UTF8ToUnicodeString(ABuf)
+  if ABuf = nil then
+    Result := ''
   else
-    Result:= UnicodeString(ABuf);
+    if IsUTF8 then
+      Result := UTF8ToUnicodeString(ABuf)
+    else
+      Result:= UnicodeString(ABuf);
 end;
 
 function TDSciHelper.GetText(AMessage, AParam1: Integer;
@@ -232,10 +238,13 @@ end;
 function TDSciHelper.SetText(AMessage, AParam1: Integer;
   const AText: UnicodeString): Integer;
 begin
-  if IsUTF8 then
-    Result := SendEditor(AMessage, AParam1, Integer(UnicodeStringToUTF8(AText)))
+  if AText = '' then
+    Result := SendEditor(AMessage, AParam1, Integer(@cDSCI_NULL))
   else
-    Result := SendEditor(AMessage, AParam1, Integer(AnsiString(AText)));
+    if IsUTF8 then
+      Result := SendEditor(AMessage, AParam1, Integer(UnicodeStringToUTF8(AText)))
+    else
+      Result := SendEditor(AMessage, AParam1, Integer(AnsiString(AText)));
 end;
 
 function TDSciHelper.GetTextLen(AMessage: Integer;
@@ -261,15 +270,18 @@ var
   lUTF8: UTF8String;
   lAnsi: AnsiString;
 begin
-  if IsUTF8 then
-  begin
-    lUTF8 := UnicodeStringToUTF8(AText);
-    Result := SendEditor(AMessage, System.Length(lUTF8), Integer(lUTF8));
-  end else
-  begin
-    lAnsi := AnsiString(AText);
-    Result := SendEditor(AMessage, System.Length(lAnsi), Integer(lAnsi));
-  end;
+  if AText = '' then
+    Result := SendEditor(AMessage, 0, Integer(@cDSCI_NULL))
+  else
+    if IsUTF8 then
+    begin
+      lUTF8 := UnicodeStringToUTF8(AText);
+      Result := SendEditor(AMessage, System.Length(lUTF8), Integer(lUTF8));
+    end else
+    begin
+      lAnsi := AnsiString(AText);
+      Result := SendEditor(AMessage, System.Length(lAnsi), Integer(lAnsi));
+    end;
 end;
 
 function TDSciHelper.SetTargetLine(ALine: Integer): Boolean;
