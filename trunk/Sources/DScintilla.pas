@@ -81,6 +81,11 @@ type
     procedure SetLines(const Value: TDSciLines);
 
   protected
+    procedure CreateWnd; override;
+
+    /// <summary>Initializes Scintilla control after creating window</summary>
+    procedure InitDefaults; virtual;
+
     /// <summary>Handles notification messages from Scintilla,
     /// only if using patched Scintilla (eg. DScintilla.dll/DSciLexer.dll)
     /// http://code.google.com/p/dscintilla/source/browse/trunk/Scintilla.patch.txt
@@ -115,17 +120,17 @@ type
 
   public
 
-    // ------------------------------------------------------------------------
-    // Scintilla methods ------------------------------------------------------
-    // ------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+    // Scintilla methods -------------------------------------------------------
+    // -------------------------------------------------------------------------
 
     {$I DScintillaMethodsDecl.inc}
 
   public
 
-    // ------------------------------------------------------------------------
-    // Scintilla properties ---------------------------------------------------
-    // ------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+    // Scintilla properties ----------------------------------------------------
+    // -------------------------------------------------------------------------
 
     {$I DScintillaPropertiesDecl.inc}
 
@@ -186,6 +191,20 @@ end;
 procedure TDScintilla.SetLines(const Value: TDSciLines);
 begin
   FLines.Assign(Value);
+end;
+
+procedure TDScintilla.CreateWnd;
+begin
+  inherited CreateWnd;
+
+  InitDefaults;
+end;
+
+procedure TDScintilla.InitDefaults;
+begin
+  // By default set Unicode-UTF8 mode
+  SetKeysUnicode(True);
+  SetCodePage(SC_CP_UTF8);
 end;
 
 procedure TDScintilla.WMNotify(var AMessage: TWMNotify);
@@ -306,15 +325,15 @@ begin
   end;
 end;
 
-// ----------------------------------------------------------------------------
-// Scintilla methods ----------------------------------------------------------
-// ----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// Scintilla methods -----------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 {$I DScintillaMethodsCode.inc}
 
-// ----------------------------------------------------------------------------
-// Scintilla properties -------------------------------------------------------
-// ----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// Scintilla properties --------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 {$I DScintillaPropertiesCode.inc}
 
