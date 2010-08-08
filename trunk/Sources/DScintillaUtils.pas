@@ -37,10 +37,8 @@
 
 unit DScintillaUtils;
 
-{$IF CompilerVersion < 16}
+{$IF CompilerVersion < 20}
   {$DEFINE DSCI_JCLWIDESTRINGS}
-{$ELSEIF CompilerVersion < 19}
-  {$DEFINE DSCI_WIDESTRINGS}
 {$IFEND}
 
 interface
@@ -50,14 +48,12 @@ uses
 
 {$IF Defined(DSCI_JCLWIDESTRINGS)}
   JclWideStrings,
-{$ELSEIF Defined(DSCI_WIDESTRINGS)}
-  WideStrings,
 {$IFEND}
 
   SysUtils, Classes;
 
 const
-  cDSCI_NULL: AnsiChar = #0;
+  cDSciNull: AnsiChar = #0;
 
 type
 
@@ -65,8 +61,6 @@ type
 
 {$IF Defined(DSCI_JCLWIDESTRINGS)}
   TDSciUnicodeStrings = JclWideStrings.TJclWideStrings;
-{$ELSEIF Defined(DSCI_WIDESTRINGS)}
-  TDSciUnicodeStrings = WideStrings.TWideStrings;
 {$ELSE}
   TDSciUnicodeStrings = TStrings;
 {$IFEND}
@@ -135,11 +129,6 @@ type
     procedure SaveToStreamUTF8(AStream: TStream;
       APreamble: Boolean = False); virtual;
 {$IFEND}
-
-{$IFDEF DSCI_WIDESTRINGS}
-    procedure LoadFromStream(Stream: TStream); override;     
-    procedure SaveToStream(Stream: TStream); override;
-{$ENDIF}
 
     procedure Delete(AIndex: Integer); override;
 {$IFDEF DSCI_JCLWIDESTRINGS}
@@ -239,7 +228,7 @@ function TDSciHelper.SetText(AMessage, AParam1: Integer;
   const AText: UnicodeString): Integer;
 begin
   if AText = '' then
-    Result := SendEditor(AMessage, AParam1, Integer(@cDSCI_NULL))
+    Result := SendEditor(AMessage, AParam1, Integer(@cDSciNull))
   else
     if IsUTF8 then
       Result := SendEditor(AMessage, AParam1, Integer(UnicodeStringToUTF8(AText)))
@@ -271,7 +260,7 @@ var
   lAnsi: AnsiString;
 begin
   if AText = '' then
-    Result := SendEditor(AMessage, 0, Integer(@cDSCI_NULL))
+    Result := SendEditor(AMessage, 0, Integer(@cDSciNull))
   else
     if IsUTF8 then
     begin
@@ -443,18 +432,6 @@ begin
 end;
 {$IFEND}
 
-{$IFDEF DSCI_WIDESTRINGS}
-procedure TDSciLines.LoadFromStream(Stream: TStream);
-begin
-  raise Exception.Create('TODO: TDSciLines.LoadFromStream');
-end;
-
-procedure TDSciLines.SaveToStream(Stream: TStream);
-begin
-  raise Exception.Create('TODO: TDSciLines.SaveToStream');
-end;
-{$ENDIF}
-
 procedure TDSciLines.Delete(AIndex: Integer);
 begin
   if FHelper.SetTargetLine(AIndex) then
@@ -486,7 +463,7 @@ begin
   SC_EOL_LF:
     lEOL := #10;
   else
-    lEOL := ''; //??
+    lEOL := sLineBreak;
   end;
 
   FHelper.SendEditor(SCI_SETTARGETSTART, lLinePos);
