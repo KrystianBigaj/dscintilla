@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <PersonalityInfo>
+    <Option>
+      <Option Name="Personality">Default.Personality</Option>
+      <Option Name="ProjectType"></Option>
+      <Option Name="Version">1.0</Option>
+      <Option Name="GUID">{566BAFA7-52DC-464E-81B7-109CE04DC29D}</Option>
+    </Option>
+  </PersonalityInfo>
+  <Default.Personality>
+    
+    <Projects>
+      <Projects Name="DScintillaRuntime.bpl">DScintillaRuntime.bdsproj</Projects>
+      <Projects Name="DScintillaDesign.bpl">DScintillaDesign.bdsproj</Projects>
+      <Projects Name="Targets">DScintillaRuntime.bpl DScintillaDesign.bpl</Projects>
+    </Projects>
+    <Dependencies>
+      <Dependency GUID="{FAF77C92-DA47-4732-8434-4653C88FD1B3}">
+        <Dependency GUID="{EA93C7B1-A10F-46CA-BAAD-CF0738E50ADD}"/>
+      </Dependency>
+    </Dependencies>
+  </Default.Personality>
+</BorlandProject>
