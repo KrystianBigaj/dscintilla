@@ -208,6 +208,8 @@ const
 
 { Scintilla consts and method codes }
 
+// <scigen>
+
   /// <summary>The INVALID_POSITION constant (-1)
   /// represents an invalid position within the document.</summary>
   INVALID_POSITION = -1;
@@ -351,7 +353,7 @@ const
   /// This is the same value as CP_UTF8 in Windows</summary>
   SC_CP_UTF8 = 65001;
 
-  /// <summary>The SC_CP_DBCS value can be used to indicate a DBCS mode for GTK+.</summary>
+  /// <summary>[Obsolute] The SC_CP_DBCS value can be used to indicate a DBCS mode for GTK+.</summary>
   SC_CP_DBCS = 1;
 
   /// <summary>Set the code page used to interpret the bytes of the document as characters.
@@ -388,7 +390,7 @@ const
   SC_MARK_CIRCLEMINUS = 20;
   SC_MARK_CIRCLEMINUSCONNECTED = 21;
 
-  /// <summary>Invisible mark that only sets the line background color.</summary>
+  /// <summary>Invisible mark that only sets the line background colour.</summary>
   SC_MARK_BACKGROUND = 22;
   SC_MARK_DOTDOTDOT = 23;
   SC_MARK_ARROWS = 24;
@@ -432,7 +434,8 @@ const
   /// <summary>Get a bit mask of all the markers set on a line.</summary>
   SCI_MARKERGET = 2046;
 
-  /// <summary>Find the next line after lineStart that includes a marker in mask.</summary>
+  /// <summary>Find the next line at or after lineStart that includes a marker in mask.
+  /// Return -1 when no more lines.</summary>
   SCI_MARKERNEXT = 2047;
 
   /// <summary>Find the previous line before lineStart that includes a marker in mask.</summary>
@@ -2193,6 +2196,13 @@ const
   /// there may be a need to redraw.</summary>
   SCI_CHANGELEXERSTATE = 2617;
 
+  /// <summary>Find the next line at or after lineStart that is a contracted fold header line.
+  /// Return -1 when no more lines.</summary>
+  SCI_CONTRACTEDFOLDNEXT = 2618;
+
+  /// <summary>Centre current line in window.</summary>
+  SCI_VERTICALCENTRECARET = 2619;
+
   /// <summary>Start notifying the container of all key presses and commands.</summary>
   SCI_STARTRECORD = 3001;
 
@@ -2420,6 +2430,7 @@ const
   SCLEX_SML = 97;
   SCLEX_MARKDOWN = 98;
   SCLEX_TXT2TAGS = 99;
+  SCLEX_A68K = 100;
 
   /// <summary>When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
   /// value assigned in sequence from SCLEX_AUTOMATIC+1.</summary>
@@ -3907,6 +3918,30 @@ const
   SCE_TXT2TAGS_OPTION = 23;
   SCE_TXT2TAGS_PREPROC = 24;
   SCE_TXT2TAGS_POSTPROC = 25;
+
+  /// <summary>Lexical states for SCLEX_A68K</summary>
+  SCE_A68K_DEFAULT = 0;
+  SCE_A68K_COMMENT = 1;
+  SCE_A68K_NUMBER_DEC = 2;
+  SCE_A68K_NUMBER_BIN = 3;
+  SCE_A68K_NUMBER_HEX = 4;
+  SCE_A68K_STRING1 = 5;
+  SCE_A68K_OPERATOR = 6;
+  SCE_A68K_CPUINSTRUCTION = 7;
+  SCE_A68K_EXTINSTRUCTION = 8;
+  SCE_A68K_REGISTER = 9;
+  SCE_A68K_DIRECTIVE = 10;
+  SCE_A68K_MACRO_ARG = 11;
+  SCE_A68K_LABEL = 12;
+  SCE_A68K_STRING2 = 13;
+  SCE_A68K_IDENTIFIER = 14;
+  SCE_A68K_MACRO_DECLARATION = 15;
+  SCE_A68K_COMMENT_WORD = 16;
+  SCE_A68K_COMMENT_SPECIAL = 17;
+  SCE_A68K_COMMENT_DOXYGEN = 18;
+
+
+// </scigen>
 
 implementation
 
