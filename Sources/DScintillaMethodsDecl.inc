@@ -85,7 +85,8 @@
     /// <summary>Get a bit mask of all the markers set on a line.</summary>
     function MarkerGet(ALine: Integer): Integer;
 
-    /// <summary>Find the next line after lineStart that includes a marker in mask.</summary>
+    /// <summary>Find the next line at or after lineStart that includes a marker in mask.
+    /// Return -1 when no more lines.</summary>
     function MarkerNext(ALineStart: Integer; AMarkerMask: Integer): Integer;
 
     /// <summary>Find the previous line before lineStart that includes a marker in mask.</summary>
@@ -784,6 +785,13 @@
     /// <summary>Indicate that the internal state of a lexer has changed over a range and therefore
     /// there may be a need to redraw.</summary>
     function ChangeLexerState(AStart: Integer; AEnd: Integer): Integer;
+
+    /// <summary>Find the next line at or after lineStart that is a contracted fold header line.
+    /// Return -1 when no more lines.</summary>
+    function ContractedFoldNext(ALineStart: Integer): Integer;
+
+    /// <summary>Centre current line in window.</summary>
+    procedure VerticalCentreCaret;
 
     /// <summary>Start notifying the container of all key presses and commands.</summary>
     procedure StartRecord;

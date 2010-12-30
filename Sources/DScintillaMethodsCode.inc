@@ -1294,6 +1294,16 @@ begin
   Result := SendEditor(SCI_CHANGELEXERSTATE, AStart, AEnd);
 end;
 
+function TDScintilla.ContractedFoldNext(ALineStart: Integer): Integer;
+begin
+  Result := SendEditor(SCI_CONTRACTEDFOLDNEXT, ALineStart, 0);
+end;
+
+procedure TDScintilla.VerticalCentreCaret;
+begin
+  SendEditor(SCI_VERTICALCENTRECARET, 0, 0);
+end;
+
 procedure TDScintilla.StartRecord;
 begin
   SendEditor(SCI_STARTRECORD, 0, 0);
