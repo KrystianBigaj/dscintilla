@@ -15,11 +15,12 @@
  *
  * The Initial Developer of the Original Code is Krystian Bigaj.
  *
- * Portions created by the Initial Developer are Copyright (C) 2010
+ * Portions created by the Initial Developer are Copyright (C) 2010-2011
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *   (none)
+ * - Michal Gajek
+ * - Marko Njezic
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -42,7 +43,7 @@ interface
 uses
   DScintillaCustom, DScintillaTypes, DScintillaUtils,
 
-  SysUtils, Classes, Messages, Graphics;
+  SysUtils, Classes, Messages, Graphics, Controls;
 
 type
 
@@ -86,37 +87,14 @@ type
     /// <summary>Initializes Scintilla control after creating window</summary>
     procedure InitDefaults; virtual;
 
-    /// <summary>Handles notification messages from Scintilla,
-    /// only if using patched Scintilla (eg. DScintilla.dll/DSciLexer.dll)
-    /// http://code.google.com/p/dscintilla/source/browse/trunk/Scintilla.patch.txt
-    /// In other case you need handle it from parent window, see HandleWMNotify.</summary>
-    procedure WMNotify(var AMessage: TWMNotify); message WM_NOTIFY;
+    /// <summary>Handles notification messages from Scintilla</summary>
+    procedure CNNotify(var AMessage: TWMNotify); message CN_NOTIFY; // Thanks to Marko Njezic there is no need to patch Scintilla anymore :)
+
+    function DoSCNotification(const ASCNotification: TDSciSCNotification): Boolean; virtual;
 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
-    /// <summary>Handles Scintilla notification messages.
-    /// Returns True, if message was handled.
-    /// If returns False, you must pass-through message
-    /// by calling inherited; see TDScintilla.WMNotify.
-    ///
-    /// You don't need to call that function if you are using
-    /// patched Scintilla (eg. DScintilla.dll/DSciLexer.dll)
-    /// http://code.google.com/p/dscintilla/source/browse/trunk/Scintilla.patch.txt
-    /// In such case it's handled in TDScintilla.WMNotify
-    ///
-    /// In case if you want use original (unpatched) Scintilla,
-    /// you must catch WM_NOTIFY from parent window of TDScintilla
-    /// similar to TDScintilla.WMNotify:
-    ///
-    ///    If TDScintilla in directly on Form, you can write code like this:
-    ///    procedure TForm1.WMNotify(var AMessage: TWMNotify);
-    ///    begin
-    ///      if not DScintilla1.HandleWMNotify(AMessage) then
-    ///        inherited;
-    ///    end;</summary>
-    function HandleWMNotify(var AMessage: TWMNotify): Boolean;
 
   public
 
@@ -207,31 +185,26 @@ begin
   SetCodePage(SC_CP_UTF8);
 end;
 
-procedure TDScintilla.WMNotify(var AMessage: TWMNotify);
+procedure TDScintilla.CNNotify(var AMessage: TWMNotify);
 begin
-  if not HandleWMNotify(AMessage) then
+  if HandleAllocated and (AMessage.NMHdr^.hwndFrom = Self.Handle) then
+    DoSCNotification(PDSciSCNotification(AMessage.NMHdr)^)
+  else
     inherited;
 end;
 
-function TDScintilla.HandleWMNotify(var AMessage: TWMNotify): Boolean;
-var
-  lSciNotify: PDSciSCNotification;
+function TDScintilla.DoSCNotification(const ASCNotification: TDSciSCNotification): Boolean;
 begin
-  Result := HandleAllocated and (AMessage.NMHdr^.hwndFrom = Self.Handle);
-
-  if not Result then
-    Exit;
-
-  lSciNotify := PDSciSCNotification(AMessage.NMHdr);
-
-  case lSciNotify^.NotifyHeader.code of
+  Result := True;
+  
+  case ASCNotification.NotifyHeader.code of
   SCN_STYLENEEDED:
     if Assigned(FOnStyleNeeded) then
-      FOnStyleNeeded(Self, lSciNotify^.position);
+      FOnStyleNeeded(Self, ASCNotification.position);
 
   SCN_CHARADDED:
     if Assigned(FOnCharAdded) then
-      FOnCharAdded(Self, lSciNotify^.ch);
+      FOnCharAdded(Self, ASCNotification.ch);
 
   SCN_SAVEPOINTREACHED:
     if Assigned(FOnSavePointReached) then
@@ -251,21 +224,24 @@ begin
 
   SCN_MODIFIED:
     if Assigned(FOnModified) then
-      FOnModified(Self, lSciNotify^.position, lSciNotify^.modificationType,
-        FHelper.GetStrFromPtr(lSciNotify^.text), lSciNotify^.length, lSciNotify^.linesAdded, lSciNotify^.line,
-        lSciNotify^.foldLevelNow, lSciNotify^.foldLevelPrev);
+      FOnModified(Self, ASCNotification.position, ASCNotification.modificationType,
+        FHelper.GetStrFromPtr(ASCNotification.text), ASCNotification.length,
+        ASCNotification.linesAdded, ASCNotification.line,
+        ASCNotification.foldLevelNow, ASCNotification.foldLevelPrev);
 
   SCN_MACRORECORD:
     if Assigned(FOnMacroRecord) then
-      FOnMacroRecord(Self, lSciNotify^.message, lSciNotify^.wParam, lSciNotify^.lParam);
+      FOnMacroRecord(Self, ASCNotification.message, ASCNotification.wParam,
+        ASCNotification.lParam);
 
   SCN_MARGINCLICK:
     if Assigned(FOnMarginClick) then
-      FOnMarginClick(Self, lSciNotify^.modifiers, lSciNotify^.position, lSciNotify^.margin);
+      FOnMarginClick(Self, ASCNotification.modifiers,
+        ASCNotification.position, ASCNotification.margin);
 
   SCN_NEEDSHOWN:
     if Assigned(FOnNeedShown) then
-      FOnNeedShown(Self, lSciNotify^.position, lSciNotify^.length);
+      FOnNeedShown(Self, ASCNotification.position, ASCNotification.length);
 
   SCN_PAINTED:
     if Assigned(FOnPainted) then
@@ -273,19 +249,20 @@ begin
 
   SCN_USERLISTSELECTION:
     if Assigned(FOnUserListSelection) then
-      FOnUserListSelection(Self, lSciNotify^.listType, FHelper.GetStrFromPtr(lSciNotify^.text));
+      FOnUserListSelection(Self, ASCNotification.listType,
+        FHelper.GetStrFromPtr(ASCNotification.text));
 
   SCN_URIDROPPED:
     if Assigned(FOnURIDropped) then
-      FOnURIDropped(Self, FHelper.GetStrFromPtr(lSciNotify^.text));
+      FOnURIDropped(Self, FHelper.GetStrFromPtr(ASCNotification.text));
 
   SCN_DWELLSTART:
     if Assigned(FOnDwellStart) then
-      FOnDwellStart(Self, lSciNotify^.position);
+      FOnDwellStart(Self, ASCNotification.position);
 
   SCN_DWELLEND:
     if Assigned(FOnDwellEnd) then
-      FOnDwellEnd(Self, lSciNotify^.position);
+      FOnDwellEnd(Self, ASCNotification.position);
 
   SCN_ZOOM:
     if Assigned(FOnZoom) then
@@ -293,27 +270,27 @@ begin
 
   SCN_HOTSPOTCLICK:
     if Assigned(FOnHotSpotClick) then
-      FOnHotSpotClick(Self, lSciNotify^.modifiers, lSciNotify^.position);
+      FOnHotSpotClick(Self, ASCNotification.modifiers, ASCNotification.position);
 
   SCN_HOTSPOTDOUBLECLICK:
     if Assigned(FOnHotSpotDoubleClick) then
-      FOnHotSpotDoubleClick(Self, lSciNotify^.modifiers, lSciNotify^.position);
+      FOnHotSpotDoubleClick(Self, ASCNotification.modifiers, ASCNotification.position);
 
   SCN_CALLTIPCLICK:
     if Assigned(FOnCallTipClick) then
-      FOnCallTipClick(Self, lSciNotify^.position);
+      FOnCallTipClick(Self, ASCNotification.position);
 
   SCN_AUTOCSELECTION:
     if Assigned(FOnAutoCSelection) then
-      FOnAutoCSelection(Self, FHelper.GetStrFromPtr(lSciNotify^.text));
+      FOnAutoCSelection(Self, FHelper.GetStrFromPtr(ASCNotification.text));
 
   SCN_INDICATORCLICK:
     if Assigned(FOnIndicatorClick) then
-      FOnIndicatorClick(Self, lSciNotify^.modifiers, lSciNotify^.position);
+      FOnIndicatorClick(Self, ASCNotification.modifiers, ASCNotification.position);
 
   SCN_INDICATORRELEASE:
     if Assigned(FOnIndicatorRelease) then
-      FOnIndicatorRelease(Self, lSciNotify^.modifiers, lSciNotify^.position);
+      FOnIndicatorRelease(Self, ASCNotification.modifiers, ASCNotification.position);
 
   SCN_AUTOCCANCELLED:
     if Assigned(FOnAutoCCancelled) then
@@ -322,6 +299,8 @@ begin
   SCN_AUTOCCHARDELETED:
     if Assigned(FOnAutoCCharDeleted) then
       FOnAutoCCharDeleted(Self);
+  else
+    Result := False;
   end;
 end;
 

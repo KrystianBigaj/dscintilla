@@ -15,11 +15,12 @@
  *
  * The Initial Developer of the Original Code is Krystian Bigaj.
  *
- * Portions created by the Initial Developer are Copyright (C) 2010
+ * Portions created by the Initial Developer are Copyright (C) 2010-2011
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *   (none)
+ * - Michal Gajek
+ * - Marko Njezic
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -43,8 +44,8 @@ uses
   Windows, Classes, SysUtils, Controls, Messages;
 
 const
-  cDScintillaDll  = 'DScintilla.dll';
-  cDSciLexerDll   = 'DSciLexer.dll';
+  cDScintillaDll  = 'Scintilla.dll';
+  cDSciLexerDll   = 'SciLexer.dll';
 
 type
 
