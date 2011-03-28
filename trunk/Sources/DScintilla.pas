@@ -53,6 +53,8 @@ type
   private
     FHelper: TDSciHelper;
     FLines: TDSciLines;
+                       
+    FOnSCNotificationEvent: TDSciNotificationEvent;
 
     FOnUpdateUI: TDSciUpdateUIEvent;
     FOnSavePointReached: TDSciSavePointReachedEvent;
@@ -72,7 +74,6 @@ type
     FOnCharAdded: TDSciCharAddedEvent;
     FOnCallTipClick: TDSciCallTipClickEvent;
     FOnHotSpotClick: TDSciHotSpotClickEvent;
-    FOnURIDropped: TDSciURIDroppedEvent;
     FOnMarginClick: TDSciMarginClickEvent;
     FOnHotSpotDoubleClick: TDSciHotSpotDoubleClickEvent;
     FOnDwellStart: TDSciDwellStartEvent;
@@ -118,6 +119,8 @@ type
 
     // Scintilla events - see documentation at http://www.scintilla.org/ScintillaDoc.html#Notifications
 
+    property OnSCNotificationEvent: TDSciNotificationEvent read FOnSCNotificationEvent write FOnSCNotificationEvent;
+
     property OnStyleNeeded: TDSciStyleNeededEvent read FOnStyleNeeded write FOnStyleNeeded;
     property OnCharAdded: TDSciCharAddedEvent read FOnCharAdded write FOnCharAdded;
     property OnSavePointReached: TDSciSavePointReachedEvent read FOnSavePointReached write FOnSavePointReached;
@@ -130,7 +133,6 @@ type
     property OnNeedShown: TDSciNeedShownEvent read FOnNeedShown write FOnNeedShown;
     property OnPainted: TDSciPaintedEvent read FOnPainted write FOnPainted;
     property OnUserListSelection: TDSciUserListSelectionEvent read FOnUserListSelection write FOnUserListSelection;
-    property OnURIDropped: TDSciURIDroppedEvent read FOnURIDropped write FOnURIDropped;
     property OnDwellStart: TDSciDwellStartEvent read FOnDwellStart write FOnDwellStart;
     property OnDwellEnd: TDSciDwellEndEvent read FOnDwellEnd write FOnDwellEnd;
     property OnZoom: TDSciZoomEvent read FOnZoom write FOnZoom;
@@ -194,9 +196,17 @@ begin
 end;
 
 function TDScintilla.DoSCNotification(const ASCNotification: TDSciSCNotification): Boolean;
-begin
+begin         
+  Result := False;
+
+  if Assigned(FOnSCNotificationEvent) then
+    FOnSCNotificationEvent(Self, ASCNotification, Result);
+
+  if Result then
+    Exit;
+
   Result := True;
-  
+
   case ASCNotification.NotifyHeader.code of
   SCN_STYLENEEDED:
     if Assigned(FOnStyleNeeded) then
@@ -220,7 +230,7 @@ begin
 
   SCN_UPDATEUI:
     if Assigned(FOnUpdateUI) then
-      FOnUpdateUI(Self);
+      FOnUpdateUI(Self, ASCNotification.updated);
 
   SCN_MODIFIED:
     if Assigned(FOnModified) then
@@ -251,18 +261,14 @@ begin
     if Assigned(FOnUserListSelection) then
       FOnUserListSelection(Self, ASCNotification.listType,
         FHelper.GetStrFromPtr(ASCNotification.text));
-
-  SCN_URIDROPPED:
-    if Assigned(FOnURIDropped) then
-      FOnURIDropped(Self, FHelper.GetStrFromPtr(ASCNotification.text));
-
+ 
   SCN_DWELLSTART:
     if Assigned(FOnDwellStart) then
-      FOnDwellStart(Self, ASCNotification.position);
+      FOnDwellStart(Self, ASCNotification.position, ASCNotification.x, ASCNotification.y);
 
   SCN_DWELLEND:
-    if Assigned(FOnDwellEnd) then
-      FOnDwellEnd(Self, ASCNotification.position);
+    if Assigned(FOnDwellEnd) then  
+      FOnDwellEnd(Self, ASCNotification.position, ASCNotification.x, ASCNotification.y);
 
   SCN_ZOOM:
     if Assigned(FOnZoom) then
@@ -282,7 +288,8 @@ begin
 
   SCN_AUTOCSELECTION:
     if Assigned(FOnAutoCSelection) then
-      FOnAutoCSelection(Self, FHelper.GetStrFromPtr(ASCNotification.text));
+      FOnAutoCSelection(Self, FHelper.GetStrFromPtr(ASCNotification.text),
+        ASCNotification.lParam);
 
   SCN_INDICATORCLICK:
     if Assigned(FOnIndicatorClick) then
