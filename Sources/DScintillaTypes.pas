@@ -122,25 +122,32 @@ type
     // SCN_STYLENEEDED, SCN_DOUBLECLICK, SCN_MODIFIED, SCN_DWELLSTART,
     // SCN_DWELLEND, SCN_CALLTIPCLICK,
     // SCN_HOTSPOTCLICK, SCN_HOTSPOTDOUBLECLICK
-    ch: Integer;                // SCN_CHARADDED, SCN_KEY
-    modifiers: Integer;         // SCN_KEY, SCN_DOUBLECLICK, SCN_HOTSPOTCLICK, SCN_HOTSPOTDOUBLECLICK
-    modificationType: Integer;  // SCN_MODIFIED
-    text: PAnsiChar;            // SCN_MODIFIED, SCN_USERLISTSELECTION, SCN_AUTOCSELECTION
-    length: Integer;            // SCN_MODIFIED
-    linesAdded: Integer;        // SCN_MODIFIED
-    message: Integer;           // SCN_MACRORECORD
-    wParam: Integer;            // SCN_MACRORECORD
-    lParam: Integer;            // SCN_MACRORECORD
-    line: Integer;              // SCN_MODIFIED, SCN_DOUBLECLICK
-    foldLevelNow: Integer;      // SCN_MODIFIED
-    foldLevelPrev: Integer;     // SCN_MODIFIED
-    margin: Integer;            // SCN_MARGINCLICK
-    listType: Integer;          // SCN_USERLISTSELECTION, SCN_AUTOCSELECTION
-    x: Integer;                 // SCN_DWELLSTART, SCN_DWELLEND
-    y: Integer;                 // SCN_DWELLSTART, SCN_DWELLEND
+    ch: Integer;                    // SCN_CHARADDED, SCN_KEY
+    modifiers: Integer;
+    // SCN_KEY, SCN_DOUBLECLICK, SCN_HOTSPOTCLICK, SCN_HOTSPOTDOUBLECLICK
+    modificationType: Integer;      // SCN_MODIFIED
+    text: PAnsiChar;                // SCN_MODIFIED, SCN_USERLISTSELECTION, SCN_AUTOCSELECTION
+    length: Integer;                // SCN_MODIFIED
+    linesAdded: Integer;            // SCN_MODIFIED
+    message: Integer;               // SCN_MACRORECORD
+    wParam: Integer;                // SCN_MACRORECORD
+    lParam: Integer;                // SCN_MACRORECORD
+    line: Integer;                  // SCN_MODIFIED, SCN_DOUBLECLICK
+    foldLevelNow: Integer;          // SCN_MODIFIED
+    foldLevelPrev: Integer;         // SCN_MODIFIED
+    margin: Integer;                // SCN_MARGINCLICK
+    listType: Integer;              // SCN_USERLISTSELECTION, SCN_AUTOCSELECTION
+    x: Integer;                     // SCN_DWELLSTART, SCN_DWELLEND
+    y: Integer;                     // SCN_DWELLSTART, SCN_DWELLEND
+    token: Integer;                 // SCN_MODIFIED with SC_MOD_CONTAINER
+    annotationLinesAdded: Integer;	// SC_MOD_CHANGEANNOTATION
+    updated: Integer;	              // SCN_UPDATEUI
   end;
 
 { TDScintilla events - http://www.scintilla.org/ScintillaDoc.html#Notifications }
+
+  TDSciNotificationEvent = procedure(ASender: TObject; const ASCN: TDSciSCNotification;
+    var AHandled: Boolean) of object;
 
   TDSciStyleNeededEvent = procedure(ASender: TObject; APosition: Integer) of object;
   TDSciCharAddedEvent = procedure(ASender: TObject; ACh: Integer) of object;
@@ -150,7 +157,7 @@ type
   // # GTK+ Specific to work around focus and accelerator problems:
   // evt  Key=2005(Integer ch; Integer modifiers)
   // evt  DoubleClick=2006()
-  TDSciUpdateUIEvent = procedure(ASender: TObject) of object;
+  TDSciUpdateUIEvent = procedure(ASender: TObject; AUpdated: Integer) of object;
   TDSciModifiedEvent = procedure(ASender: TObject; APosition: Integer; AModificationType: Integer;
     AText: UnicodeString; ALength: Integer; ALinesAdded: Integer; ALine: Integer;
     AFoldLevelNow: Integer; AFoldLevelPrev: Integer) of object;
@@ -159,14 +166,13 @@ type
   TDSciNeedShownEvent = procedure(ASender: TObject; APosition: Integer; ALength: Integer) of object;
   TDSciPaintedEvent = procedure(ASender: TObject) of object;
   TDSciUserListSelectionEvent = procedure(ASender: TObject; AListType: Integer; AText: UnicodeString) of object;
-  TDSciURIDroppedEvent = procedure(ASender: TObject; AText: UnicodeString) of object;
-  TDSciDwellStartEvent = procedure(ASender: TObject; APosition: Integer) of object;
-  TDSciDwellEndEvent = procedure(ASender: TObject; APosition: Integer) of object;
+  TDSciDwellStartEvent = procedure(ASender: TObject; APosition, X, Y: Integer) of object;
+  TDSciDwellEndEvent = procedure(ASender: TObject; APosition, X, Y: Integer) of object;
   TDSciZoomEvent = procedure(ASender: TObject) of object;
   TDSciHotSpotClickEvent = procedure(ASender: TObject; AModifiers: Integer; APosition: Integer) of object;
   TDSciHotSpotDoubleClickEvent = procedure(ASender: TObject; AModifiers: Integer; APosition: Integer) of object;
   TDSciCallTipClickEvent = procedure(ASender: TObject; APosition: Integer) of object;
-  TDSciAutoCSelectionEvent = procedure(ASender: TObject; AText: UnicodeString) of object;
+  TDSciAutoCSelectionEvent = procedure(ASender: TObject; AText: UnicodeString; APosition: Integer) of object;
   TDSciIndicatorClickEvent = procedure(ASender: TObject; AModifiers: Integer; APosition: Integer) of object;
   TDSciIndicatorReleaseEvent = procedure(ASender: TObject; AModifiers: Integer; APosition: Integer) of object;
   TDSciAutoCCancelledEvent = procedure(ASender: TObject) of object;
@@ -191,7 +197,8 @@ const
   SCN_NEEDSHOWN          = 2011;
   SCN_PAINTED            = 2013;
   SCN_USERLISTSELECTION  = 2014;
-  SCN_URIDROPPED         = 2015;
+  // Only on the GTK+ version
+  // SCN_URIDROPPED         = 2015;
   SCN_DWELLSTART         = 2016;
   SCN_DWELLEND           = 2017;
   SCN_ZOOM               = 2018;
