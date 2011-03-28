@@ -488,6 +488,12 @@ const
   /// <summary>Retrieve the mouse click sensitivity of a margin.</summary>
   SCI_GETMARGINSENSITIVEN = 2247;
 
+  /// <summary>Set the cursor shown when the mouse is inside a margin.</summary>
+  SCI_SETMARGINCURSORN = 2248;
+
+  // <summary>Retrieve the cursor shown in a margin.</summary>
+  SCI_GETMARGINCURSORN = 2249;
+
   /// <summary>Styles in range 32..38 are predefined for parts of the UI and are not used as normal styles.
   /// Style 39 is for future use.</summary>
   STYLE_DEFAULT = 32;
@@ -1656,7 +1662,9 @@ const
   SCI_GETMOUSEDOWNCAPTURES = 2385;
 
   SC_CURSORNORMAL = -1;
+  SC_CURSORARROW = 2;
   SC_CURSORWAIT = 4;
+  SC_CURSORREVERSEARROW = 7;
 
   /// <summary>Sets the cursor to one of the SC_CURSOR* values.</summary>
   SCI_SETCURSOR = 2386;
@@ -2303,6 +2311,11 @@ const
   SC_MOD_LEXERSTATE = $80000;
   SC_MODEVENTMASKALL = $FFFFF;
 
+  SC_UPDATE_CONTENT = $1;
+  SC_UPDATE_SELECTION = $2;
+  SC_UPDATE_V_SCROLL = $4;
+  SC_UPDATE_H_SCROLL = $8;
+  
   /// <summary>For compatibility, these go through the COMMAND notification rather than NOTIFY
   /// and should have had exactly the same values as the EN_* constants.
   /// Unfortunately the SETFOCUS and KILLFOCUS are flipped over from EN_*
@@ -2438,6 +2451,7 @@ const
   SCLEX_MARKDOWN = 98;
   SCLEX_TXT2TAGS = 99;
   SCLEX_A68K = 100;
+  SCLEX_MODULA = 101;
 
   /// <summary>When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
   /// value assigned in sequence from SCLEX_AUTOMATIC+1.</summary>
@@ -2482,6 +2496,8 @@ const
   SCE_C_COMMENTDOCKEYWORD = 17;
   SCE_C_COMMENTDOCKEYWORDERROR = 18;
   SCE_C_GLOBALCLASS = 19;
+  SCE_C_STRINGRAW = 20;
+  SCE_C_TRIPLEVERBATIM = 21;
 
   /// <summary>Lexical states for SCLEX_D</summary>
   SCE_D_DEFAULT = 0;
@@ -3008,6 +3024,7 @@ const
   SCE_ASM_CHARACTER = 12;
   SCE_ASM_STRINGEOL = 13;
   SCE_ASM_EXTINSTRUCTION = 14;
+  SCE_ASM_COMMENTDIRECTIVE = 15;
 
   /// <summary>Lexical states for SCLEX_FORTRAN</summary>
   SCE_F_DEFAULT = 0;
@@ -3947,6 +3964,25 @@ const
   SCE_A68K_COMMENT_SPECIAL = 17;
   SCE_A68K_COMMENT_DOXYGEN = 18;
 
+  /// <summary>Lexical states for SCLEX_MODULA</summary>
+  SCE_MODULA_DEFAULT = 0;
+  SCE_MODULA_COMMENT = 1;
+  SCE_MODULA_DOXYCOMM = 2;
+  SCE_MODULA_DOXYKEY = 3;
+  SCE_MODULA_KEYWORD = 4;
+  SCE_MODULA_RESERVED = 5;
+  SCE_MODULA_NUMBER = 6;
+  SCE_MODULA_BASENUM = 7;
+  SCE_MODULA_FLOAT = 8;
+  SCE_MODULA_STRING = 9;
+  SCE_MODULA_STRSPEC = 10;
+  SCE_MODULA_CHAR = 11;
+  SCE_MODULA_CHARSPEC = 12;
+  SCE_MODULA_PROC = 13;
+  SCE_MODULA_PRAGMA = 14;
+  SCE_MODULA_PRGKEY = 15;
+  SCE_MODULA_OPERATOR = 16;
+  SCE_MODULA_BADSTR = 17;
 
 // </scigen>
 

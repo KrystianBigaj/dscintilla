@@ -967,3 +967,8 @@
     /// Return the length of the text.</summary>
     function GetLexerLanguage: UnicodeString;
 
+    /// <summary>Set the cursor shown when the mouse is inside a margin.</summary>
+    procedure SetMarginCursorN(AMargin: Integer; ACursor: Integer);
+
+    /// <summary>Retrieve the cursor shown in a margin.</summary>
+    function GetMarginCursorN(AMargin: Integer): Integer;

@@ -1610,3 +1610,12 @@ begin
   FHelper.GetText(SCI_GETLEXERLANGUAGE, 0, Result);
 end;
 
+procedure TDScintilla.SetMarginCursorN(AMargin: Integer; ACursor: Integer);
+begin
+  SendEditor(SCI_SETMARGINCURSORN, AMargin, ACursor);
+end;
+
+function TDScintilla.GetMarginCursorN(AMargin: Integer): Integer;
+begin
+  Result := SendEditor(SCI_GETMARGINCURSORN, AMargin, 0);
+end;
