@@ -1,0 +1,5 @@
+DScintilla is just a VCL wrapper around Scintilla, so to see it feature
+you can try http://www.scintilla.org/SciTEDownload.html or other projects
+that are using Scintilla http://www.scintilla.org/ScintillaRelated.html
+
+Documentation you can find here http://www.scintilla.org/ScintillaDoc.html
