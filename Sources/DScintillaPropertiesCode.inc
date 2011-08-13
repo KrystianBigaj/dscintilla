@@ -133,6 +133,16 @@ begin
   Result := Boolean(SendEditor(SCI_GETMARGINSENSITIVEN, AMargin, 0));
 end;
 
+procedure TDScintilla.SetMarginCursorN(AMargin: Integer; ACursor: Integer);
+begin
+  SendEditor(SCI_SETMARGINCURSORN, AMargin, ACursor);
+end;
+
+function TDScintilla.GetMarginCursorN(AMargin: Integer): Integer;
+begin
+  Result := SendEditor(SCI_GETMARGINCURSORN, AMargin, 0);
+end;
+
 procedure TDScintilla.StyleSetFore(AStyle: Integer; AFore: TColor);
 begin
   SendEditor(SCI_STYLESETFORE, AStyle, Integer(AFore));
@@ -1139,9 +1149,9 @@ begin
   Result := SendEditor(SCI_GETCARETSTICKY, 0, 0);
 end;
 
-procedure TDScintilla.SetCaretSticky(ACaretStickyBehaviour: Integer);
+procedure TDScintilla.SetCaretSticky(AUseCaretStickyBehaviour: Integer);
 begin
-  SendEditor(SCI_SETCARETSTICKY, ACaretStickyBehaviour, 0);
+  SendEditor(SCI_SETCARETSTICKY, AUseCaretStickyBehaviour, 0);
 end;
 
 procedure TDScintilla.SetPasteConvertEndings(AConvert: Boolean);
@@ -1229,6 +1239,16 @@ begin
   Result := SendEditor(SCI_INDICGETALPHA, AIndicator, 0);
 end;
 
+procedure TDScintilla.IndicSetOutlineAlpha(AIndicator: Integer; AAlpha: Integer);
+begin
+  SendEditor(SCI_INDICSETOUTLINEALPHA, AIndicator, AAlpha);
+end;
+
+function TDScintilla.IndicGetOutlineAlpha(AIndicator: Integer): Integer;
+begin
+  Result := SendEditor(SCI_INDICGETOUTLINEALPHA, AIndicator, 0);
+end;
+
 procedure TDScintilla.SetExtraAscent(AExtraAscent: Integer);
 begin
   SendEditor(SCI_SETEXTRAASCENT, AExtraAscent, 0);
@@ -1289,6 +1309,16 @@ end;
 function TDScintilla.MarginGetStyleOffset: Integer;
 begin
   Result := SendEditor(SCI_MARGINGETSTYLEOFFSET, 0, 0);
+end;
+
+procedure TDScintilla.SetMarginOptions(AMarginOptions: Integer);
+begin
+  SendEditor(SCI_SETMARGINOPTIONS, AMarginOptions, 0);
+end;
+
+function TDScintilla.GetMarginOptions: Integer;
+begin
+  Result := SendEditor(SCI_GETMARGINOPTIONS, 0, 0);
 end;
 
 procedure TDScintilla.AnnotationSetText(ALine: Integer; const AText: UnicodeString);
@@ -1576,6 +1606,26 @@ begin
   Result := TColor(SendEditor(SCI_GETADDITIONALCARETFORE, 0, 0));
 end;
 
+procedure TDScintilla.SetIdentifier(AIdentifier: Integer);
+begin
+  SendEditor(SCI_SETIDENTIFIER, AIdentifier, 0);
+end;
+
+function TDScintilla.GetIdentifier: Integer;
+begin
+  Result := SendEditor(SCI_GETIDENTIFIER, 0, 0);
+end;
+
+procedure TDScintilla.RGBAImageSetWidth(AWidth: Integer);
+begin
+  SendEditor(SCI_RGBAIMAGESETWIDTH, AWidth, 0);
+end;
+
+procedure TDScintilla.RGBAImageSetHeight(AHeight: Integer);
+begin
+  SendEditor(SCI_RGBAIMAGESETHEIGHT, AHeight, 0);
+end;
+
 procedure TDScintilla.SetLexer(ALexer: Integer);
 begin
   SendEditor(SCI_SETLEXER, ALexer, 0);
@@ -1610,12 +1660,3 @@ begin
   FHelper.GetText(SCI_GETLEXERLANGUAGE, 0, Result);
 end;
 
-procedure TDScintilla.SetMarginCursorN(AMargin: Integer; ACursor: Integer);
-begin
-  SendEditor(SCI_SETMARGINCURSORN, AMargin, ACursor);
-end;
-
-function TDScintilla.GetMarginCursorN(AMargin: Integer): Integer;
-begin
-  Result := SendEditor(SCI_GETMARGINCURSORN, AMargin, 0);
-end;

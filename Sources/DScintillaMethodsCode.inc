@@ -127,6 +127,16 @@ begin
   SendEditor(SCI_MARKERSETBACK, AMarkerNumber, Integer(ABack));
 end;
 
+procedure TDScintilla.MarkerSetBackSelected(AMarkerNumber: Integer; ABack: TColor);
+begin
+  SendEditor(SCI_MARKERSETBACKSELECTED, AMarkerNumber, Integer(ABack));
+end;
+
+procedure TDScintilla.MarkerEnableHighlight(AEnabled: Boolean);
+begin
+  SendEditor(SCI_MARKERENABLEHIGHLIGHT, Integer(AEnabled), 0);
+end;
+
 function TDScintilla.MarkerAdd(ALine: Integer; AMarkerNumber: Integer): Integer;
 begin
   Result := SendEditor(SCI_MARKERADD, ALine, AMarkerNumber);
@@ -286,6 +296,11 @@ end;
 procedure TDScintilla.ClearRegisteredImages;
 begin
   SendEditor(SCI_CLEARREGISTEREDIMAGES, 0, 0);
+end;
+
+procedure TDScintilla.SetEmptySelection(APos: Integer);
+begin
+  SendEditor(SCI_SETEMPTYSELECTION, APos, 0);
 end;
 
 function TDScintilla.FindText(AFlags: Integer; const AText: UnicodeString; var ARange: TDSciCharacterRange): Integer;
@@ -903,9 +918,19 @@ begin
   SendEditor(SCI_BRACEHIGHLIGHT, APos1, APos2);
 end;
 
+procedure TDScintilla.BraceHighlightIndicator(AUseBraceHighlightIndicator: Boolean; AIndicator: Integer);
+begin
+  SendEditor(SCI_BRACEHIGHLIGHTINDICATOR, Integer(AUseBraceHighlightIndicator), AIndicator);
+end;
+
 procedure TDScintilla.BraceBadLight(APos: Integer);
 begin
   SendEditor(SCI_BRACEBADLIGHT, APos, 0);
+end;
+
+procedure TDScintilla.BraceBadLightIndicator(AUseBraceBadLightIndicator: Boolean; AIndicator: Integer);
+begin
+  SendEditor(SCI_BRACEBADLIGHTINDICATOR, Integer(AUseBraceBadLightIndicator), AIndicator);
 end;
 
 function TDScintilla.BraceMatch(APos: Integer): Integer;
@@ -1302,6 +1327,36 @@ end;
 procedure TDScintilla.VerticalCentreCaret;
 begin
   SendEditor(SCI_VERTICALCENTRECARET, 0, 0);
+end;
+
+procedure TDScintilla.MoveSelectedLinesUp;
+begin
+  SendEditor(SCI_MOVESELECTEDLINESUP, 0, 0);
+end;
+
+procedure TDScintilla.MoveSelectedLinesDown;
+begin
+  SendEditor(SCI_MOVESELECTEDLINESDOWN, 0, 0);
+end;
+
+procedure TDScintilla.MarkerDefineRGBAImage(AMarkerNumber: Integer; APixels: PAnsiChar);
+begin
+  SendEditor(SCI_MARKERDEFINERGBAIMAGE, AMarkerNumber, Integer(APixels));
+end;
+
+procedure TDScintilla.RegisterRGBAImage(AType: Integer; APixels: PAnsiChar);
+begin
+  SendEditor(SCI_REGISTERRGBAIMAGE, AType, Integer(APixels));
+end;
+
+procedure TDScintilla.ScrollToStart;
+begin
+  SendEditor(SCI_SCROLLTOSTART, 0, 0);
+end;
+
+procedure TDScintilla.ScrollToEnd;
+begin
+  SendEditor(SCI_SCROLLTOEND, 0, 0);
 end;
 
 procedure TDScintilla.StartRecord;
