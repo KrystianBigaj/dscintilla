@@ -73,6 +73,12 @@
     /// <summary>Set the background colour used for a particular marker number.</summary>
     procedure MarkerSetBack(AMarkerNumber: Integer; ABack: TColor);
 
+    /// <summary>Set the background colour used for a particular marker number when its folding block is selected.</summary>
+    procedure MarkerSetBackSelected(AMarkerNumber: Integer; ABack: TColor);
+
+    /// <summary>Enable/disable highlight for current folding bloc (smallest one that contains the caret)</summary>
+    procedure MarkerEnableHighlight(AEnabled: Boolean);
+
     /// <summary>Add a marker to a line, returning an ID which can be used to find or delete the marker.</summary>
     function MarkerAdd(ALine: Integer; AMarkerNumber: Integer): Integer;
 
@@ -173,6 +179,9 @@
 
     /// <summary>Clear all the registered XPM images.</summary>
     procedure ClearRegisteredImages;
+
+    /// <summary>Set caret to a position, while removing any existing selection.</summary>
+    procedure SetEmptySelection(APos: Integer);
 
     /// <summary>Find some text in the document.</summary>
     function FindText(AFlags: Integer; const AText: UnicodeString; var ARange: TDSciCharacterRange): Integer;
@@ -534,8 +543,14 @@
     /// <summary>Highlight the characters at two positions.</summary>
     procedure BraceHighlight(APos1: Integer; APos2: Integer);
 
+    /// <summary>Use specified indicator to highlight matching braces instead of changing their style.</summary>
+    procedure BraceHighlightIndicator(AUseBraceHighlightIndicator: Boolean; AIndicator: Integer);
+
     /// <summary>Highlight the character at a position indicating there is no matching brace.</summary>
     procedure BraceBadLight(APos: Integer);
+
+    /// <summary>Use specified indicator to highlight non matching brace instead of changing its style.</summary>
+    procedure BraceBadLightIndicator(AUseBraceBadLightIndicator: Boolean; AIndicator: Integer);
 
     /// <summary>Find the position of a matching brace or INVALID_POSITION if no match.</summary>
     function BraceMatch(APos: Integer): Integer;
@@ -792,6 +807,26 @@
 
     /// <summary>Centre current line in window.</summary>
     procedure VerticalCentreCaret;
+
+    /// <summary>Move the selected lines up one line, shifting the line above after the selection</summary>
+    procedure MoveSelectedLinesUp;
+
+    /// <summary>Move the selected lines down one line, shifting the line below before the selection</summary>
+    procedure MoveSelectedLinesDown;
+
+    /// <summary>Define a marker from RGBA data.
+    /// It has the width and height from RGBAImageSetWidth/Height</summary>
+    procedure MarkerDefineRGBAImage(AMarkerNumber: Integer; APixels: PAnsiChar);
+
+    /// <summary>Register an RGBA image for use in autocompletion lists. 
+    /// It has the width and height from RGBAImageSetWidth/Height</summary>
+    procedure RegisterRGBAImage(AType: Integer; APixels: PAnsiChar);
+
+    /// <summary>Scroll to start of document.</summary>
+    procedure ScrollToStart;
+
+    /// <summary>Scroll to end of document.</summary>
+    procedure ScrollToEnd;
 
     /// <summary>Start notifying the container of all key presses and commands.</summary>
     procedure StartRecord;

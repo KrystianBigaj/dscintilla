@@ -85,6 +85,12 @@
     /// <summary>Retrieve the mouse click sensitivity of a margin.</summary>
     function GetMarginSensitiveN(AMargin: Integer): Boolean;
 
+    /// <summary>Set the cursor shown when the mouse is inside a margin.</summary>
+    procedure SetMarginCursorN(AMargin: Integer; ACursor: Integer);
+
+    /// <summary>Retrieve the cursor shown in a margin.</summary>
+    function GetMarginCursorN(AMargin: Integer): Integer;
+
     /// <summary>Set the foreground colour of a style.</summary>
     procedure StyleSetFore(AStyle: Integer; AFore: TColor);
 
@@ -718,7 +724,7 @@
     function GetCaretSticky: Integer;
 
     /// <summary>Stop the caret preferred x position changing when the user types.</summary>
-    procedure SetCaretSticky(ACaretStickyBehaviour: Integer);
+    procedure SetCaretSticky(AUseCaretStickyBehaviour: Integer);
 
     /// <summary>Enable/Disable convert-on-paste for line endings</summary>
     procedure SetPasteConvertEndings(AConvert: Boolean);
@@ -772,6 +778,12 @@
     /// <summary>Get the alpha fill colour of the given indicator.</summary>
     function IndicGetAlpha(AIndicator: Integer): Integer;
 
+    /// <summary>Set the alpha outline colour of the given indicator.</summary>
+    procedure IndicSetOutlineAlpha(AIndicator: Integer; AAlpha: Integer);
+
+    /// <summary>Get the alpha outline colour of the given indicator.</summary>
+    function IndicGetOutlineAlpha(AIndicator: Integer): Integer;
+
     /// <summary>Set extra ascent for each line</summary>
     procedure SetExtraAscent(AExtraAscent: Integer);
 
@@ -807,6 +819,12 @@
 
     /// <summary>Get the start of the range of style numbers used for margin text</summary>
     function MarginGetStyleOffset: Integer;
+
+    /// <summary>Set the margin options.</summary>
+    procedure SetMarginOptions(AMarginOptions: Integer);
+
+    /// <summary>Get the margin options.</summary>
+    function GetMarginOptions: Integer;
 
     /// <summary>Set the annotation text for a line</summary>
     procedure AnnotationSetText(ALine: Integer; const AText: UnicodeString);
@@ -947,6 +965,18 @@
     /// <summary>Get the foreground colour of additional carets.</summary>
     function GetAdditionalCaretFore: TColor;
 
+    /// <summary>Set the identifier reported as idFrom in notification messages.</summary>
+    procedure SetIdentifier(AIdentifier: Integer);
+
+    /// <summary>Get the identifier.</summary>
+    function GetIdentifier: Integer;
+
+    /// <summary>Set the width for future RGBA image data.</summary>
+    procedure RGBAImageSetWidth(AWidth: Integer);
+
+    /// <summary>Set the height for future RGBA image data.</summary>
+    procedure RGBAImageSetHeight(AHeight: Integer);
+
     /// <summary>Set the lexing language of the document.</summary>
     procedure SetLexer(ALexer: Integer);
 
@@ -967,8 +997,3 @@
     /// Return the length of the text.</summary>
     function GetLexerLanguage: UnicodeString;
 
-    /// <summary>Set the cursor shown when the mouse is inside a margin.</summary>
-    procedure SetMarginCursorN(AMargin: Integer; ACursor: Integer);
-
-    /// <summary>Retrieve the cursor shown in a margin.</summary>
-    function GetMarginCursorN(AMargin: Integer): Integer;

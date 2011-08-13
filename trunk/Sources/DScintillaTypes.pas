@@ -217,6 +217,7 @@ const
 
 // <scigen>
 
+
   /// <summary>The INVALID_POSITION constant (-1)
   /// represents an invalid position within the document.</summary>
   INVALID_POSITION = -1;
@@ -360,7 +361,7 @@ const
   /// This is the same value as CP_UTF8 in Windows</summary>
   SC_CP_UTF8 = 65001;
 
-  /// <summary>[Obsolute] The SC_CP_DBCS value can be used to indicate a DBCS mode for GTK+.</summary>
+  /// <summary>[Deprecated in 2.21] The SC_CP_DBCS value can be used to indicate a DBCS mode for GTK+.</summary>
   SC_CP_DBCS = 1;
 
   /// <summary>Set the code page used to interpret the bytes of the document as characters.
@@ -406,6 +407,7 @@ const
   SC_MARK_LEFTRECT = 27;
   SC_MARK_AVAILABLE = 28;
   SC_MARK_UNDERLINE = 29;
+  SC_MARK_RGBAIMAGE = 30;
 
   SC_MARK_CHARACTER = 10000;
 
@@ -428,6 +430,12 @@ const
 
   /// <summary>Set the background colour used for a particular marker number.</summary>
   SCI_MARKERSETBACK = 2042;
+
+  /// <summary>Set the background colour used for a particular marker number when its folding block is selected.</summary>
+  SCI_MARKERSETBACKSELECTED = 2292;
+
+  /// <summary>Enable/disable highlight for current folding bloc (smallest one that contains the caret)</summary>
+  SCI_MARKERENABLEHIGHLIGHT = 2293;
 
   /// <summary>Add a marker to a line, returning an ID which can be used to find or delete the marker.</summary>
   SCI_MARKERADD = 2043;
@@ -491,7 +499,7 @@ const
   /// <summary>Set the cursor shown when the mouse is inside a margin.</summary>
   SCI_SETMARGINCURSORN = 2248;
 
-  // <summary>Retrieve the cursor shown in a margin.</summary>
+  /// <summary>Retrieve the cursor shown in a margin.</summary>
   SCI_GETMARGINCURSORN = 2249;
 
   /// <summary>Styles in range 32..38 are predefined for parts of the UI and are not used as normal styles.
@@ -676,6 +684,11 @@ const
   INDIC_HIDDEN = 5;
   INDIC_BOX = 6;
   INDIC_ROUNDBOX = 7;
+  INDIC_STRAIGHTBOX = 8;
+  INDIC_DASH = 9;
+  INDIC_DOTS = 10;
+  INDIC_SQUIGGLELOW = 11;
+  INDIC_DOTBOX = 12;
   INDIC_MAX = 31;
   INDIC_CONTAINER = 8;
   INDIC0_MASK = $20;
@@ -921,6 +934,9 @@ const
 
   /// <summary>Returns the position at the end of the selection.</summary>
   SCI_GETSELECTIONEND = 2145;
+
+  /// <summary>Set caret to a position, while removing any existing selection.</summary>
+  SCI_SETEMPTYSELECTION = 2556;
 
   /// <summary>Sets the print magnification added to the point size of each style for printing.</summary>
   SCI_SETPRINTMAGNIFICATION = 2146;
@@ -1553,8 +1569,14 @@ const
   /// <summary>Highlight the characters at two positions.</summary>
   SCI_BRACEHIGHLIGHT = 2351;
 
+  /// <summary>Use specified indicator to highlight matching braces instead of changing their style.</summary>
+  SCI_BRACEHIGHLIGHTINDICATOR = 2498;
+
   /// <summary>Highlight the character at a position indicating there is no matching brace.</summary>
   SCI_BRACEBADLIGHT = 2352;
+
+  /// <summary>Use specified indicator to highlight non matching brace instead of changing its style.</summary>
+  SCI_BRACEBADLIGHTINDICATOR = 2499;
 
   /// <summary>Find the position of a matching brace or INVALID_POSITION if no match.</summary>
   SCI_BRACEMATCH = 2353;
@@ -2003,6 +2025,12 @@ const
   /// <summary>Get the alpha fill colour of the given indicator.</summary>
   SCI_INDICGETALPHA = 2524;
 
+  /// <summary>Set the alpha outline colour of the given indicator.</summary>
+  SCI_INDICSETOUTLINEALPHA = 2558;
+
+  /// <summary>Get the alpha outline colour of the given indicator.</summary>
+  SCI_INDICGETOUTLINEALPHA = 2559;
+
   /// <summary>Set extra ascent for each line</summary>
   SCI_SETEXTRAASCENT = 2525;
 
@@ -2044,6 +2072,15 @@ const
 
   /// <summary>Get the start of the range of style numbers used for margin text</summary>
   SCI_MARGINGETSTYLEOFFSET = 2538;
+
+  SC_MARGINOPTION_NONE = 0;
+  SC_MARGINOPTION_SUBLINESELECT = 1;
+
+  /// <summary>Set the margin options.</summary>
+  SCI_SETMARGINOPTIONS = 2539;
+
+  /// <summary>Get the margin options.</summary>
+  SCI_GETMARGINOPTIONS = 2557;
 
   /// <summary>Set the annotation text for a line</summary>
   SCI_ANNOTATIONSETTEXT = 2540;
@@ -2218,6 +2255,38 @@ const
   /// <summary>Centre current line in window.</summary>
   SCI_VERTICALCENTRECARET = 2619;
 
+  /// <summary>Move the selected lines up one line, shifting the line above after the selection</summary>
+  SCI_MOVESELECTEDLINESUP = 2620;
+
+  /// <summary>Move the selected lines down one line, shifting the line below before the selection</summary>
+  SCI_MOVESELECTEDLINESDOWN = 2621;
+
+  /// <summary>Set the identifier reported as idFrom in notification messages.</summary>
+  SCI_SETIDENTIFIER = 2622;
+
+  /// <summary>Get the identifier.</summary>
+  SCI_GETIDENTIFIER = 2623;
+
+  /// <summary>Set the width for future RGBA image data.</summary>
+  SCI_RGBAIMAGESETWIDTH = 2624;
+
+  /// <summary>Set the height for future RGBA image data.</summary>
+  SCI_RGBAIMAGESETHEIGHT = 2625;
+
+  /// <summary>Define a marker from RGBA data.
+  /// It has the width and height from RGBAImageSetWidth/Height</summary>
+  SCI_MARKERDEFINERGBAIMAGE = 2626;
+
+  /// <summary>Register an RGBA image for use in autocompletion lists. 
+  /// It has the width and height from RGBAImageSetWidth/Height</summary>
+  SCI_REGISTERRGBAIMAGE = 2627;
+
+  /// <summary>Scroll to start of document.</summary>
+  SCI_SCROLLTOSTART = 2628;
+
+  /// <summary>Scroll to end of document.</summary>
+  SCI_SCROLLTOEND = 2629;
+
   /// <summary>Start notifying the container of all key presses and commands.</summary>
   SCI_STARTRECORD = 3001;
 
@@ -2315,7 +2384,7 @@ const
   SC_UPDATE_SELECTION = $2;
   SC_UPDATE_V_SCROLL = $4;
   SC_UPDATE_H_SCROLL = $8;
-  
+
   /// <summary>For compatibility, these go through the COMMAND notification rather than NOTIFY
   /// and should have had exactly the same values as the EN_* constants.
   /// Unfortunately the SETFOCUS and KILLFOCUS are flipped over from EN_*
@@ -2350,6 +2419,7 @@ const
   SCMOD_CTRL = 2;
   SCMOD_ALT = 4;
   SCMOD_SUPER = 8;
+  SCMOD_META = 16;
 
   /// <summary>For SciLexer.h</summary>
   SCLEX_CONTAINER = 0;
@@ -3983,6 +4053,7 @@ const
   SCE_MODULA_PRGKEY = 15;
   SCE_MODULA_OPERATOR = 16;
   SCE_MODULA_BADSTR = 17;
+
 
 // </scigen>
 
