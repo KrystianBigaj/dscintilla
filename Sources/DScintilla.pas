@@ -54,8 +54,9 @@ type
     FHelper: TDSciHelper;
     FLines: TDSciLines;
 
-    FOnSCNotificationEvent: TDSciNotificationEvent;
     FOnInitDefaults: TNotifyEvent;
+    FOnChange: TNotifyEvent;
+    FOnSCNotificationEvent: TDSciNotificationEvent;
 
     FOnUpdateUI: TDSciUpdateUIEvent;
     FOnSavePointReached: TDSciSavePointReachedEvent;
@@ -90,6 +91,9 @@ type
     procedure InitDefaults; virtual;
     procedure DoInitDefaults;
 
+    /// <summary>Handles SCEN_CHANGE message from Scintilla</summary>
+    procedure CNCommand(var AMessage: TWMCommand); message CN_COMMAND;
+
     /// <summary>Handles notification messages from Scintilla</summary>
     procedure CNNotify(var AMessage: TWMNotify); message CN_NOTIFY; // Thanks to Marko Njezic there is no need to patch Scintilla anymore :)
 
@@ -123,6 +127,7 @@ type
 
     // Scintilla events - see documentation at http://www.scintilla.org/ScintillaDoc.html#Notifications
 
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnSCNotificationEvent: TDSciNotificationEvent read FOnSCNotificationEvent write FOnSCNotificationEvent;
 
     property OnStyleNeeded: TDSciStyleNeededEvent read FOnStyleNeeded write FOnStyleNeeded;
@@ -209,6 +214,16 @@ begin
   if HandleAllocated and (AMessage.NMHdr^.hwndFrom = Self.Handle) then
     DoSCNotification(PDSciSCNotification(AMessage.NMHdr)^)
   else
+    inherited;
+end;
+
+procedure TDScintilla.CNCommand(var AMessage: TWMCommand);
+begin
+  if AMessage.NotifyCode = SCEN_CHANGE then
+  begin
+    if Assigned(OnChange) then
+      OnChange(Self);
+  end else
     inherited;
 end;
 
