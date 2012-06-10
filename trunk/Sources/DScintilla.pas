@@ -53,8 +53,9 @@ type
   private
     FHelper: TDSciHelper;
     FLines: TDSciLines;
-                       
+
     FOnSCNotificationEvent: TDSciNotificationEvent;
+    FOnInitDefaults: TNotifyEvent;
 
     FOnUpdateUI: TDSciUpdateUIEvent;
     FOnSavePointReached: TDSciSavePointReachedEvent;
@@ -87,6 +88,7 @@ type
 
     /// <summary>Initializes Scintilla control after creating window</summary>
     procedure InitDefaults; virtual;
+    procedure DoInitDefaults;
 
     /// <summary>Handles notification messages from Scintilla</summary>
     procedure CNNotify(var AMessage: TWMNotify); message CN_NOTIFY; // Thanks to Marko Njezic there is no need to patch Scintilla anymore :)
@@ -116,6 +118,8 @@ type
   published
 
     property Lines: TDSciLines read FLines write SetLines;
+
+    property OnInitDefaults: TNotifyEvent read FOnInitDefaults write FOnInitDefaults;
 
     // Scintilla events - see documentation at http://www.scintilla.org/ScintillaDoc.html#Notifications
 
@@ -177,7 +181,7 @@ procedure TDScintilla.CreateWnd;
 begin
   inherited CreateWnd;
 
-  InitDefaults;
+  DoInitDefaults;
 end;
 
 procedure TDScintilla.InitDefaults;
@@ -185,6 +189,19 @@ begin
   // By default set Unicode-UTF8 mode
   SetKeysUnicode(True);
   SetCodePage(SC_CP_UTF8);
+end;
+
+procedure TDScintilla.DoInitDefaults;
+begin
+  InitDefaults;
+
+  { If anywhere in the parent control hierarchy a reparenting operation
+    is performed, this can lead to the Scintilla handle being destroyed
+    (and later recreated). This in turn leads to loss of styles etc.,
+    which is pretty bad. This event gives the caller a chance to
+    reinitialize all that stuff. }
+  if Assigned(OnInitDefaults) then
+    OnInitDefaults(Self);
 end;
 
 procedure TDScintilla.CNNotify(var AMessage: TWMNotify);
