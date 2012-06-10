@@ -643,8 +643,11 @@
     /// <summary>Get which document modification events are sent to the container.</summary>
     function GetModEventMask: Integer;
 
+    /// <summary>Calls TWinControl.SetFocus</summary>
+    procedure SetFocus; reintroduce; overload;
+
     /// <summary>Change internal focus flag.</summary>
-    procedure SetFocus(AFocus: Boolean); reintroduce;
+    procedure SetFocus(AFocus: Boolean); reintroduce; overload;
 
     /// <summary>Get internal focus flag.</summary>
     function GetFocus: Boolean;

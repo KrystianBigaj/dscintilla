@@ -1019,6 +1019,11 @@ begin
   Result := SendEditor(SCI_GETMODEVENTMASK, 0, 0);
 end;
 
+procedure TDScintilla.SetFocus;
+begin
+  inherited SetFocus;
+end;
+
 procedure TDScintilla.SetFocus(AFocus: Boolean);
 begin
   SendEditor(SCI_SETFOCUS, Integer(AFocus), 0);
