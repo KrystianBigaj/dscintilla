@@ -346,6 +346,7 @@ function TDScintilla.GetTextRange(AStart, AEnd: Integer): UnicodeString;
 var
   lRange: TDSciTextRange;
   lChars: TDSciChars;
+  lActualLength: Integer;
 begin
   Result := '';
 
@@ -358,15 +359,15 @@ begin
   if (AStart < 0) or (AEnd < 0) or (AStart >= AEnd) then
     Exit;
 
-  SetLength(lChars, AEnd - AStart);
+  SetLength(lChars, AEnd - AStart + 1); // to handle case when text is zero-terminated, as per the Scintilla docs for SCI_GETTEXTRANGE
 
   lRange.chrg.cpMin := AStart;
   lRange.chrg.cpMax := AEnd;
-  lRange.lpstrText := @lChars;
+  lRange.lpstrText := @lChars[0];
 
-  SendEditor(SCI_GETTEXTRANGE, 0, Integer(@lRange));
+  lActualLength := SendEditor(SCI_GETTEXTRANGE, 0, Integer(@lRange));
+  lChars[lActualLength] := #0;
 
-  lChars[Length(lChars) - 1] := #0;
   Result := FHelper.GetStrFromPtr(@lChars[0]);
 end;
 
