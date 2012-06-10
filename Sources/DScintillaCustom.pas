@@ -255,7 +255,14 @@ function TDScintillaCustom.SendEditor(AMessage: Integer; WParam: Integer; LParam
 begin
   HandleNeeded;
 
-  if FAccessMethod = smWindows then
+  { There are cases when the handle has been allocated but the direct pointer has
+    not yet been set, because a call to SendEditor ends up in here during the
+
+       inherited CreateWnd;
+
+    call in TDScintillaCustom.CreateWnd. For those cases, ignore the specified
+    access method and always use smWindows. }
+  if (FAccessMethod = smWindows) or not Assigned(FDirectFunction) or not Assigned(FDirectPointer) then
     Result := Windows.SendMessage(Self.Handle, AMessage, WParam, LParam)
   else
     Result := FDirectFunction(FDirectPointer, AMessage, WParam, LParam);
