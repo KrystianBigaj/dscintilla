@@ -1262,6 +1262,7 @@ const
   SC_WRAPVISUALFLAG_NONE = $0000;
   SC_WRAPVISUALFLAG_END = $0001;
   SC_WRAPVISUALFLAG_START = $0002;
+  SC_WRAPVISUALFLAG_MARGIN = $0004;
 
   /// <summary>Set the display mode of visual flags for wrapped lines.</summary>
   SCI_SETWRAPVISUALFLAGS = 2460;
