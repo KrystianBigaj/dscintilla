@@ -79,8 +79,11 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    procedure DefaultHandler(var Message); override;
+    // Workaround bugs
+    procedure DefaultHandler(var AMessage); override;
+    procedure MouseWheelHandler(var AMessage: TMessage); override;
 
+  public
     /// <summary>Sends message to Scintilla control.
     /// For list of commands see DScintillaTypes.pas and documentation at:
     /// http://www.scintilla.org/ScintillaDoc.html</summary>
@@ -241,14 +244,59 @@ begin
   AMessage.Result := AMessage.Result or DLGC_WANTALLKEYS;
 end;
 
-procedure TDScintillaCustom.DefaultHandler(var Message);
+procedure TDScintillaCustom.DefaultHandler(var AMessage);
 begin
   // In design mode there is an AV when clicking on control whithout this workaround
   // It's wParam HDC<>PAINTSTRUCT problem
-  if {(csDesigning in ComponentState) and} (TMessage(Message).Msg = WM_PAINT) and (TMessage(Message).WParam <> 0) then
-    TMessage(Message).WParam := 0;
+  if {(csDesigning in ComponentState) and} (TMessage(AMessage).Msg = WM_PAINT) and (TMessage(AMessage).WParam <> 0) then
+    TMessage(AMessage).WParam := 0;
 
   inherited;
+end;
+
+procedure TDScintillaCustom.MouseWheelHandler(var AMessage: TMessage);
+
+  function VCLBugWorkaround_ShiftStateToKeys(AShiftState: TShiftState): Word;
+  begin
+    // Reverse function for Forms.KeysToShiftState
+    // However it doesn't revert MK_XBUTTON1/MK_XBUTTON2
+    // but Scintilla as of version 3.25 doesn't use it.
+    Result := 0;
+
+    if ssShift in AShiftState then
+      Result := Result or MK_SHIFT;
+    if ssCtrl in AShiftState then
+      Result := Result or MK_CONTROL;
+    if ssLeft in AShiftState then
+      Result := Result or MK_LBUTTON;
+    if ssRight in AShiftState then
+      Result := Result or MK_RBUTTON;
+    if ssMiddle in AShiftState then
+      Result := Result or MK_MBUTTON;
+  end;
+
+begin
+  inherited MouseWheelHandler(AMessage);
+
+  // If message wasn't handled by OnMouseWheel* events ...
+  if AMessage.Result = 0 then
+  begin
+    // Workaround for : https://code.google.com/p/dscintilla/issues/detail?id=5
+    //
+    // TControl.WMMouseWheel changes WM_MOUSEWHEEL parameters,
+    // but doesn't revert then when passing message down.
+    //
+    // As a workaround try to revert damage done by TControl.WMMouseWheel:
+    //   TCMMouseWheel(Message).ShiftState := KeysToShiftState(Message.Keys);
+    // Message might not be complete, because of missing MK_XBUTTON1/MK_XBUTTON2
+    // flags, however Scintilla doesn't use them as of today.
+    TWMMouseWheel(AMessage).Keys := VCLBugWorkaround_ShiftStateToKeys(TCMMouseWheel(AMessage).ShiftState);
+
+    // Pass it down to TWinControl.DefaultHandler->CallWindowProc(WM_MOUSEWHEEL)->Scintilla
+    // and mark it as handled so TControl.WMMouseWheel won't call inherited (which calls DefaultHandler)
+    inherited DefaultHandler(AMessage);
+    AMessage.Result := 1;
+  end;
 end;
 
 function TDScintillaCustom.SendEditor(AMessage: Integer; WParam: Integer; LParam: Integer): Integer;
