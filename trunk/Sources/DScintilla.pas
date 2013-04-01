@@ -62,12 +62,14 @@ type
     FOnSavePointReached: TDSciSavePointReachedEvent;
     FOnZoom: TDSciZoomEvent;
     FOnUserListSelection: TDSciUserListSelectionEvent;
+    FOnUserListSelection2: TDSciUserListSelection2Event;
     FOnDwellEnd: TDSciDwellEndEvent;
     FOnPainted: TDSciPaintedEvent;
     FOnModifyAttemptRO: TDSciModifyAttemptROEvent;
     FOnAutoCCharDeleted: TDSciAutoCCharDeletedEvent;
     FOnAutoCCancelled: TDSciAutoCCancelledEvent;
     FOnModified: TDSciModifiedEvent;
+    FOnModified2: TDSciModified2Event;
     FOnStyleNeeded: TDSciStyleNeededEvent;
     FOnSavePointLeft: TDSciSavePointLeftEvent;
     FOnIndicatorRelease: TDSciIndicatorReleaseEvent;
@@ -78,6 +80,7 @@ type
     FOnHotSpotClick: TDSciHotSpotClickEvent;
     FOnMarginClick: TDSciMarginClickEvent;
     FOnHotSpotDoubleClick: TDSciHotSpotDoubleClickEvent;
+    FOnHotSpotReleaseClick: TDSciHotSpotReleaseClickEvent;
     FOnDwellStart: TDSciDwellStartEvent;
     FOnIndicatorClick: TDSciIndicatorClickEvent;
     FOnAutoCSelection: TDSciAutoCSelectionEvent;
@@ -140,16 +143,19 @@ type
     property OnModifyAttemptRO: TDSciModifyAttemptROEvent read FOnModifyAttemptRO write FOnModifyAttemptRO;
     property OnUpdateUI: TDSciUpdateUIEvent read FOnUpdateUI write FOnUpdateUI;
     property OnModified: TDSciModifiedEvent read FOnModified write FOnModified;
+    property OnModified2: TDSciModified2Event read FOnModified2 write FOnModified2;
     property OnMacroRecord: TDSciMacroRecordEvent read FOnMacroRecord write FOnMacroRecord;
     property OnMarginClick: TDSciMarginClickEvent read FOnMarginClick write FOnMarginClick;
     property OnNeedShown: TDSciNeedShownEvent read FOnNeedShown write FOnNeedShown;
     property OnPainted: TDSciPaintedEvent read FOnPainted write FOnPainted;
     property OnUserListSelection: TDSciUserListSelectionEvent read FOnUserListSelection write FOnUserListSelection;
+    property OnUserListSelection2: TDSciUserListSelection2Event read FOnUserListSelection2 write FOnUserListSelection2;
     property OnDwellStart: TDSciDwellStartEvent read FOnDwellStart write FOnDwellStart;
     property OnDwellEnd: TDSciDwellEndEvent read FOnDwellEnd write FOnDwellEnd;
     property OnZoom: TDSciZoomEvent read FOnZoom write FOnZoom;
     property OnHotSpotClick: TDSciHotSpotClickEvent read FOnHotSpotClick write FOnHotSpotClick;
     property OnHotSpotDoubleClick: TDSciHotSpotDoubleClickEvent read FOnHotSpotDoubleClick write FOnHotSpotDoubleClick;
+    property OnHotSpotReleaseClick: TDSciHotSpotReleaseClickEvent read FOnHotSpotReleaseClick write FOnHotSpotReleaseClick;
     property OnCallTipClick: TDSciCallTipClickEvent read FOnCallTipClick write FOnCallTipClick;
     property OnAutoCSelection: TDSciAutoCSelectionEvent read FOnAutoCSelection write FOnAutoCSelection;
     property OnIndicatorClick: TDSciIndicatorClickEvent read FOnIndicatorClick write FOnIndicatorClick;
@@ -268,11 +274,20 @@ begin
       FOnUpdateUI(Self, ASCNotification.updated);
 
   SCN_MODIFIED:
-    if Assigned(FOnModified) then
-      FOnModified(Self, ASCNotification.position, ASCNotification.modificationType,
-        FHelper.GetStrFromPtr(ASCNotification.text), ASCNotification.length,
-        ASCNotification.linesAdded, ASCNotification.line,
-        ASCNotification.foldLevelNow, ASCNotification.foldLevelPrev);
+    begin
+      if Assigned(FOnModified) then
+        FOnModified(Self, ASCNotification.position, ASCNotification.modificationType,
+          FHelper.GetStrFromPtr(ASCNotification.text), ASCNotification.length,
+          ASCNotification.linesAdded, ASCNotification.line,
+          ASCNotification.foldLevelNow, ASCNotification.foldLevelPrev);
+
+      if Assigned(FOnModified2) then
+        FOnModified2(Self, ASCNotification.position, ASCNotification.modificationType,
+          FHelper.GetStrFromPtr(ASCNotification.text), ASCNotification.length,
+          ASCNotification.linesAdded, ASCNotification.line,
+          ASCNotification.foldLevelNow, ASCNotification.foldLevelPrev,
+          ASCNotification.token, ASCNotification.annotationLinesAdded);
+    end;
 
   SCN_MACRORECORD:
     if Assigned(FOnMacroRecord) then
@@ -293,9 +308,16 @@ begin
       FOnPainted(Self);
 
   SCN_USERLISTSELECTION:
-    if Assigned(FOnUserListSelection) then
-      FOnUserListSelection(Self, ASCNotification.listType,
-        FHelper.GetStrFromPtr(ASCNotification.text));
+    begin
+      if Assigned(FOnUserListSelection) then
+        FOnUserListSelection(Self, ASCNotification.listType,
+          FHelper.GetStrFromPtr(ASCNotification.text));
+
+      if Assigned(FOnUserListSelection2) then
+        FOnUserListSelection2(Self, ASCNotification.listType,
+          FHelper.GetStrFromPtr(ASCNotification.text),
+          ASCNotification.position);
+    end;
  
   SCN_DWELLSTART:
     if Assigned(FOnDwellStart) then
@@ -316,6 +338,10 @@ begin
   SCN_HOTSPOTDOUBLECLICK:
     if Assigned(FOnHotSpotDoubleClick) then
       FOnHotSpotDoubleClick(Self, ASCNotification.modifiers, ASCNotification.position);
+
+  SCN_HOTSPOTRELEASECLICK:
+    if Assigned(FOnHotSpotReleaseClick) then
+      FOnHotSpotReleaseClick(Self, ASCNotification.modifiers, ASCNotification.position);
 
   SCN_CALLTIPCLICK:
     if Assigned(FOnCallTipClick) then
