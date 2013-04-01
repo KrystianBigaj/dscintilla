@@ -18,6 +18,11 @@ begin
   SendEditor(SCI_CLEARALL, 0, 0);
 end;
 
+procedure TDScintilla.DeleteRange(APos: Integer; ADeleteLength: Integer);
+begin
+  SendEditor(SCI_DELETERANGE, APos, ADeleteLength);
+end;
+
 procedure TDScintilla.ClearDocumentStyle;
 begin
   SendEditor(SCI_CLEARDOCUMENTSTYLE, 0, 0);
@@ -298,6 +303,11 @@ begin
   SendEditor(SCI_CLEARREGISTEREDIMAGES, 0, 0);
 end;
 
+function TDScintilla.CountCharacters(AStartPos: Integer; AEndPos: Integer): Integer;
+begin
+  Result := SendEditor(SCI_COUNTCHARACTERS, AStartPos, AEndPos);
+end;
+
 procedure TDScintilla.SetEmptySelection(APos: Integer);
 begin
   SendEditor(SCI_SETEMPTYSELECTION, APos, 0);
@@ -406,6 +416,11 @@ begin
   SendEditor(SCI_SCROLLCARET, 0, 0);
 end;
 
+procedure TDScintilla.ScrollRange(ASecondary: Integer; APrimary: Integer);
+begin
+  SendEditor(SCI_SCROLLRANGE, ASecondary, APrimary);
+end;
+
 procedure TDScintilla.ReplaceSel(const AText: UnicodeString);
 begin
   FHelper.SetText(SCI_REPLACESEL, 0, AText);
@@ -507,11 +522,6 @@ end;
 procedure TDScintilla.CallTipSetHlt(AStart: Integer; AEnd: Integer);
 begin
   SendEditor(SCI_CALLTIPSETHLT, AStart, AEnd);
-end;
-
-procedure TDScintilla.CallTipUseStyle(ATabSize: Integer);
-begin
-  SendEditor(SCI_CALLTIPUSESTYLE, ATabSize, 0);
 end;
 
 function TDScintilla.VisibleFromDocLine(ALine: Integer): Integer;
@@ -1260,6 +1270,11 @@ begin
   SendEditor(SCI_COPYALLOWLINE, 0, 0);
 end;
 
+function TDScintilla.GetGapPosition: Integer;
+begin
+  Result := SendEditor(SCI_GETGAPPOSITION, 0, 0);
+end;
+
 function TDScintilla.MarkerSymbolDefined(AMarkerNumber: Integer): Integer;
 begin
   Result := SendEditor(SCI_MARKERSYMBOLDEFINED, AMarkerNumber, 0);
@@ -1273,6 +1288,16 @@ end;
 procedure TDScintilla.AnnotationClearAll;
 begin
   SendEditor(SCI_ANNOTATIONCLEARALL, 0, 0);
+end;
+
+procedure TDScintilla.ReleaseAllExtendedStyles;
+begin
+  SendEditor(SCI_RELEASEALLEXTENDEDSTYLES, 0, 0);
+end;
+
+function TDScintilla.AllocateExtendedStyles(ANumberStyles: Integer): Integer;
+begin
+  Result := SendEditor(SCI_ALLOCATEEXTENDEDSTYLES, ANumberStyles, 0);
 end;
 
 procedure TDScintilla.AddUndoAction(AToken: Integer; AFlags: Integer);
@@ -1340,6 +1365,11 @@ begin
   SendEditor(SCI_MOVESELECTEDLINESDOWN, 0, 0);
 end;
 
+procedure TDScintilla.RGBAImageSetScale(AScalePercent: Integer);
+begin
+  SendEditor(SCI_RGBAIMAGESETSCALE, AScalePercent, 0);
+end;
+
 procedure TDScintilla.MarkerDefineRGBAImage(AMarkerNumber: Integer; APixels: PAnsiChar);
 begin
   SendEditor(SCI_MARKERDEFINERGBAIMAGE, AMarkerNumber, Integer(APixels));
@@ -1358,6 +1388,36 @@ end;
 procedure TDScintilla.ScrollToEnd;
 begin
   SendEditor(SCI_SCROLLTOEND, 0, 0);
+end;
+
+function TDScintilla.CreateLoader(ABytes: Integer): Integer;
+begin
+  Result := SendEditor(SCI_CREATELOADER, ABytes, 0);
+end;
+
+// procedure TDScintilla.FindIndicatorShow(AStart: Integer; AEnd: Integer);
+// begin
+//   SendEditor(SCI_FINDINDICATORSHOW, AStart, AEnd);
+// end;
+
+// procedure TDScintilla.FindIndicatorFlash(AStart: Integer; AEnd: Integer);
+// begin
+//   SendEditor(SCI_FINDINDICATORFLASH, AStart, AEnd);
+// end;
+
+// procedure TDScintilla.FindIndicatorHide;
+// begin
+//   SendEditor(SCI_FINDINDICATORHIDE, 0, 0);
+// end;
+
+procedure TDScintilla.VCHomeDisplay;
+begin
+  SendEditor(SCI_VCHOMEDISPLAY, 0, 0);
+end;
+
+procedure TDScintilla.VCHomeDisplayExtend;
+begin
+  SendEditor(SCI_VCHOMEDISPLAYEXTEND, 0, 0);
 end;
 
 procedure TDScintilla.StartRecord;
@@ -1435,5 +1495,15 @@ end;
 function TDScintilla.DescribeKeyWordSets: UnicodeString;
 begin
   FHelper.GetText(SCI_DESCRIBEKEYWORDSETS, 0, Result);
+end;
+
+function TDScintilla.AllocateSubStyles(AStyleBase: Integer; ANumberStyles: Integer): Integer;
+begin
+  Result := SendEditor(SCI_ALLOCATESUBSTYLES, AStyleBase, ANumberStyles);
+end;
+
+procedure TDScintilla.FreeSubStyles;
+begin
+  SendEditor(SCI_FREESUBSTYLES, 0, 0);
 end;
 

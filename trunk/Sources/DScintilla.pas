@@ -119,6 +119,9 @@ type
 
     {$I DScintillaPropertiesDecl.inc}
 
+    /// <summary>Calls TWinControl.SetFocus</summary>
+    procedure SetFocus; reintroduce; overload;
+
   published
 
     property Lines: TDSciLines read FLines write SetLines;
@@ -354,6 +357,11 @@ end;
 // -----------------------------------------------------------------------------
 
 {$I DScintillaPropertiesCode.inc}
+
+procedure TDScintilla.SetFocus;
+begin
+  inherited SetFocus;
+end;
 
 end.
 

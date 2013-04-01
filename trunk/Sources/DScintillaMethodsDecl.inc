@@ -10,6 +10,9 @@
     /// <summary>Delete all text in the document.</summary>
     procedure ClearAll;
 
+    /// <summary>Delete a range of text in the document.</summary>
+    procedure DeleteRange(APos: Integer; ADeleteLength: Integer);
+
     /// <summary>Set all style bytes to 0, remove all folding information.</summary>
     procedure ClearDocumentStyle;
 
@@ -180,6 +183,9 @@
     /// <summary>Clear all the registered XPM images.</summary>
     procedure ClearRegisteredImages;
 
+    /// <summary>Count characters between two positions.</summary>
+    function CountCharacters(AStartPos: Integer; AEndPos: Integer): Integer;
+
     /// <summary>Set caret to a position, while removing any existing selection.</summary>
     procedure SetEmptySelection(APos: Integer);
 
@@ -224,6 +230,11 @@
 
     /// <summary>Ensure the caret is visible.</summary>
     procedure ScrollCaret;
+
+    /// <summary>Scroll the argument positions and the range between them into view giving
+    /// priority to the primary position then the secondary position.
+    /// This may be used to make a search match visible.</summary>
+    procedure ScrollRange(ASecondary: Integer; APrimary: Integer);
 
     /// <summary>Replace the selected text with the argument text.</summary>
     procedure ReplaceSel(const AText: UnicodeString);
@@ -294,9 +305,6 @@
 
     /// <summary>Highlight a segment of the definition.</summary>
     procedure CallTipSetHlt(AStart: Integer; AEnd: Integer);
-
-    /// <summary>Enable use of STYLE_CALLTIP and set call tip tab size in pixels.</summary>
-    procedure CallTipUseStyle(ATabSize: Integer);
 
     /// <summary>Find the display line of a document line taking hidden lines into account.</summary>
     function VisibleFromDocLine(ALine: Integer): Integer;
@@ -616,7 +624,7 @@
     /// <summary>Set the focus to this Scintilla widget.</summary>
     procedure GrabFocus;
 
-    /// <summary>Set the way the caret is kept visible when going sideway.
+    /// <summary>Set the way the caret is kept visible when going sideways.
     /// The exclusion zone is given in pixels.</summary>
     procedure SetXCaretPolicy(ACaretPolicy: Integer; ACaretSlop: Integer);
 
@@ -763,6 +771,10 @@
     /// <summary>Copy the selection, if selection empty copy the line with the caret</summary>
     procedure CopyAllowLine;
 
+    /// <summary>Return a position which, to avoid performance costs, should not be within
+    /// the range of a call to GetRangePointer.</summary>
+    function GetGapPosition: Integer;
+
     /// <summary>Which symbol was defined for markerNumber with MarkerDefine</summary>
     function MarkerSymbolDefined(AMarkerNumber: Integer): Integer;
 
@@ -771,6 +783,12 @@
 
     /// <summary>Clear the annotations from all lines</summary>
     procedure AnnotationClearAll;
+
+    /// <summary>Release all extended (&gt;255) style numbers</summary>
+    procedure ReleaseAllExtendedStyles;
+
+    /// <summary>Allocate some extended (&gt;255) style numbers and return the start of the range</summary>
+    function AllocateExtendedStyles(ANumberStyles: Integer): Integer;
 
     /// <summary>Add a container action to the undo stack</summary>
     procedure AddUndoAction(AToken: Integer; AFlags: Integer);
@@ -814,11 +832,14 @@
     /// <summary>Move the selected lines down one line, shifting the line below before the selection</summary>
     procedure MoveSelectedLinesDown;
 
+    /// <summary>Set the scale factor in percent for future RGBA image data.</summary>
+    procedure RGBAImageSetScale(AScalePercent: Integer);
+
     /// <summary>Define a marker from RGBA data.
     /// It has the width and height from RGBAImageSetWidth/Height</summary>
     procedure MarkerDefineRGBAImage(AMarkerNumber: Integer; APixels: PAnsiChar);
 
-    /// <summary>Register an RGBA image for use in autocompletion lists. 
+    /// <summary>Register an RGBA image for use in autocompletion lists.
     /// It has the width and height from RGBAImageSetWidth/Height</summary>
     procedure RegisterRGBAImage(AType: Integer; APixels: PAnsiChar);
 
@@ -827,6 +848,25 @@
 
     /// <summary>Scroll to end of document.</summary>
     procedure ScrollToEnd;
+
+    /// <summary>Create an ILoader*.</summary>
+    function CreateLoader(ABytes: Integer): Integer;
+
+    /// <summary>On OS X, show a find indicator.</summary>
+    // procedure FindIndicatorShow(AStart: Integer; AEnd: Integer);
+
+    /// <summary>On OS X, flash a find indicator, then fade out.</summary>
+    // procedure FindIndicatorFlash(AStart: Integer; AEnd: Integer);
+
+    /// <summary>On OS X, hide the find indicator.</summary>
+    // procedure FindIndicatorHide;
+
+    /// <summary>Move caret to before first visible character on display line.
+    /// If already there move to first character on display line.</summary>
+    procedure VCHomeDisplay;
+
+    /// <summary>Like VCHomeDisplay but extending selection to new caret position.</summary>
+    procedure VCHomeDisplayExtend;
 
     /// <summary>Start notifying the container of all key presses and commands.</summary>
     procedure StartRecord;
@@ -867,4 +907,10 @@
 
     /// <summary>Retrieve a '\n' separated list of descriptions of the keyword sets understood by the current lexer.</summary>
     function DescribeKeyWordSets: UnicodeString;
+
+    /// <summary>Allocate a set of sub styles for a particular base style, returning start of range</summary>
+    function AllocateSubStyles(AStyleBase: Integer; ANumberStyles: Integer): Integer;
+
+    /// <summary>Free allocated sub styles</summary>
+    procedure FreeSubStyles;
 
