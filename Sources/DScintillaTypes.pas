@@ -119,28 +119,33 @@ type
   TDSciSCNotification = record
     NotifyHeader: TDSciNotifyHeader;
     position: Integer;
-    // SCN_STYLENEEDED, SCN_DOUBLECLICK, SCN_MODIFIED, SCN_DWELLSTART,
-    // SCN_DWELLEND, SCN_CALLTIPCLICK,
-    // SCN_HOTSPOTCLICK, SCN_HOTSPOTDOUBLECLICK
+	  // SCN_STYLENEEDED, SCN_DOUBLECLICK, SCN_MODIFIED, SCN_MARGINCLICK,
+	  // SCN_NEEDSHOWN, SCN_DWELLSTART, SCN_DWELLEND, SCN_CALLTIPCLICK,
+	  // SCN_HOTSPOTCLICK, SCN_HOTSPOTDOUBLECLICK, SCN_HOTSPOTRELEASECLICK,
+	  // SCN_INDICATORCLICK, SCN_INDICATORRELEASE,
+	  // SCN_USERLISTSELECTION, SCN_AUTOCSELECTION
+
     ch: Integer;                    // SCN_CHARADDED, SCN_KEY
     modifiers: Integer;
-    // SCN_KEY, SCN_DOUBLECLICK, SCN_HOTSPOTCLICK, SCN_HOTSPOTDOUBLECLICK
+	  // SCN_KEY, SCN_DOUBLECLICK, SCN_HOTSPOTCLICK, SCN_HOTSPOTDOUBLECLICK,
+	  // SCN_HOTSPOTRELEASECLICK, SCN_INDICATORCLICK, SCN_INDICATORRELEASE,
+
     modificationType: Integer;      // SCN_MODIFIED
-    text: PAnsiChar;                // SCN_MODIFIED, SCN_USERLISTSELECTION, SCN_AUTOCSELECTION
+    text: PAnsiChar;                // SCN_MODIFIED
     length: Integer;                // SCN_MODIFIED
     linesAdded: Integer;            // SCN_MODIFIED
     message: Integer;               // SCN_MACRORECORD
     wParam: Integer;                // SCN_MACRORECORD
     lParam: Integer;                // SCN_MACRORECORD
-    line: Integer;                  // SCN_MODIFIED, SCN_DOUBLECLICK
+    line: Integer;                  // SCN_MODIFIED
     foldLevelNow: Integer;          // SCN_MODIFIED
     foldLevelPrev: Integer;         // SCN_MODIFIED
     margin: Integer;                // SCN_MARGINCLICK
-    listType: Integer;              // SCN_USERLISTSELECTION, SCN_AUTOCSELECTION
+    listType: Integer;              // SCN_USERLISTSELECTION
     x: Integer;                     // SCN_DWELLSTART, SCN_DWELLEND
     y: Integer;                     // SCN_DWELLSTART, SCN_DWELLEND
     token: Integer;                 // SCN_MODIFIED with SC_MOD_CONTAINER
-    annotationLinesAdded: Integer;	// SC_MOD_CHANGEANNOTATION
+    annotationLinesAdded: Integer;	// SCN_MODIFIED with SC_MOD_CHANGEANNOTATION
     updated: Integer;	              // SCN_UPDATEUI
   end;
 
@@ -161,16 +166,22 @@ type
   TDSciModifiedEvent = procedure(ASender: TObject; APosition: Integer; AModificationType: Integer;
     AText: UnicodeString; ALength: Integer; ALinesAdded: Integer; ALine: Integer;
     AFoldLevelNow: Integer; AFoldLevelPrev: Integer) of object;
+  TDSciModified2Event = procedure(ASender: TObject; APosition: Integer; AModificationType: Integer;
+    AText: UnicodeString; ALength: Integer; ALinesAdded: Integer; ALine: Integer;
+    AFoldLevelNow: Integer; AFoldLevelPrev: Integer;
+    AToken: Integer; AAnnotationLinesAdded: Integer) of object;
   TDSciMacroRecordEvent = procedure(ASender: TObject; AMessage: Integer; AWParam: Integer; ALParam: Integer) of object;
   TDSciMarginClickEvent = procedure(ASender: TObject; AModifiers: Integer; APosition: Integer; AMargin: Integer) of object;
   TDSciNeedShownEvent = procedure(ASender: TObject; APosition: Integer; ALength: Integer) of object;
   TDSciPaintedEvent = procedure(ASender: TObject) of object;
   TDSciUserListSelectionEvent = procedure(ASender: TObject; AListType: Integer; AText: UnicodeString) of object;
+  TDSciUserListSelection2Event = procedure(ASender: TObject; AListType: Integer; AText: UnicodeString; APosition: Integer) of object;
   TDSciDwellStartEvent = procedure(ASender: TObject; APosition, X, Y: Integer) of object;
   TDSciDwellEndEvent = procedure(ASender: TObject; APosition, X, Y: Integer) of object;
   TDSciZoomEvent = procedure(ASender: TObject) of object;
   TDSciHotSpotClickEvent = procedure(ASender: TObject; AModifiers: Integer; APosition: Integer) of object;
   TDSciHotSpotDoubleClickEvent = procedure(ASender: TObject; AModifiers: Integer; APosition: Integer) of object;
+  TDSciHotSpotReleaseClickEvent = procedure(ASender: TObject; AModifiers: Integer; APosition: Integer) of object;
   TDSciCallTipClickEvent = procedure(ASender: TObject; APosition: Integer) of object;
   TDSciAutoCSelectionEvent = procedure(ASender: TObject; AText: UnicodeString; APosition: Integer) of object;
   TDSciIndicatorClickEvent = procedure(ASender: TObject; AModifiers: Integer; APosition: Integer) of object;
@@ -182,34 +193,35 @@ const
 
 { Scintilla event codes }
 
-  SCN_STYLENEEDED        = 2000;
-  SCN_CHARADDED          = 2001;
-  SCN_SAVEPOINTREACHED   = 2002;
-  SCN_SAVEPOINTLEFT      = 2003;
-  SCN_MODIFYATTEMPTRO    = 2004;
+  SCN_STYLENEEDED         = 2000;
+  SCN_CHARADDED           = 2001;
+  SCN_SAVEPOINTREACHED    = 2002;
+  SCN_SAVEPOINTLEFT       = 2003;
+  SCN_MODIFYATTEMPTRO     = 2004;
   //# GTK+ Specific to work around focus and accelerator problems:
   //evt void Key           =2005(int ch, int modifiers)
   //evt void DoubleClick   =2006(void)
-  SCN_UPDATEUI           = 2007;
-  SCN_MODIFIED           = 2008;
-  SCN_MACRORECORD        = 2009;
-  SCN_MARGINCLICK        = 2010;
-  SCN_NEEDSHOWN          = 2011;
-  SCN_PAINTED            = 2013;
-  SCN_USERLISTSELECTION  = 2014;
+  SCN_UPDATEUI            = 2007;
+  SCN_MODIFIED            = 2008;
+  SCN_MACRORECORD         = 2009;
+  SCN_MARGINCLICK         = 2010;
+  SCN_NEEDSHOWN           = 2011;
+  SCN_PAINTED             = 2013;
+  SCN_USERLISTSELECTION   = 2014;
   // Only on the GTK+ version
   // SCN_URIDROPPED         = 2015;
-  SCN_DWELLSTART         = 2016;
-  SCN_DWELLEND           = 2017;
-  SCN_ZOOM               = 2018;
-  SCN_HOTSPOTCLICK       = 2019;
-  SCN_HOTSPOTDOUBLECLICK = 2020;
-  SCN_CALLTIPCLICK       = 2021;
-  SCN_AUTOCSELECTION     = 2022;
-  SCN_INDICATORCLICK     = 2023;
-  SCN_INDICATORRELEASE   = 2024;
-  SCN_AUTOCCANCELLED     = 2025;
-  SCN_AUTOCCHARDELETED   = 2026;
+  SCN_DWELLSTART          = 2016;
+  SCN_DWELLEND            = 2017;
+  SCN_ZOOM                = 2018;
+  SCN_HOTSPOTCLICK        = 2019;
+  SCN_HOTSPOTDOUBLECLICK  = 2020;
+  SCN_CALLTIPCLICK        = 2021;
+  SCN_AUTOCSELECTION      = 2022;
+  SCN_INDICATORCLICK      = 2023;
+  SCN_INDICATORRELEASE    = 2024;
+  SCN_AUTOCCANCELLED      = 2025;
+  SCN_AUTOCCHARDELETED    = 2026;
+  SCN_HOTSPOTRELEASECLICK = 2027;
 
 const
 
