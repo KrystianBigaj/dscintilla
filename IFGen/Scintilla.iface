@@ -4324,10 +4324,10 @@ cat Deprecated
 val SC_CP_DBCS=1
 
 # Deprecated in 2.30
-
 # In palette mode?
 get bool GetUsePalette=2139(,)
 
+# Deprecated in 2.30
 # In palette mode, Scintilla uses the environment's palette calls to display
 # more colours. This may lead to ugly displays.
 set void SetUsePalette=2039(bool usePalette,)

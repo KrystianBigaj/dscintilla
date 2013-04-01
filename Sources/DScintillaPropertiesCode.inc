@@ -1790,8 +1790,13 @@ begin
   FHelper.GetText(SCI_GETSUBSTYLEBASES, 0, Result);
 end;
 
-function TDScintilla.GetUsePalette: Boolean;
-begin
-  Result := Boolean(SendEditor(SCI_GETUSEPALETTE, 0, 0));
-end;
+// function TDScintilla.GetUsePalette: Boolean;
+// begin
+//   Result := Boolean(SendEditor(SCI_GETUSEPALETTE, 0, 0));
+// end;
+
+// procedure TDScintilla.SetUsePalette(AUsePalette: Boolean);
+// begin
+//   SendEditor(SCI_SETUSEPALETTE, Integer(AUsePalette), 0);
+// end;
 

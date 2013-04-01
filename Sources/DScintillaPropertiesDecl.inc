@@ -1080,6 +1080,12 @@
     /// <summary>Get the set of base styles that can be extended with sub styles</summary>
     function GetSubStyleBases: UnicodeString;
 
-    /// <summary>In palette mode?</summary>
-    function GetUsePalette: Boolean;
+    /// <summary>Deprecated in 2.30
+    /// In palette mode?</summary>
+    // function GetUsePalette: Boolean;
+
+    /// <summary>Deprecated in 2.30
+    /// In palette mode, Scintilla uses the environment's palette calls to display
+    /// more colours. This may lead to ugly displays.</summary>
+    // procedure SetUsePalette(AUsePalette: Boolean);
 
