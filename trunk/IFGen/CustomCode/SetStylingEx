@@ -1,0 +1,6 @@
+procedure SetStylingEx(const AStyles: TDSciStyles);
+procedure TDScintilla.SetStylingEx(const AStyles: TDSciStyles);
+begin
+  SendEditor(SCI_SETSTYLINGEX, System.Length(AStyles), Integer(AStyles));
+end;
+

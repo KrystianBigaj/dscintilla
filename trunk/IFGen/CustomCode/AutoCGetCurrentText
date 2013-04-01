@@ -1,0 +1,6 @@
+function AutoCGetCurrentText: UnicodeString;
+function TDScintilla.AutoCGetCurrentText: UnicodeString;
+begin
+  FHelper.GetText(SCI_AUTOCGETCURRENTTEXT, 0, Result);
+end;
+

@@ -1,0 +1,6 @@
+function CreateDocument: TDSciDocument;
+function TDScintilla.CreateDocument: TDSciDocument;
+begin
+  Result := TDSciDocument(SendEditor(SCI_CREATEDOCUMENT, 0, 0));
+end;
+
