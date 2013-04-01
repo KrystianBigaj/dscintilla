@@ -1,0 +1,8 @@
+function AnnotationGetStyles(ALine: Integer): TDSciStyles;
+function TDScintilla.AnnotationGetStyles(ALine: Integer): TDSciStyles;
+begin
+  SetLength(Result, SendEditor(SCI_ANNOTATIONGETSTYLES, ALine));
+  if Length(Result) > 0 then
+    SendEditor(SCI_ANNOTATIONGETSTYLES, ALine, Integer(Result));
+end;
+

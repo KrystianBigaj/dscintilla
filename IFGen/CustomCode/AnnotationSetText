@@ -1,0 +1,6 @@
+procedure AnnotationSetText(ALine: Integer; const AText: UnicodeString);
+procedure TDScintilla.AnnotationSetText(ALine: Integer; const AText: UnicodeString);
+begin
+  FHelper.SetText(SCI_ANNOTATIONSETTEXT, ALine, AText);
+end;
+

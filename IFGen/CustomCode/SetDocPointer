@@ -1,0 +1,7 @@
+procedure SetDocPointer(APointer:Pointer);
+procedure TDScintilla.SetDocPointer(APointer:Pointer);
+begin
+  if APointer <> nil then
+    SendEditor(SCI_SETDOCPOINTER, 0, Integer(APointer));
+end;
+

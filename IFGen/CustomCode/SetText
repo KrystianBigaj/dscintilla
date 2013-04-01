@@ -1,0 +1,6 @@
+procedure SetText(const AText: UnicodeString);
+procedure TDScintilla.SetText(const AText: UnicodeString);
+begin
+  FHelper.SetTextLen(SCI_SETTEXT, AText);
+end;
+

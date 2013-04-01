@@ -1,0 +1,6 @@
+procedure AppendText(const AText: UnicodeString);
+procedure TDScintilla.AppendText(const AText: UnicodeString);
+begin
+  FHelper.SetTextLen(SCI_APPENDTEXT, AText);
+end;
+

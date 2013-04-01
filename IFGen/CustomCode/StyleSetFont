@@ -1,0 +1,6 @@
+procedure StyleSetFont(AStyle: Integer; const AFontName: UnicodeString);
+procedure TDScintilla.StyleSetFont(AStyle: Integer; const AFontName: UnicodeString);
+begin
+  SendEditor(SCI_STYLESETFONT, AStyle, Integer(AnsiString(AFontName)));
+end;
+

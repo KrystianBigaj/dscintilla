@@ -1,0 +1,6 @@
+function GetSubStyleBases: UnicodeString;
+function TDScintilla.GetSubStyleBases: UnicodeString;
+begin
+  FHelper.GetText(SCI_GETSUBSTYLEBASES, 0, Result);
+end;
+

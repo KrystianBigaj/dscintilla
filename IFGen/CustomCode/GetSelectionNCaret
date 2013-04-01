@@ -1,0 +1,9 @@
+function GetSelectionNCaret(ASelection: Integer): Integer;
+function %s.GetSelectionNCaret(ASelection: Integer): Integer;
+begin
+  if (ASelection >= 0) and (ASelection < GetSelections) then
+    Result := SendEditor(SCI_GETSELECTIONNCARET, ASelection, 0)
+  else
+    Result := INVALID_POSITION;
+end;
+
