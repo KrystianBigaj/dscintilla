@@ -171,8 +171,8 @@ end;
 
 destructor TDScintilla.Destroy;
 begin
-  FLines.Free;
-  FHelper.Free;
+  FreeAndNil(FLines);
+  FreeAndNil(FHelper);
 
   inherited Destroy;
 end;
