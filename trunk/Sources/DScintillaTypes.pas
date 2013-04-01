@@ -4389,9 +4389,14 @@ const
   /// The SC_CP_DBCS value can be used to indicate a DBCS mode for GTK+.</summary>
   SC_CP_DBCS = 1;
 
-  /// <summary>In palette mode?</summary>
+  /// <summary>Deprecated in 2.30
+  /// In palette mode?</summary>
   SCI_GETUSEPALETTE = 2139;
 
+  /// <summary>Deprecated in 2.30
+  /// In palette mode, Scintilla uses the environment's palette calls to display
+  /// more colours. This may lead to ugly displays.</summary>
+  SCI_SETUSEPALETTE = 2039;
 
 // </scigen>
 
