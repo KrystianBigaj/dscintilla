@@ -66,6 +66,9 @@ type
 
     procedure SetSciDllModule(const Value: String);
 
+    procedure LoadSciLibrary;
+    procedure FreeSciLibrary;
+
   protected
     procedure CreateWnd; override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -74,6 +77,7 @@ type
 
     procedure WMEraseBkgnd(var AMessage: TWmEraseBkgnd); message WM_ERASEBKGND;
     procedure WMGetDlgCode(var AMessage: TWMGetDlgCode); message WM_GETDLGCODE;
+    procedure WMDestroy(var AMessage: TWMDestroy); message WM_DESTROY;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -171,12 +175,7 @@ destructor TDScintillaCustom.Destroy;
 begin
   inherited Destroy;
 
-  if FSciDllHandle <> 0 then
-  try
-    FreeLibrary(FSciDllHandle);
-  finally
-    FSciDllHandle := 0;
-  end;
+  FreeSciLibrary;
 end;
 
 procedure TDScintillaCustom.SetSciDllModule(const Value: String);
@@ -189,6 +188,23 @@ begin
   RecreateWndIf;
 end;
 
+procedure TDScintillaCustom.LoadSciLibrary;
+begin
+  FSciDllHandle := LoadLibrary(PChar(FSciDllModule));
+  if FSciDllHandle = 0 then
+    RaiseLastOSError;
+end;
+
+procedure TDScintillaCustom.FreeSciLibrary;
+begin
+  if FSciDllHandle <> 0 then
+  try
+    FreeLibrary(FSciDllHandle);
+  finally
+    FSciDllHandle := 0;
+  end;
+end;
+
 procedure TDScintillaCustom.CreateWnd;
 const
   /// <summary>Retrieve a pointer to a function that processes messages for this Scintilla.</summary>
@@ -199,9 +215,7 @@ const
   SCI_GETDIRECTPOINTER = 2185;
 
 begin
-  FSciDllHandle := LoadLibrary(PChar(FSciDllModule));
-  if FSciDllHandle = 0 then
-    RaiseLastOSError;
+  LoadSciLibrary;
 
   inherited CreateWnd;
 
@@ -244,10 +258,29 @@ begin
   AMessage.Result := AMessage.Result or DLGC_WANTALLKEYS;
 end;
 
+procedure TDScintillaCustom.WMDestroy(var AMessage: TWMDestroy);
+begin
+  inherited;
+
+  // No longer valid after window destory
+  FDirectFunction := nil;
+  FDirectPointer := nil;
+end;
+
 procedure TDScintillaCustom.DefaultHandler(var AMessage);
 begin
   // In design mode there is an AV when clicking on control whithout this workaround
-  // It's wParam HDC<>PAINTSTRUCT problem
+  // It's wParam HDC vs. PAINTSTRUCT problem:
+  (*
+  LRESULT ScintillaWin::WndPaint(uptr_t wParam) {
+    ...
+    PAINTSTRUCT ps;
+    PAINTSTRUCT *pps;
+
+    bool IsOcxCtrl = (wParam != 0); // if wParam != 0, it contains
+                     // a PAINSTRUCT* from the OCX
+  *)
+
   if {(csDesigning in ComponentState) and} (TMessage(AMessage).Msg = WM_PAINT) and (TMessage(AMessage).WParam <> 0) then
     TMessage(AMessage).WParam := 0;
 
