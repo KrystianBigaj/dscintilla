@@ -240,6 +240,9 @@ const
   /// <summary>Delete all text in the document.</summary>
   SCI_CLEARALL = 2004;
 
+  /// <summary>Delete a range of text in the document.</summary>
+  SCI_DELETERANGE = 2645;
+
   /// <summary>Set all style bytes to 0, remove all folding information.</summary>
   SCI_CLEARDOCUMENTSTYLE = 2005;
 
@@ -361,16 +364,9 @@ const
   /// This is the same value as CP_UTF8 in Windows</summary>
   SC_CP_UTF8 = 65001;
 
-  /// <summary>[Deprecated in 2.21] The SC_CP_DBCS value can be used to indicate a DBCS mode for GTK+.</summary>
-  SC_CP_DBCS = 1;
-
   /// <summary>Set the code page used to interpret the bytes of the document as characters.
   /// The SC_CP_UTF8 value can be used to enter Unicode mode.</summary>
   SCI_SETCODEPAGE = 2037;
-
-  /// <summary>In palette mode, Scintilla uses the environment's palette calls to display
-  /// more colours. This may lead to ugly displays.</summary>
-  SCI_SETUSEPALETTE = 2039;
 
   MARKER_MAX = 31;
   SC_MARK_CIRCLE = 0;
@@ -464,6 +460,8 @@ const
 
   /// <summary>Set the alpha used for a marker that is drawn in the text area, not the margin.</summary>
   SCI_MARKERSETALPHA = 2476;
+
+  SC_MAX_MARGIN = 4;
 
   SC_MARGIN_SYMBOL = 0;
   SC_MARGIN_NUMBER = 1;
@@ -616,6 +614,24 @@ const
   /// <summary>Set a style to be mixed case, or to force upper or lower case.</summary>
   SCI_STYLESETCASE = 2060;
 
+  SC_FONT_SIZE_MULTIPLIER = 100;
+
+  /// <summary>Set the size of characters of a style. Size is in points multiplied by 100.</summary>
+  SCI_STYLESETSIZEFRACTIONAL = 2061;
+
+  /// <summary>Get the size of characters of a style in points multiplied by 100</summary>
+  SCI_STYLEGETSIZEFRACTIONAL = 2062;
+
+  SC_WEIGHT_NORMAL = 400;
+  SC_WEIGHT_SEMIBOLD = 600;
+  SC_WEIGHT_BOLD = 700;
+
+  /// <summary>Set the weight of characters of a style.</summary>
+  SCI_STYLESETWEIGHT = 2063;
+
+  /// <summary>Get the weight of characters of a style.</summary>
+  SCI_STYLEGETWEIGHT = 2064;
+
   /// <summary>Set the character set of the font in a style.</summary>
   SCI_STYLESETCHARACTERSET = 2066;
 
@@ -668,6 +684,10 @@ const
   /// First sets defaults like SetCharsDefault.</summary>
   SCI_SETWORDCHARS = 2077;
 
+  /// <summary>Get the set of characters making up words for when moving or selecting by word.
+  /// Retuns the number of characters</summary>
+  SCI_GETWORDCHARS = 2646;
+
   /// <summary>Start a sequence of actions that is undone and redone as a unit.
   /// May be nested.</summary>
   SCI_BEGINUNDOACTION = 2078;
@@ -689,6 +709,7 @@ const
   INDIC_DOTS = 10;
   INDIC_SQUIGGLELOW = 11;
   INDIC_DOTBOX = 12;
+  INDIC_SQUIGGLEPIXMAP = 13;
   INDIC_MAX = 31;
   INDIC_CONTAINER = 8;
   INDIC0_MASK = $20;
@@ -881,6 +902,9 @@ const
   /// <summary>Retrieve the column number of a position, taking tab width into account.</summary>
   SCI_GETCOLUMN = 2129;
 
+  /// <summary>Count characters between two positions.</summary>
+  SCI_COUNTCHARACTERS = 2633;
+
   /// <summary>Show or hide the horizontal scroll bar.</summary>
   SCI_SETHSCROLLBAR = 2130;
 
@@ -913,9 +937,6 @@ const
 
   /// <summary>Get the foreground colour of the caret.</summary>
   SCI_GETCARETFORE = 2138;
-
-  /// <summary>In palette mode?</summary>
-  SCI_GETUSEPALETTE = 2139;
 
   /// <summary>In read-only mode?</summary>
   SCI_GETREADONLY = 2140;
@@ -1033,6 +1054,11 @@ const
 
   /// <summary>Ensure the caret is visible.</summary>
   SCI_SCROLLCARET = 2169;
+
+  /// <summary>Scroll the argument positions and the range between them into view giving
+  /// priority to the primary position then the secondary position.
+  /// This may be used to make a search match visible.</summary>
+  SCI_SCROLLRANGE = 2569;
 
   /// <summary>Replace the selected text with the argument text.</summary>
   SCI_REPLACESEL = 2170;
@@ -1161,6 +1187,9 @@ const
   /// <summary>Enable use of STYLE_CALLTIP and set call tip tab size in pixels.</summary>
   SCI_CALLTIPUSESTYLE = 2212;
 
+  /// <summary>Set position of calltip, above or below text.</summary>
+  SCI_CALLTIPSETPOSITION = 2213;
+
   /// <summary>Find the display line of a document line taking hidden lines into account.</summary>
   SCI_VISIBLEFROMDOCLINE = 2220;
 
@@ -1197,6 +1226,9 @@ const
 
   /// <summary>Is a line visible?</summary>
   SCI_GETLINEVISIBLE = 2228;
+
+  /// <summary>Are all lines visible?</summary>
+  SCI_GETALLLINESVISIBLE = 2236;
 
   /// <summary>Show the children of a header line.</summary>
   SCI_SETFOLDEXPANDED = 2229;
@@ -1730,7 +1762,7 @@ const
   /// <summary>Delete forwards from the current position to the end of the line.</summary>
   SCI_DELLINERIGHT = 2396;
 
-  /// <summary>Get and Set the xOffset (ie, horizonal scroll position).</summary>
+  /// <summary>Get and Set the xOffset (ie, horizontal scroll position).</summary>
   SCI_SETXOFFSET = 2397;
   SCI_GETXOFFSET = 2398;
 
@@ -1766,7 +1798,7 @@ const
   /// where most code reside, and the lines after the caret, eg. the body of a function.</summary>
   CARET_EVEN = $08;
 
-  /// <summary>Set the way the caret is kept visible when going sideway.
+  /// <summary>Set the way the caret is kept visible when going sideways.
   /// The exclusion zone is given in pixels.</summary>
   SCI_SETXCARETPOLICY = 2402;
 
@@ -1899,6 +1931,16 @@ const
   /// Should be called after SetWordChars.</summary>
   SCI_SETWHITESPACECHARS = 2443;
 
+  /// <summary>Get the set of characters making up whitespace for when moving or selecting by word.</summary>
+  SCI_GETWHITESPACECHARS = 2647;
+
+  /// <summary>Set the set of characters making up punctuation characters
+  /// Should be called after SetWordChars.</summary>
+  SCI_SETPUNCTUATIONCHARS = 2648;
+
+  /// <summary>Get the set of characters making up punctuation characters</summary>
+  SCI_GETPUNCTUATIONCHARS = 2649;
+
   /// <summary>Reset the set of characters for whitespace and word characters to the defaults.</summary>
   SCI_SETCHARSDEFAULT = 2444;
 
@@ -1908,6 +1950,15 @@ const
   /// <summary>Get currently selected item text in the auto-completion list
   /// Returns the length of the item text</summary>
   SCI_AUTOCGETCURRENTTEXT = 2610;
+
+  SC_CASEINSENSITIVEBEHAVIOUR_RESPECTCASE = 0;
+  SC_CASEINSENSITIVEBEHAVIOUR_IGNORECASE = 1;
+
+  /// <summary>Set auto-completion case insensitive behaviour to either prefer case-sensitive matches or have no preference.</summary>
+  SCI_AUTOCSETCASEINSENSITIVEBEHAVIOUR = 2634;
+
+  /// <summary>Get auto-completion case insensitive behaviour.</summary>
+  SCI_AUTOCGETCASEINSENSITIVEBEHAVIOUR = 2635;
 
   /// <summary>Enlarge the document to a particular size of text bytes.</summary>
   SCI_ALLOCATE = 2446;
@@ -1980,7 +2031,7 @@ const
   /// <summary>Set the value used for IndicatorFillRange</summary>
   SCI_SETINDICATORVALUE = 2502;
 
-  /// <summary>Get the current indicator vaue</summary>
+  /// <summary>Get the current indicator value</summary>
   SCI_GETINDICATORVALUE = 2503;
 
   /// <summary>Turn a indicator on over a range.</summary>
@@ -2013,6 +2064,15 @@ const
   /// <summary>Compact the document buffer and return a read-only pointer to the
   /// characters in the document.</summary>
   SCI_GETCHARACTERPOINTER = 2520;
+
+  /// <summary>Return a read-only pointer to a range of characters in the document.
+  /// May move the gap so that the range is contiguous, but will only move up
+  /// to rangeLength bytes.</summary>
+  SCI_GETRANGEPOINTER = 2643;
+
+  /// <summary>Return a position which, to avoid performance costs, should not be within
+  /// the range of a call to GetRangePointer.</summary>
+  SCI_GETGAPPOSITION = 2644;
 
   /// <summary>Always interpret keyboard input as Unicode</summary>
   SCI_SETKEYSUNICODE = 2521;
@@ -2123,6 +2183,12 @@ const
   /// <summary>Get the start of the range of style numbers used for annotations</summary>
   SCI_ANNOTATIONGETSTYLEOFFSET = 2551;
 
+  /// <summary>Release all extended (&gt;255) style numbers</summary>
+  SCI_RELEASEALLEXTENDEDSTYLES = 2552;
+
+  /// <summary>Allocate some extended (&gt;255) style numbers and return the start of the range</summary>
+  SCI_ALLOCATEEXTENDEDSTYLES = 2553;
+
   UNDO_MAY_COALESCE = 1;
 
   /// <summary>Add a container action to the undo stack</summary>
@@ -2161,6 +2227,9 @@ const
 
   /// <summary>How many selections are there?</summary>
   SCI_GETSELECTIONS = 2570;
+
+  /// <summary>Is every selected range empty?</summary>
+  SCI_GETSELECTIONEMPTY = 2650;
 
   /// <summary>Clear selections to a single empty stream selection</summary>
   SCI_CLEARSELECTIONS = 2571;
@@ -2274,11 +2343,14 @@ const
   /// <summary>Set the height for future RGBA image data.</summary>
   SCI_RGBAIMAGESETHEIGHT = 2625;
 
+  /// <summary>Set the scale factor in percent for future RGBA image data.</summary>
+  SCI_RGBAIMAGESETSCALE = 2651;
+
   /// <summary>Define a marker from RGBA data.
   /// It has the width and height from RGBAImageSetWidth/Height</summary>
   SCI_MARKERDEFINERGBAIMAGE = 2626;
 
-  /// <summary>Register an RGBA image for use in autocompletion lists. 
+  /// <summary>Register an RGBA image for use in autocompletion lists.
   /// It has the width and height from RGBAImageSetWidth/Height</summary>
   SCI_REGISTERRGBAIMAGE = 2627;
 
@@ -2287,6 +2359,40 @@ const
 
   /// <summary>Scroll to end of document.</summary>
   SCI_SCROLLTOEND = 2629;
+
+  SC_TECHNOLOGY_DEFAULT = 0;
+  SC_TECHNOLOGY_DIRECTWRITE = 1;
+
+  /// <summary>Set the technology used.</summary>
+  SCI_SETTECHNOLOGY = 2630;
+
+  /// <summary>Get the tech.</summary>
+  SCI_GETTECHNOLOGY = 2631;
+
+  /// <summary>Create an ILoader*.</summary>
+  SCI_CREATELOADER = 2632;
+
+  /// <summary>On OS X, show a find indicator.</summary>
+  SCI_FINDINDICATORSHOW = 2640;
+
+  /// <summary>On OS X, flash a find indicator, then fade out.</summary>
+  SCI_FINDINDICATORFLASH = 2641;
+
+  /// <summary>On OS X, hide the find indicator.</summary>
+  SCI_FINDINDICATORHIDE = 2642;
+
+  /// <summary>Move caret to before first visible character on display line.
+  /// If already there move to first character on display line.</summary>
+  SCI_VCHOMEDISPLAY = 2652;
+
+  /// <summary>Like VCHomeDisplay but extending selection to new caret position.</summary>
+  SCI_VCHOMEDISPLAYEXTEND = 2653;
+
+  /// <summary>Is the caret line always visible?</summary>
+  SCI_GETCARETLINEVISIBLEALWAYS = 2654;
+
+  /// <summary>Sets the caret line to always visible.</summary>
+  SCI_SETCARETLINEVISIBLEALWAYS = 2655;
 
   /// <summary>Start notifying the container of all key presses and commands.</summary>
   SCI_STARTRECORD = 3001;
@@ -2523,6 +2629,12 @@ const
   SCLEX_TXT2TAGS = 99;
   SCLEX_A68K = 100;
   SCLEX_MODULA = 101;
+  SCLEX_COFFEESCRIPT = 102;
+  SCLEX_TCMD = 103;
+  SCLEX_AVS = 104;
+  SCLEX_ECL = 105;
+  SCLEX_OSCRIPT = 106;
+  SCLEX_VISUALPROLOG = 107;
 
   /// <summary>When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
   /// value assigned in sequence from SCLEX_AUTOMATIC+1.</summary>
@@ -2569,6 +2681,8 @@ const
   SCE_C_GLOBALCLASS = 19;
   SCE_C_STRINGRAW = 20;
   SCE_C_TRIPLEVERBATIM = 21;
+  SCE_C_HASHQUOTEDSTRING = 22;
+  SCE_C_PREPROCESSORCOMMENT = 23;
 
   /// <summary>Lexical states for SCLEX_D</summary>
   SCE_D_DEFAULT = 0;
@@ -2792,6 +2906,16 @@ const
   SCE_PL_SUB_PROTOTYPE = 40;
   SCE_PL_FORMAT_IDENT = 41;
   SCE_PL_FORMAT = 42;
+  SCE_PL_STRING_VAR = 43;
+  SCE_PL_XLAT = 44;
+  SCE_PL_REGEX_VAR = 54;
+  SCE_PL_REGSUBST_VAR = 55;
+  SCE_PL_BACKTICKS_VAR = 57;
+  SCE_PL_HERE_QQ_VAR = 61;
+  SCE_PL_HERE_QX_VAR = 62;
+  SCE_PL_STRING_QQ_VAR = 64;
+  SCE_PL_STRING_QX_VAR = 65;
+  SCE_PL_STRING_QR_VAR = 66;
 
   /// <summary>Lexical states for SCLEX_RUBY</summary>
   SCE_RB_DEFAULT = 0;
@@ -2864,6 +2988,14 @@ const
   SCE_L_TAG = 2;
   SCE_L_MATH = 3;
   SCE_L_COMMENT = 4;
+  SCE_L_TAG2 = 5;
+  SCE_L_MATH2 = 6;
+  SCE_L_COMMENT2 = 7;
+  SCE_L_VERBATIM = 8;
+  SCE_L_SHORTCMD = 9;
+  SCE_L_SPECIAL = 10;
+  SCE_L_CMDOPT = 11;
+  SCE_L_ERROR = 12;
 
   /// <summary>Lexical states for SCLEX_LUA</summary>
   SCE_LUA_DEFAULT = 0;
@@ -2886,6 +3018,7 @@ const
   SCE_LUA_WORD6 = 17;
   SCE_LUA_WORD7 = 18;
   SCE_LUA_WORD8 = 19;
+  SCE_LUA_LABEL = 20;
 
   /// <summary>Lexical states for SCLEX_ERRORLIST</summary>
   SCE_ERR_DEFAULT = 0;
@@ -2910,6 +3043,7 @@ const
   SCE_ERR_TIDY = 19;
   SCE_ERR_JAVA_STACK = 20;
   SCE_ERR_VALUE = 21;
+  SCE_ERR_GCC_INCLUDED_FROM = 22;
 
   /// <summary>Lexical states for SCLEX_BATCH</summary>
   SCE_BAT_DEFAULT = 0;
@@ -2920,6 +3054,19 @@ const
   SCE_BAT_COMMAND = 5;
   SCE_BAT_IDENTIFIER = 6;
   SCE_BAT_OPERATOR = 7;
+
+  /// <summary>Lexical states for SCLEX_TCMD</summary>
+  SCE_TCMD_DEFAULT = 0;
+  SCE_TCMD_COMMENT = 1;
+  SCE_TCMD_WORD = 2;
+  SCE_TCMD_LABEL = 3;
+  SCE_TCMD_HIDE = 4;
+  SCE_TCMD_COMMAND = 5;
+  SCE_TCMD_IDENTIFIER = 6;
+  SCE_TCMD_OPERATOR = 7;
+  SCE_TCMD_ENVIRONMENT = 8;
+  SCE_TCMD_EXPANSION = 9;
+  SCE_TCMD_CLABEL = 10;
 
   /// <summary>Lexical states for SCLEX_MAKEFILE</summary>
   SCE_MAKE_DEFAULT = 0;
@@ -3138,6 +3285,7 @@ const
   SCE_CSS_EXTENDED_PSEUDOCLASS = 20;
   SCE_CSS_EXTENDED_PSEUDOELEMENT = 21;
   SCE_CSS_MEDIA = 22;
+  SCE_CSS_VARIABLE = 23;
 
   /// <summary>Lexical states for SCLEX_POV</summary>
   SCE_POV_DEFAULT = 0;
@@ -3885,6 +4033,7 @@ const
   SCE_MYSQL_USER2 = 19;
   SCE_MYSQL_USER3 = 20;
   SCE_MYSQL_HIDDENCOMMAND = 21;
+  SCE_MYSQL_PLACEHOLDER = 22;
 
   /// <summary>Lexical state for SCLEX_PO</summary>
   SCE_PO_DEFAULT = 0;
@@ -3896,6 +4045,13 @@ const
   SCE_PO_MSGCTXT = 6;
   SCE_PO_MSGCTXT_TEXT = 7;
   SCE_PO_FUZZY = 8;
+  SCE_PO_PROGRAMMER_COMMENT = 9;
+  SCE_PO_REFERENCE = 10;
+  SCE_PO_FLAGS = 11;
+  SCE_PO_MSGID_TEXT_EOL = 12;
+  SCE_PO_MSGSTR_TEXT_EOL = 13;
+  SCE_PO_MSGCTXT_TEXT_EOL = 14;
+  SCE_PO_ERROR = 15;
 
   /// <summary>Lexical states for SCLEX_PASCAL</summary>
   SCE_PAS_DEFAULT = 0;
@@ -4054,6 +4210,175 @@ const
   SCE_MODULA_PRGKEY = 15;
   SCE_MODULA_OPERATOR = 16;
   SCE_MODULA_BADSTR = 17;
+
+  /// <summary>Lexical states for SCLEX_COFFEESCRIPT</summary>
+  SCE_COFFEESCRIPT_DEFAULT = 0;
+  SCE_COFFEESCRIPT_COMMENT = 1;
+  SCE_COFFEESCRIPT_COMMENTLINE = 2;
+  SCE_COFFEESCRIPT_COMMENTDOC = 3;
+  SCE_COFFEESCRIPT_NUMBER = 4;
+  SCE_COFFEESCRIPT_WORD = 5;
+  SCE_COFFEESCRIPT_STRING = 6;
+  SCE_COFFEESCRIPT_CHARACTER = 7;
+  SCE_COFFEESCRIPT_UUID = 8;
+  SCE_COFFEESCRIPT_PREPROCESSOR = 9;
+  SCE_COFFEESCRIPT_OPERATOR = 10;
+  SCE_COFFEESCRIPT_IDENTIFIER = 11;
+  SCE_COFFEESCRIPT_STRINGEOL = 12;
+  SCE_COFFEESCRIPT_VERBATIM = 13;
+  SCE_COFFEESCRIPT_REGEX = 14;
+  SCE_COFFEESCRIPT_COMMENTLINEDOC = 15;
+  SCE_COFFEESCRIPT_WORD2 = 16;
+  SCE_COFFEESCRIPT_COMMENTDOCKEYWORD = 17;
+  SCE_COFFEESCRIPT_COMMENTDOCKEYWORDERROR = 18;
+  SCE_COFFEESCRIPT_GLOBALCLASS = 19;
+  SCE_COFFEESCRIPT_STRINGRAW = 20;
+  SCE_COFFEESCRIPT_TRIPLEVERBATIM = 21;
+  SCE_COFFEESCRIPT_HASHQUOTEDSTRING = 22;
+  SCE_COFFEESCRIPT_COMMENTBLOCK = 22;
+  SCE_COFFEESCRIPT_VERBOSE_REGEX = 23;
+  SCE_COFFEESCRIPT_VERBOSE_REGEX_COMMENT = 24;
+
+  /// <summary>Lexical states for SCLEX_AVS</summary>
+  SCE_AVS_DEFAULT = 0;
+  SCE_AVS_COMMENTBLOCK = 1;
+  SCE_AVS_COMMENTBLOCKN = 2;
+  SCE_AVS_COMMENTLINE = 3;
+  SCE_AVS_NUMBER = 4;
+  SCE_AVS_OPERATOR = 5;
+  SCE_AVS_IDENTIFIER = 6;
+  SCE_AVS_STRING = 7;
+  SCE_AVS_TRIPLESTRING = 8;
+  SCE_AVS_KEYWORD = 9;
+  SCE_AVS_FILTER = 10;
+  SCE_AVS_PLUGIN = 11;
+  SCE_AVS_FUNCTION = 12;
+  SCE_AVS_CLIPPROP = 13;
+  SCE_AVS_USERDFN = 14;
+
+  /// <summary>Lexical states for SCLEX_ECL</summary>
+  SCE_ECL_DEFAULT = 0;
+  SCE_ECL_COMMENT = 1;
+  SCE_ECL_COMMENTLINE = 2;
+  SCE_ECL_NUMBER = 3;
+  SCE_ECL_STRING = 4;
+  SCE_ECL_WORD0 = 5;
+  SCE_ECL_OPERATOR = 6;
+  SCE_ECL_CHARACTER = 7;
+  SCE_ECL_UUID = 8;
+  SCE_ECL_PREPROCESSOR = 9;
+  SCE_ECL_UNKNOWN = 10;
+  SCE_ECL_IDENTIFIER = 11;
+  SCE_ECL_STRINGEOL = 12;
+  SCE_ECL_VERBATIM = 13;
+  SCE_ECL_REGEX = 14;
+  SCE_ECL_COMMENTLINEDOC = 15;
+  SCE_ECL_WORD1 = 16;
+  SCE_ECL_COMMENTDOCKEYWORD = 17;
+  SCE_ECL_COMMENTDOCKEYWORDERROR = 18;
+  SCE_ECL_WORD2 = 19;
+  SCE_ECL_WORD3 = 20;
+  SCE_ECL_WORD4 = 21;
+  SCE_ECL_WORD5 = 22;
+  SCE_ECL_COMMENTDOC = 23;
+  SCE_ECL_ADDED = 24;
+  SCE_ECL_DELETED = 25;
+  SCE_ECL_CHANGED = 26;
+  SCE_ECL_MOVED = 27;
+
+  /// <summary>Lexical states for SCLEX_OSCRIPT</summary>
+  SCE_OSCRIPT_DEFAULT = 0;
+  SCE_OSCRIPT_LINE_COMMENT = 1;
+  SCE_OSCRIPT_BLOCK_COMMENT = 2;
+  SCE_OSCRIPT_DOC_COMMENT = 3;
+  SCE_OSCRIPT_PREPROCESSOR = 4;
+  SCE_OSCRIPT_NUMBER = 5;
+  SCE_OSCRIPT_SINGLEQUOTE_STRING = 6;
+  SCE_OSCRIPT_DOUBLEQUOTE_STRING = 7;
+  SCE_OSCRIPT_CONSTANT = 8;
+  SCE_OSCRIPT_IDENTIFIER = 9;
+  SCE_OSCRIPT_GLOBAL = 10;
+  SCE_OSCRIPT_KEYWORD = 11;
+  SCE_OSCRIPT_OPERATOR = 12;
+  SCE_OSCRIPT_LABEL = 13;
+  SCE_OSCRIPT_TYPE = 14;
+  SCE_OSCRIPT_FUNCTION = 15;
+  SCE_OSCRIPT_OBJECT = 16;
+  SCE_OSCRIPT_PROPERTY = 17;
+  SCE_OSCRIPT_METHOD = 18;
+
+  /// <summary>Lexical states for SCLEX_VISUALPROLOG</summary>
+  SCE_VISUALPROLOG_DEFAULT = 0;
+  SCE_VISUALPROLOG_KEY_MAJOR = 1;
+  SCE_VISUALPROLOG_KEY_MINOR = 2;
+  SCE_VISUALPROLOG_KEY_DIRECTIVE = 3;
+  SCE_VISUALPROLOG_COMMENT_BLOCK = 4;
+  SCE_VISUALPROLOG_COMMENT_LINE = 5;
+  SCE_VISUALPROLOG_COMMENT_KEY = 6;
+  SCE_VISUALPROLOG_COMMENT_KEY_ERROR = 7;
+  SCE_VISUALPROLOG_IDENTIFIER = 8;
+  SCE_VISUALPROLOG_VARIABLE = 9;
+  SCE_VISUALPROLOG_ANONYMOUS = 10;
+  SCE_VISUALPROLOG_NUMBER = 11;
+  SCE_VISUALPROLOG_OPERATOR = 12;
+  SCE_VISUALPROLOG_CHARACTER = 13;
+  SCE_VISUALPROLOG_CHARACTER_TOO_MANY = 14;
+  SCE_VISUALPROLOG_CHARACTER_ESCAPE_ERROR = 15;
+  SCE_VISUALPROLOG_STRING = 16;
+  SCE_VISUALPROLOG_STRING_ESCAPE = 17;
+  SCE_VISUALPROLOG_STRING_ESCAPE_ERROR = 18;
+  SCE_VISUALPROLOG_STRING_EOL_OPEN = 19;
+  SCE_VISUALPROLOG_STRING_VERBATIM = 20;
+  SCE_VISUALPROLOG_STRING_VERBATIM_SPECIAL = 21;
+  SCE_VISUALPROLOG_STRING_VERBATIM_EOL = 22;
+
+  /// <summary>Line end types which may be used in addition to LF, CR, and CRLF
+  /// SC_LINE_END_TYPE_UNICODE includes U+2028 Line Separator,
+  /// U+2029 Paragraph Separator, and U+0085 Next Line</summary>
+  SC_LINE_END_TYPE_DEFAULT = 0;
+  SC_LINE_END_TYPE_UNICODE = 1;
+
+  /// <summary>Set the line end types that the application wants to use. May not be used if incompatible with lexer or encoding.</summary>
+  SCI_SETLINEENDTYPESALLOWED = 2656;
+
+  /// <summary>Get the line end types currently allowed.</summary>
+  SCI_GETLINEENDTYPESALLOWED = 2657;
+
+  /// <summary>Get the line end types currently recognised. May be a subset of the allowed types due to lexer limitation.</summary>
+  SCI_GETLINEENDTYPESACTIVE = 2658;
+
+  /// <summary>Bit set of LineEndType enumertion for which line ends beyond the standard
+  /// LF, CR, and CRLF are supported by the lexer.</summary>
+  SCI_GETLINEENDTYPESSUPPORTED = 4018;
+
+  /// <summary>Allocate a set of sub styles for a particular base style, returning start of range</summary>
+  SCI_ALLOCATESUBSTYLES = 4020;
+
+  /// <summary>The starting style number for the sub styles associated with a base style</summary>
+  SCI_GETSUBSTYLESSTART = 4021;
+
+  /// <summary>The number of sub styles associated with a base style</summary>
+  SCI_GETSUBSTYLESLENGTH = 4022;
+
+  /// <summary>Free allocated sub styles</summary>
+  SCI_FREESUBSTYLES = 4023;
+
+  /// <summary>Set the identifiers that are shown in a particular style</summary>
+  SCI_SETIDENTIFIERS = 4024;
+
+  /// <summary>Where styles are duplicated by a feature such as active/inactive code
+  /// return the distance between the two types.</summary>
+  SCI_DISTANCETOSECONDARYSTYLES = 4025;
+
+  /// <summary>Get the set of base styles that can be extended with sub styles</summary>
+  SCI_GETSUBSTYLEBASES = 4026;
+
+  /// <summary>Deprecated in 2.21
+  /// The SC_CP_DBCS value can be used to indicate a DBCS mode for GTK+.</summary>
+  SC_CP_DBCS = 1;
+
+  /// <summary>In palette mode?</summary>
+  SCI_GETUSEPALETTE = 2139;
 
 
 // </scigen>

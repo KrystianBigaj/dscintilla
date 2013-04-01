@@ -57,10 +57,6 @@
     /// The SC_CP_UTF8 value can be used to enter Unicode mode.</summary>
     procedure SetCodePage(ACodePage: Integer);
 
-    /// <summary>In palette mode, Scintilla uses the environment's palette calls to display
-    /// more colours. This may lead to ugly displays.</summary>
-    procedure SetUsePalette(AUsePalette: Boolean);
-
     /// <summary>Set a margin to be either numeric or symbolic.</summary>
     procedure SetMarginTypeN(AMargin: Integer; AMarginType: Integer);
 
@@ -155,6 +151,18 @@
     /// <summary>Set a style to be mixed case, or to force upper or lower case.</summary>
     procedure StyleSetCase(AStyle: Integer; ACaseForce: Integer);
 
+    /// <summary>Set the size of characters of a style. Size is in points multiplied by 100.</summary>
+    procedure StyleSetSizeFractional(AStyle: Integer; ACaseForce: Integer);
+
+    /// <summary>Get the size of characters of a style in points multiplied by 100</summary>
+    function StyleGetSizeFractional(AStyle: Integer): Integer;
+
+    /// <summary>Set the weight of characters of a style.</summary>
+    procedure StyleSetWeight(AStyle: Integer; AWeight: Integer);
+
+    /// <summary>Get the weight of characters of a style.</summary>
+    function StyleGetWeight(AStyle: Integer): Integer;
+
     /// <summary>Set the character set of the font in a style.</summary>
     procedure StyleSetCharacterSet(AStyle: Integer; ACharacterSet: Integer);
 
@@ -187,7 +195,11 @@
 
     /// <summary>Set the set of characters making up words for when moving or selecting by word.
     /// First sets defaults like SetCharsDefault.</summary>
-    procedure SetWordChars(const ACharacters: UnicodeString);
+    procedure SetWordChars(const ACharacters: AnsiString);
+
+    /// <summary>Get the set of characters making up words for when moving or selecting by word.
+    /// Retuns the number of characters</summary>
+    function GetWordChars: AnsiString;
 
     /// <summary>Set an indicator to plain, squiggle or TT.</summary>
     procedure IndicSetStyle(AIndic: Integer; AStyle: Integer);
@@ -364,9 +376,6 @@
     /// <summary>Get the foreground colour of the caret.</summary>
     function GetCaretFore: TColor;
 
-    /// <summary>In palette mode?</summary>
-    function GetUsePalette: Boolean;
-
     /// <summary>In read-only mode?</summary>
     function GetReadOnly: Boolean;
 
@@ -472,6 +481,12 @@
     /// <summary>Set the foreground colour for the highlighted part of the call tip.</summary>
     procedure CallTipSetForeHlt(AFore: TColor);
 
+    /// <summary>Enable use of STYLE_CALLTIP and set call tip tab size in pixels.</summary>
+    procedure CallTipUseStyle(ATabSize: Integer);
+
+    /// <summary>Set position of calltip, above or below text.</summary>
+    procedure CallTipSetPosition(AAbove: Boolean);
+
     /// <summary>Set the fold level of a line.
     /// This encodes an integer level along with flags indicating whether the
     /// line is a header and whether it is effectively white space.</summary>
@@ -488,6 +503,9 @@
 
     /// <summary>Is a line visible?</summary>
     function GetLineVisible(ALine: Integer): Boolean;
+
+    /// <summary>Are all lines visible?</summary>
+    function GetAllLinesVisible: Boolean;
 
     /// <summary>Show the children of a header line.</summary>
     procedure SetFoldExpanded(ALine: Integer; AExpanded: Boolean);
@@ -643,9 +661,6 @@
     /// <summary>Get which document modification events are sent to the container.</summary>
     function GetModEventMask: Integer;
 
-    /// <summary>Calls TWinControl.SetFocus</summary>
-    procedure SetFocus; reintroduce; overload;
-
     /// <summary>Change internal focus flag.</summary>
     procedure SetFocus(AFocus: Boolean); reintroduce; overload;
 
@@ -677,7 +692,7 @@
     /// <summary>Get the way control characters are displayed.</summary>
     function GetControlCharSymbol: Integer;
 
-    /// <summary>Get and Set the xOffset (ie, horizonal scroll position).</summary>
+    /// <summary>Get and Set the xOffset (ie, horizontal scroll position).</summary>
     procedure SetXOffset(ANewOffset: Integer);
 
     function GetXOffset: Integer;
@@ -723,6 +738,22 @@
     /// Should be called after SetWordChars.</summary>
     procedure SetWhitespaceChars(const ACharacters: UnicodeString);
 
+    /// <summary>Get the set of characters making up whitespace for when moving or selecting by word.</summary>
+    function GetWhitespaceChars: AnsiString;
+
+    /// <summary>Set the set of characters making up punctuation characters
+    /// Should be called after SetWordChars.</summary>
+    procedure SetPunctuationChars(const ACharacters: AnsiString);
+
+    /// <summary>Get the set of characters making up punctuation characters</summary>
+    function GetPunctuationChars: AnsiString;
+
+    /// <summary>Set auto-completion case insensitive behaviour to either prefer case-sensitive matches or have no preference.</summary>
+    procedure AutoCSetCaseInsensitiveBehaviour(ABehaviour: Integer);
+
+    /// <summary>Get auto-completion case insensitive behaviour.</summary>
+    function AutoCGetCaseInsensitiveBehaviour: Integer;
+
     /// <summary>Can the caret preferred x position only be changed by explicit movement commands?</summary>
     function GetCaretSticky: Integer;
 
@@ -756,7 +787,7 @@
     /// <summary>Set the value used for IndicatorFillRange</summary>
     procedure SetIndicatorValue(AValue: Integer);
 
-    /// <summary>Get the current indicator vaue</summary>
+    /// <summary>Get the current indicator value</summary>
     function GetIndicatorValue: Integer;
 
     /// <summary>Set number of entries in position cache</summary>
@@ -768,6 +799,11 @@
     /// <summary>Compact the document buffer and return a read-only pointer to the
     /// characters in the document.</summary>
     function GetCharacterPointer: PByte;
+
+    /// <summary>Return a read-only pointer to a range of characters in the document.
+    /// May move the gap so that the range is contiguous, but will only move up
+    /// to rangeLength bytes.</summary>
+    function GetRangePointer(APosition: Integer; ARangeLength: Integer): Integer;
 
     /// <summary>Always interpret keyboard input as Unicode</summary>
     procedure SetKeysUnicode(AKeysUnicode: Boolean);
@@ -889,6 +925,9 @@
     /// <summary>How many selections are there?</summary>
     function GetSelections: Integer;
 
+    /// <summary>Is every selected range empty?</summary>
+    function GetSelectionEmpty: Boolean;
+
     /// <summary>Set the main selection</summary>
     procedure SetMainSelection(ASelection: Integer);
 
@@ -980,6 +1019,18 @@
     /// <summary>Set the height for future RGBA image data.</summary>
     procedure RGBAImageSetHeight(AHeight: Integer);
 
+    /// <summary>Set the technology used.</summary>
+    procedure SetTechnology(ATechnology: Integer);
+
+    /// <summary>Get the tech.</summary>
+    function GetTechnology: Integer;
+
+    /// <summary>Is the caret line always visible?</summary>
+    function GetCaretLineVisibleAlways: Boolean;
+
+    /// <summary>Sets the caret line to always visible.</summary>
+    procedure SetCaretLineVisibleAlways(AAlwaysVisible: Boolean);
+
     /// <summary>Set the lexing language of the document.</summary>
     procedure SetLexer(ALexer: Integer);
 
@@ -999,4 +1050,36 @@
     /// <summary>Retrieve the name of the lexer.
     /// Return the length of the text.</summary>
     function GetLexerLanguage: UnicodeString;
+
+    /// <summary>Set the line end types that the application wants to use. May not be used if incompatible with lexer or encoding.</summary>
+    procedure SetLineEndTypesAllowed(ALineEndBitSet: Integer);
+
+    /// <summary>Get the line end types currently allowed.</summary>
+    function GetLineEndTypesAllowed: Integer;
+
+    /// <summary>Get the line end types currently recognised. May be a subset of the allowed types due to lexer limitation.</summary>
+    function GetLineEndTypesActive: Integer;
+
+    /// <summary>Bit set of LineEndType enumertion for which line ends beyond the standard
+    /// LF, CR, and CRLF are supported by the lexer.</summary>
+    function GetLineEndTypesSupported: Integer;
+
+    /// <summary>The starting style number for the sub styles associated with a base style</summary>
+    function GetSubStylesStart(AStyleBase: Integer): Integer;
+
+    /// <summary>The number of sub styles associated with a base style</summary>
+    function GetSubStylesLength(AStyleBase: Integer): Integer;
+
+    /// <summary>Set the identifiers that are shown in a particular style</summary>
+    procedure SetIdentifiers(AStyle: Integer; const AIdentifiers: AnsiString);
+
+    /// <summary>Where styles are duplicated by a feature such as active/inactive code
+    /// return the distance between the two types.</summary>
+    function DistanceToSecondaryStyles: Integer;
+
+    /// <summary>Get the set of base styles that can be extended with sub styles</summary>
+    function GetSubStyleBases: UnicodeString;
+
+    /// <summary>In palette mode?</summary>
+    function GetUsePalette: Boolean;
 

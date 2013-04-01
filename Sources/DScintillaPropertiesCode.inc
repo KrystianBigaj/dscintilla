@@ -88,11 +88,6 @@ begin
   SendEditor(SCI_SETCODEPAGE, ACodePage, 0);
 end;
 
-procedure TDScintilla.SetUsePalette(AUsePalette: Boolean);
-begin
-  SendEditor(SCI_SETUSEPALETTE, Integer(AUsePalette), 0);
-end;
-
 procedure TDScintilla.SetMarginTypeN(AMargin: Integer; AMarginType: Integer);
 begin
   SendEditor(SCI_SETMARGINTYPEN, AMargin, AMarginType);
@@ -248,6 +243,26 @@ begin
   SendEditor(SCI_STYLESETCASE, AStyle, ACaseForce);
 end;
 
+procedure TDScintilla.StyleSetSizeFractional(AStyle: Integer; ACaseForce: Integer);
+begin
+  SendEditor(SCI_STYLESETSIZEFRACTIONAL, AStyle, ACaseForce);
+end;
+
+function TDScintilla.StyleGetSizeFractional(AStyle: Integer): Integer;
+begin
+  Result := SendEditor(SCI_STYLEGETSIZEFRACTIONAL, AStyle, 0);
+end;
+
+procedure TDScintilla.StyleSetWeight(AStyle: Integer; AWeight: Integer);
+begin
+  SendEditor(SCI_STYLESETWEIGHT, AStyle, AWeight);
+end;
+
+function TDScintilla.StyleGetWeight(AStyle: Integer): Integer;
+begin
+  Result := SendEditor(SCI_STYLEGETWEIGHT, AStyle, 0);
+end;
+
 procedure TDScintilla.StyleSetCharacterSet(AStyle: Integer; ACharacterSet: Integer);
 begin
   SendEditor(SCI_STYLESETCHARACTERSET, AStyle, ACharacterSet);
@@ -298,9 +313,14 @@ begin
   SendEditor(SCI_SETCARETPERIOD, APeriodMilliseconds, 0);
 end;
 
-procedure TDScintilla.SetWordChars(const ACharacters: UnicodeString);
+procedure TDScintilla.SetWordChars(const ACharacters: AnsiString);
 begin
-  FHelper.SetText(SCI_SETWORDCHARS, 0, ACharacters);
+  FHelper.SetTextA(SCI_SETWORDCHARS, 0, ACharacters);
+end;
+
+function TDScintilla.GetWordChars: AnsiString;
+begin
+  FHelper.GetTextA(SCI_GETWORDCHARS, 0, Result);
 end;
 
 procedure TDScintilla.IndicSetStyle(AIndic: Integer; AStyle: Integer);
@@ -573,11 +593,6 @@ begin
   Result := TColor(SendEditor(SCI_GETCARETFORE, 0, 0));
 end;
 
-function TDScintilla.GetUsePalette: Boolean;
-begin
-  Result := Boolean(SendEditor(SCI_GETUSEPALETTE, 0, 0));
-end;
-
 function TDScintilla.GetReadOnly: Boolean;
 begin
   Result := Boolean(SendEditor(SCI_GETREADONLY, 0, 0));
@@ -748,6 +763,16 @@ begin
   SendEditor(SCI_CALLTIPSETFOREHLT, Integer(AFore), 0);
 end;
 
+procedure TDScintilla.CallTipUseStyle(ATabSize: Integer);
+begin
+  SendEditor(SCI_CALLTIPUSESTYLE, ATabSize, 0);
+end;
+
+procedure TDScintilla.CallTipSetPosition(AAbove: Boolean);
+begin
+  SendEditor(SCI_CALLTIPSETPOSITION, Integer(AAbove), 0);
+end;
+
 procedure TDScintilla.SetFoldLevel(ALine: Integer; ALevel: Integer);
 begin
   SendEditor(SCI_SETFOLDLEVEL, ALine, ALevel);
@@ -771,6 +796,11 @@ end;
 function TDScintilla.GetLineVisible(ALine: Integer): Boolean;
 begin
   Result := Boolean(SendEditor(SCI_GETLINEVISIBLE, ALine, 0));
+end;
+
+function TDScintilla.GetAllLinesVisible: Boolean;
+begin
+  Result := Boolean(SendEditor(SCI_GETALLLINESVISIBLE, 0, 0));
 end;
 
 procedure TDScintilla.SetFoldExpanded(ALine: Integer; AExpanded: Boolean);
@@ -1019,11 +1049,6 @@ begin
   Result := SendEditor(SCI_GETMODEVENTMASK, 0, 0);
 end;
 
-procedure TDScintilla.SetFocus;
-begin
-  inherited SetFocus;
-end;
-
 procedure TDScintilla.SetFocus(AFocus: Boolean);
 begin
   SendEditor(SCI_SETFOCUS, Integer(AFocus), 0);
@@ -1149,6 +1174,31 @@ begin
   FHelper.SetText(SCI_SETWHITESPACECHARS, 0, ACharacters);
 end;
 
+function TDScintilla.GetWhitespaceChars: AnsiString;
+begin
+  FHelper.GetTextA(SCI_GETWHITESPACECHARS, 0, Result);
+end;
+
+procedure TDScintilla.SetPunctuationChars(const ACharacters: AnsiString);
+begin
+  FHelper.SetTextA(SCI_SETPUNCTUATIONCHARS, 0, ACharacters);
+end;
+
+function TDScintilla.GetPunctuationChars: AnsiString;
+begin
+  FHelper.GetTextA(SCI_GETPUNCTUATIONCHARS, 0, Result);
+end;
+
+procedure TDScintilla.AutoCSetCaseInsensitiveBehaviour(ABehaviour: Integer);
+begin
+  SendEditor(SCI_AUTOCSETCASEINSENSITIVEBEHAVIOUR, ABehaviour, 0);
+end;
+
+function TDScintilla.AutoCGetCaseInsensitiveBehaviour: Integer;
+begin
+  Result := SendEditor(SCI_AUTOCGETCASEINSENSITIVEBEHAVIOUR, 0, 0);
+end;
+
 function TDScintilla.GetCaretSticky: Integer;
 begin
   Result := SendEditor(SCI_GETCARETSTICKY, 0, 0);
@@ -1222,6 +1272,11 @@ end;
 function TDScintilla.GetCharacterPointer: PByte;
 begin
   Result := PByte(SendEditor(SCI_GETCHARACTERPOINTER, 0, 0));
+end;
+
+function TDScintilla.GetRangePointer(APosition: Integer; ARangeLength: Integer): Integer;
+begin
+  Result := SendEditor(SCI_GETRANGEPOINTER, APosition, ARangeLength);
 end;
 
 procedure TDScintilla.SetKeysUnicode(AKeysUnicode: Boolean);
@@ -1425,6 +1480,11 @@ end;
 function TDScintilla.GetSelections: Integer;
 begin
   Result := SendEditor(SCI_GETSELECTIONS, 0, 0);
+end;
+
+function TDScintilla.GetSelectionEmpty: Boolean;
+begin
+  Result := Boolean(SendEditor(SCI_GETSELECTIONEMPTY, 0, 0));
 end;
 
 procedure TDScintilla.SetMainSelection(ASelection: Integer);
@@ -1631,6 +1691,26 @@ begin
   SendEditor(SCI_RGBAIMAGESETHEIGHT, AHeight, 0);
 end;
 
+procedure TDScintilla.SetTechnology(ATechnology: Integer);
+begin
+  SendEditor(SCI_SETTECHNOLOGY, ATechnology, 0);
+end;
+
+function TDScintilla.GetTechnology: Integer;
+begin
+  Result := SendEditor(SCI_GETTECHNOLOGY, 0, 0);
+end;
+
+function TDScintilla.GetCaretLineVisibleAlways: Boolean;
+begin
+  Result := Boolean(SendEditor(SCI_GETCARETLINEVISIBLEALWAYS, 0, 0));
+end;
+
+procedure TDScintilla.SetCaretLineVisibleAlways(AAlwaysVisible: Boolean);
+begin
+  SendEditor(SCI_SETCARETLINEVISIBLEALWAYS, Integer(AAlwaysVisible), 0);
+end;
+
 procedure TDScintilla.SetLexer(ALexer: Integer);
 begin
   SendEditor(SCI_SETLEXER, ALexer, 0);
@@ -1663,5 +1743,55 @@ end;
 function TDScintilla.GetLexerLanguage: UnicodeString;
 begin
   FHelper.GetText(SCI_GETLEXERLANGUAGE, 0, Result);
+end;
+
+procedure TDScintilla.SetLineEndTypesAllowed(ALineEndBitSet: Integer);
+begin
+  SendEditor(SCI_SETLINEENDTYPESALLOWED, ALineEndBitSet, 0);
+end;
+
+function TDScintilla.GetLineEndTypesAllowed: Integer;
+begin
+  Result := SendEditor(SCI_GETLINEENDTYPESALLOWED, 0, 0);
+end;
+
+function TDScintilla.GetLineEndTypesActive: Integer;
+begin
+  Result := SendEditor(SCI_GETLINEENDTYPESACTIVE, 0, 0);
+end;
+
+function TDScintilla.GetLineEndTypesSupported: Integer;
+begin
+  Result := SendEditor(SCI_GETLINEENDTYPESSUPPORTED, 0, 0);
+end;
+
+function TDScintilla.GetSubStylesStart(AStyleBase: Integer): Integer;
+begin
+  Result := SendEditor(SCI_GETSUBSTYLESSTART, AStyleBase, 0);
+end;
+
+function TDScintilla.GetSubStylesLength(AStyleBase: Integer): Integer;
+begin
+  Result := SendEditor(SCI_GETSUBSTYLESLENGTH, AStyleBase, 0);
+end;
+
+procedure TDScintilla.SetIdentifiers(AStyle: Integer; const AIdentifiers: AnsiString);
+begin
+  FHelper.SetTextA(SCI_SETIDENTIFIERS, AStyle, AIdentifiers);
+end;
+
+function TDScintilla.DistanceToSecondaryStyles: Integer;
+begin
+  Result := SendEditor(SCI_DISTANCETOSECONDARYSTYLES, 0, 0);
+end;
+
+function TDScintilla.GetSubStyleBases: UnicodeString;
+begin
+  FHelper.GetText(SCI_GETSUBSTYLEBASES, 0, Result);
+end;
+
+function TDScintilla.GetUsePalette: Boolean;
+begin
+  Result := Boolean(SendEditor(SCI_GETUSEPALETTE, 0, 0));
 end;
 

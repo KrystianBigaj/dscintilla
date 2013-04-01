@@ -79,9 +79,12 @@ type
     function IsUTF8: Boolean;
 
     function GetStrFromPtr(ABuf: PAnsiChar): UnicodeString;
+    function GetStrFromPtrA(ABuf: PAnsiChar): AnsiString;
 
     function GetText(AMessage: Integer; AParam1: Integer; var AText: UnicodeString): Integer;
+    function GetTextA(AMessage: Integer; AParam1: Integer; var AText: AnsiString): Integer;
     function SetText(AMessage: Integer; AParam1: Integer; const AText: UnicodeString): Integer;
+    function SetTextA(AMessage: Integer; AParam1: Integer; const AText: AnsiString): Integer;
     function GetTextLen(AMessage: Integer; var AText: UnicodeString): Integer;
     function SetTextLen(AMessage: Integer; const AText: UnicodeString): Integer;
 
@@ -210,6 +213,14 @@ begin
       Result:= UnicodeString(ABuf);
 end;
 
+function TDSciHelper.GetStrFromPtrA(ABuf: PAnsiChar): AnsiString;
+begin
+  if ABuf = nil then
+    Result := ''
+  else
+    Result:= AnsiString(ABuf);
+end;
+
 function TDSciHelper.GetText(AMessage, AParam1: Integer;
   var AText: UnicodeString): Integer;
 var
@@ -219,6 +230,20 @@ begin
   try
     Result := SendEditor(AMessage, AParam1, Integer(lBuf));
     AText := GetStrFromPtr(lBuf);
+  finally
+    FreeMem(lBuf);
+  end;
+end;
+
+function TDSciHelper.GetTextA(AMessage, AParam1: Integer;
+  var AText: AnsiString): Integer;
+var
+  lBuf: PAnsiChar;
+begin
+  lBuf := AllocMem(SendEditor(AMessage, AParam1) + 1);
+  try
+    Result := SendEditor(AMessage, AParam1, Integer(lBuf));
+    AText := GetStrFromPtrA(lBuf);
   finally
     FreeMem(lBuf);
   end;
@@ -234,6 +259,15 @@ begin
       Result := SendEditor(AMessage, AParam1, Integer(UnicodeStringToUTF8(AText)))
     else
       Result := SendEditor(AMessage, AParam1, Integer(AnsiString(AText)));
+end;
+
+function TDSciHelper.SetTextA(AMessage, AParam1: Integer;
+  const AText: AnsiString): Integer;
+begin
+  if AText = '' then
+    Result := SendEditor(AMessage, AParam1, Integer(@cDSciNull))
+  else
+    Result := SendEditor(AMessage, AParam1, Integer(AText));
 end;
 
 function TDSciHelper.GetTextLen(AMessage: Integer;
