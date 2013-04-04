@@ -142,13 +142,13 @@ type
     property OnSavePointLeft: TDSciSavePointLeftEvent read FOnSavePointLeft write FOnSavePointLeft;
     property OnModifyAttemptRO: TDSciModifyAttemptROEvent read FOnModifyAttemptRO write FOnModifyAttemptRO;
     property OnUpdateUI: TDSciUpdateUIEvent read FOnUpdateUI write FOnUpdateUI;
-    property OnModified: TDSciModifiedEvent read FOnModified write FOnModified;
+    property OnModified: TDSciModifiedEvent read FOnModified write FOnModified; // deprecated - use OnModified2
     property OnModified2: TDSciModified2Event read FOnModified2 write FOnModified2;
     property OnMacroRecord: TDSciMacroRecordEvent read FOnMacroRecord write FOnMacroRecord;
     property OnMarginClick: TDSciMarginClickEvent read FOnMarginClick write FOnMarginClick;
     property OnNeedShown: TDSciNeedShownEvent read FOnNeedShown write FOnNeedShown;
     property OnPainted: TDSciPaintedEvent read FOnPainted write FOnPainted;
-    property OnUserListSelection: TDSciUserListSelectionEvent read FOnUserListSelection write FOnUserListSelection;
+    property OnUserListSelection: TDSciUserListSelectionEvent read FOnUserListSelection write FOnUserListSelection; // deprecated - use OnUserListSelection2
     property OnUserListSelection2: TDSciUserListSelection2Event read FOnUserListSelection2 write FOnUserListSelection2;
     property OnDwellStart: TDSciDwellStartEvent read FOnDwellStart write FOnDwellStart;
     property OnDwellEnd: TDSciDwellEndEvent read FOnDwellEnd write FOnDwellEnd;
