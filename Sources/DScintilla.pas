@@ -170,20 +170,19 @@ implementation
 
 constructor TDScintilla.Create(AOwner: TComponent);
 begin
+  FDllModule := cDSciLexerDll;
   FHelper := TDSciHelper.Create(SendEditor);
   FLines := TDSciLines.Create(FHelper);
 
   inherited Create(AOwner);
-
-  DllModule := cDSciLexerDll;
 end;
 
 destructor TDScintilla.Destroy;
 begin
+  inherited Destroy;
+
   FreeAndNil(FLines);
   FreeAndNil(FHelper);
-
-  inherited Destroy;
 end;
 
 procedure TDScintilla.SetLines(const Value: TDSciLines);
