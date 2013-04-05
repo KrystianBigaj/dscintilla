@@ -66,7 +66,7 @@ type
 
     procedure SetSciDllModule(const Value: String);
 
-    procedure LoadSciLibrary;
+    procedure LoadSciLibraryIfNeeded;
     procedure FreeSciLibrary;
 
   protected
@@ -188,8 +188,11 @@ begin
   RecreateWndIf;
 end;
 
-procedure TDScintillaCustom.LoadSciLibrary;
+procedure TDScintillaCustom.LoadSciLibraryIfNeeded;
 begin
+  if FSciDllHandle <> 0 then
+    Exit;
+
   FSciDllHandle := LoadLibrary(PChar(FSciDllModule));
   if FSciDllHandle = 0 then
     RaiseLastOSError;
@@ -215,7 +218,7 @@ const
   SCI_GETDIRECTPOINTER = 2185;
 
 begin
-  LoadSciLibrary;
+  LoadSciLibraryIfNeeded;
 
   inherited CreateWnd;
 
