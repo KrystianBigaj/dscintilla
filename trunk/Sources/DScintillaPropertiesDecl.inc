@@ -623,10 +623,10 @@
     procedure SetViewEOL(AVisible: Boolean);
 
     /// <summary>Retrieve a pointer to the document object.</summary>
-    function GetDocPointer: Pointer;
+    function GetDocPointer: TDSciDocument;
 
     /// <summary>Change the document object used.</summary>
-    procedure SetDocPointer(APointer:Pointer);
+    procedure SetDocPointer(APointer: TDSciDocument);
 
     /// <summary>Set which document modification events are sent to the container.</summary>
     procedure SetModEventMask(AMask: Integer);

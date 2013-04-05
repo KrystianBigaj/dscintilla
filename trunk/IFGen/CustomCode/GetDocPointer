@@ -1,6 +1,6 @@
-function GetDocPointer: Pointer;
-function TDScintilla.GetDocPointer: Pointer;
+function GetDocPointer: TDSciDocument;
+function TDScintilla.GetDocPointer: TDSciDocument;
 begin
-  Result := Pointer(SendEditor(SCI_GETDOCPOINTER, 0, 0));
+  Result := TDSciDocument(SendEditor(SCI_GETDOCPOINTER, 0, 0));
 end;
 
