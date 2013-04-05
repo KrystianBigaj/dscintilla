@@ -183,13 +183,8 @@ end;
 
 destructor TDScintilla.Destroy;
 begin
-  { TODO: Leak
-  if FStoredDocPointer <> nil then
-  begin
-    ReleaseDocument(FStoredDocPointer);
-    FStoredDocPointer := nil;
-  end;
-  }
+  Assert(FStoredDocPointer = nil);
+
   inherited Destroy;
 
   FreeAndNil(FLines);
@@ -205,6 +200,7 @@ procedure TDScintilla.WMCreate(var AMessage: TWMCreate);
 begin
   inherited;
 
+  // Restore document state, if it was stored in WMDestroy
   if FStoredDocPointer <> nil then
   begin
     SetDocPointer(FStoredDocPointer);
@@ -216,9 +212,13 @@ end;
 
 procedure TDScintilla.WMDestroy(var AMessage: TWMDestroy);
 begin
-  FStoredDocPointer := GetDocPointer;
-  if FStoredDocPointer <> nil then
-    AddRefDocument(FStoredDocPointer);
+  // We can only store document state, if we know that window will be recreaded
+  if csRecreating in ControlState then
+  begin
+    FStoredDocPointer := GetDocPointer;
+    if FStoredDocPointer <> nil then
+      AddRefDocument(FStoredDocPointer);
+  end;
 
   inherited;
 end;
