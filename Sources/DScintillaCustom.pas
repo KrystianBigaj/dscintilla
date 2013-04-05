@@ -75,10 +75,11 @@ type
 
     procedure RecreateWndIf;
 
-    procedure WMEraseBkgnd(var AMessage: TWmEraseBkgnd); message WM_ERASEBKGND;
-    procedure WMGetDlgCode(var AMessage: TWMGetDlgCode); message WM_GETDLGCODE;
+    procedure WMCreate(var AMessage: TWMCreate); message WM_CREATE;
     procedure WMDestroy(var AMessage: TWMDestroy); message WM_DESTROY;
 
+    procedure WMEraseBkgnd(var AMessage: TWmEraseBkgnd); message WM_ERASEBKGND;
+    procedure WMGetDlgCode(var AMessage: TWMGetDlgCode); message WM_GETDLGCODE;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -209,23 +210,12 @@ begin
 end;
 
 procedure TDScintillaCustom.CreateWnd;
-const
-  /// <summary>Retrieve a pointer to a function that processes messages for this Scintilla.</summary>
-  SCI_GETDIRECTFUNCTION = 2184;
-
-  /// <summary>Retrieve a pointer value to use as the first argument when calling
-  /// the function returned by GetDirectFunction.</summary>
-  SCI_GETDIRECTPOINTER = 2185;
-
 begin
+  // Load Scintilla if not loaded already.
+  // Library must be loaded before subclassing/creating window
   LoadSciLibraryIfNeeded;
 
   inherited CreateWnd;
-
-  FDirectFunction := TDScintillaFunction(Windows.SendMessage(
-    Self.WindowHandle, SCI_GETDIRECTFUNCTION, 0, 0));
-  FDirectPointer := Pointer(Windows.SendMessage(
-    Self.WindowHandle, SCI_GETDIRECTPOINTER, 0, 0));
 end;
 
 procedure TDScintillaCustom.CreateParams(var Params: TCreateParams);
@@ -240,6 +230,32 @@ procedure TDScintillaCustom.RecreateWndIf;
 begin
   if HandleAllocated then
     RecreateWnd;
+end;
+
+procedure TDScintillaCustom.WMCreate(var AMessage: TWMCreate);
+const
+  /// <summary>Retrieve a pointer to a function that processes messages for this Scintilla.</summary>
+  SCI_GETDIRECTFUNCTION = 2184;
+
+  /// <summary>Retrieve a pointer value to use as the first argument when calling
+  /// the function returned by GetDirectFunction.</summary>
+  SCI_GETDIRECTPOINTER = 2185;
+begin
+  inherited;
+
+  FDirectFunction := TDScintillaFunction(Windows.SendMessage(
+    WindowHandle, SCI_GETDIRECTFUNCTION, 0, 0));
+  FDirectPointer := Pointer(Windows.SendMessage(
+    WindowHandle, SCI_GETDIRECTPOINTER, 0, 0));
+end;
+
+procedure TDScintillaCustom.WMDestroy(var AMessage: TWMDestroy);
+begin
+  inherited;
+
+  // No longer valid after window destory
+  FDirectFunction := nil;
+  FDirectPointer := nil;
 end;
 
 procedure TDScintillaCustom.WMEraseBkgnd(var AMessage: TWmEraseBkgnd);
@@ -259,15 +275,6 @@ begin
   AMessage.Result := AMessage.Result or DLGC_WANTARROWS or DLGC_WANTCHARS;
   AMessage.Result := AMessage.Result or DLGC_WANTTAB;
   AMessage.Result := AMessage.Result or DLGC_WANTALLKEYS;
-end;
-
-procedure TDScintillaCustom.WMDestroy(var AMessage: TWMDestroy);
-begin
-  inherited;
-
-  // No longer valid after window destory
-  FDirectFunction := nil;
-  FDirectPointer := nil;
 end;
 
 procedure TDScintillaCustom.DefaultHandler(var AMessage);
