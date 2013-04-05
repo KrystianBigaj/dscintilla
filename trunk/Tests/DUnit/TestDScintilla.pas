@@ -304,7 +304,6 @@ type
     procedure TestSetTabWidth;
     procedure TestGetTabWidth;
     procedure TestSetCodePage;
-    procedure TestSetUsePalette;
     procedure TestSetMarginTypeN;
     procedure TestGetMarginTypeN;
     procedure TestSetMarginWidthN;
@@ -399,7 +398,6 @@ type
     procedure TestGetLineEndPosition;
     procedure TestGetCodePage;
     procedure TestGetCaretFore;
-    procedure TestGetUsePalette;
     procedure TestGetReadOnly;
     procedure TestSetCurrentPos;
     procedure TestSetSelectionStart;
@@ -2833,15 +2831,6 @@ begin
   // TODO: Validate method results
 end;
 
-procedure TestTDScintilla.TestSetUsePalette;
-var
-  AUsePalette: Boolean;
-begin
-  // TODO: Setup method call parameters
-  FDScintilla.SetUsePalette(AUsePalette);
-  // TODO: Validate method results
-end;
-
 procedure TestTDScintilla.TestSetMarginTypeN;
 var
   AMarginType: Integer;
@@ -3707,14 +3696,6 @@ var
   ReturnValue: TColor;
 begin
   ReturnValue := FDScintilla.GetCaretFore;
-  // TODO: Validate method results
-end;
-
-procedure TestTDScintilla.TestGetUsePalette;
-var
-  ReturnValue: Boolean;
-begin
-  ReturnValue := FDScintilla.GetUsePalette;
   // TODO: Validate method results
 end;
 
