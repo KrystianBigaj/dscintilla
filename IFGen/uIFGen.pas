@@ -180,7 +180,7 @@ var
 
   function NextLine: Boolean;
   begin
-    Result := lLineIdx < lIn.Count - 1;
+    Result := lLineIdx < lIn.Count;
 
     if Result then
     begin

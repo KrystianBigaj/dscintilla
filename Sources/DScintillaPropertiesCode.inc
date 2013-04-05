@@ -988,12 +988,12 @@ begin
   SendEditor(SCI_SETVIEWEOL, Integer(AVisible), 0);
 end;
 
-function TDScintilla.GetDocPointer: Pointer;
+function TDScintilla.GetDocPointer: TDSciDocument;
 begin
-  Result := Pointer(SendEditor(SCI_GETDOCPOINTER, 0, 0));
+  Result := TDSciDocument(SendEditor(SCI_GETDOCPOINTER, 0, 0));
 end;
 
-procedure TDScintilla.SetDocPointer(APointer:Pointer);
+procedure TDScintilla.SetDocPointer(APointer: TDSciDocument);
 begin
   if APointer <> nil then
     SendEditor(SCI_SETDOCPOINTER, 0, Integer(APointer));

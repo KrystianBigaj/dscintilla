@@ -54,6 +54,8 @@ type
     FHelper: TDSciHelper;
     FLines: TDSciLines;
 
+    FStoredDocPointer: TDSciDocument;
+
     FOnInitDefaults: TNotifyEvent;
     FOnChange: TNotifyEvent;
     FOnSCNotificationEvent: TDSciNotificationEvent;
@@ -101,6 +103,9 @@ type
     procedure CNNotify(var AMessage: TWMNotify); message CN_NOTIFY; // Thanks to Marko Njezic there is no need to patch Scintilla anymore :)
 
     function DoSCNotification(const ASCNotification: TDSciSCNotification): Boolean; virtual;
+
+    procedure WMCreate(var AMessage: TWMCreate); message WM_CREATE;
+    procedure WMDestroy(var AMessage: TWMDestroy); message WM_DESTROY;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -170,7 +175,6 @@ implementation
 
 constructor TDScintilla.Create(AOwner: TComponent);
 begin
-  FDllModule := cDSciLexerDll;
   FHelper := TDSciHelper.Create(SendEditor);
   FLines := TDSciLines.Create(FHelper);
 
@@ -179,6 +183,13 @@ end;
 
 destructor TDScintilla.Destroy;
 begin
+  { TODO: Leak
+  if FStoredDocPointer <> nil then
+  begin
+    ReleaseDocument(FStoredDocPointer);
+    FStoredDocPointer := nil;
+  end;
+  }
   inherited Destroy;
 
   FreeAndNil(FLines);
@@ -188,6 +199,28 @@ end;
 procedure TDScintilla.SetLines(const Value: TDSciLines);
 begin
   FLines.Assign(Value);
+end;
+
+procedure TDScintilla.WMCreate(var AMessage: TWMCreate);
+begin
+  inherited;
+
+  if FStoredDocPointer <> nil then
+  begin
+    SetDocPointer(FStoredDocPointer);
+
+    ReleaseDocument(FStoredDocPointer);
+    FStoredDocPointer := nil;
+  end;
+end;
+
+procedure TDScintilla.WMDestroy(var AMessage: TWMDestroy);
+begin
+  FStoredDocPointer := GetDocPointer;
+  if FStoredDocPointer <> nil then
+    AddRefDocument(FStoredDocPointer);
+
+  inherited;
 end;
 
 procedure TDScintilla.CreateWnd;
@@ -236,7 +269,7 @@ begin
 end;
 
 function TDScintilla.DoSCNotification(const ASCNotification: TDSciSCNotification): Boolean;
-begin         
+begin
   Result := False;
 
   if Assigned(FOnSCNotificationEvent) then
@@ -317,13 +350,13 @@ begin
           FHelper.GetStrFromPtr(ASCNotification.text),
           ASCNotification.position);
     end;
- 
+
   SCN_DWELLSTART:
     if Assigned(FOnDwellStart) then
       FOnDwellStart(Self, ASCNotification.position, ASCNotification.x, ASCNotification.y);
 
   SCN_DWELLEND:
-    if Assigned(FOnDwellEnd) then  
+    if Assigned(FOnDwellEnd) then
       FOnDwellEnd(Self, ASCNotification.position, ASCNotification.x, ASCNotification.y);
 
   SCN_ZOOM:
