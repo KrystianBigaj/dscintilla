@@ -15,7 +15,7 @@
  *
  * The Initial Developer of the Original Code is Krystian Bigaj.
  *
- * Portions created by the Initial Developer are Copyright (C) 2010-2011
+ * Portions created by the Initial Developer are Copyright (C) 2010-2013
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
@@ -106,6 +106,9 @@ type
 
     procedure WMCreate(var AMessage: TWMCreate); message WM_CREATE;
     procedure WMDestroy(var AMessage: TWMDestroy); message WM_DESTROY;
+
+    procedure DoStoreDocState; virtual;
+    procedure DoRestoreDocState; virtual;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -202,25 +205,31 @@ begin
 
   // Restore document state, if it was stored in WMDestroy
   if FStoredDocPointer <> nil then
-  begin
-    SetDocPointer(FStoredDocPointer);
-
-    ReleaseDocument(FStoredDocPointer);
-    FStoredDocPointer := nil;
-  end;
+    DoRestoreDocState;
 end;
 
 procedure TDScintilla.WMDestroy(var AMessage: TWMDestroy);
 begin
   // We can only store document state, if we know that window will be recreaded
   if csRecreating in ControlState then
-  begin
-    FStoredDocPointer := GetDocPointer;
-    if FStoredDocPointer <> nil then
-      AddRefDocument(FStoredDocPointer);
-  end;
+    DoStoreDocState;
 
   inherited;
+end;
+
+procedure TDScintilla.DoStoreDocState;
+begin
+  FStoredDocPointer := GetDocPointer;
+  if FStoredDocPointer <> nil then
+    AddRefDocument(FStoredDocPointer);
+end;
+
+procedure TDScintilla.DoRestoreDocState;
+begin
+  SetDocPointer(FStoredDocPointer);
+
+  ReleaseDocument(FStoredDocPointer);
+  FStoredDocPointer := nil;
 end;
 
 procedure TDScintilla.CreateWnd;
