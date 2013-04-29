@@ -682,3 +682,7 @@ GetWhitespaceChars=Hidden~1
 SetPunctuationChars=Hidden~1
 GetPunctuationChars=Hidden~1
 RGBAImageSetScale=Hidden~1
+Ordering=Hidden~1
+AutoCSetOrder=Hidden~1
+AutoCGetOrder=Hidden~1
+CreateLoader=Hidden~1

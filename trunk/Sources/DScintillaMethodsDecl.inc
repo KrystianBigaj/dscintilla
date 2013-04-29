@@ -850,7 +850,7 @@
     procedure ScrollToEnd;
 
     /// <summary>Create an ILoader*.</summary>
-    function CreateLoader(ABytes: Integer): Integer;
+    function CreateLoader(ABytes: Integer): Pointer;
 
     /// <summary>On OS X, show a find indicator.</summary>
     // procedure FindIndicatorShow(AStart: Integer; AEnd: Integer);

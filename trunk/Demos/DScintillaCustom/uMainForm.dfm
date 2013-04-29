@@ -48,13 +48,12 @@ object frmMain: TfrmMain
     Width = 145
     Height = 21
     ItemHeight = 13
+    ItemIndex = 0
     TabOrder = 1
-    Text = 'Scintilla.dll'
+    Text = 'SciLexer.dll'
     OnChange = CheckDllChange
     Items.Strings = (
-      'Scintilla.dll'
       'SciLexer.dll'
-      'DScintilla.dll'
-      'DSciLexer.dll')
+      'Scintilla.dll')
   end
 end

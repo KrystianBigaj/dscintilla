@@ -1390,7 +1390,7 @@ begin
   SendEditor(SCI_SCROLLTOEND, 0, 0);
 end;
 
-function TDScintilla.CreateLoader(ABytes: Integer): Integer;
+function TDScintilla.CreateLoader(ABytes: Integer): Pointer;
 begin
   Result := SendEditor(SCI_CREATELOADER, ABytes, 0);
 end;
