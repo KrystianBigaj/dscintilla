@@ -1972,6 +1972,16 @@ const
   /// <summary>Get auto-completion case insensitive behaviour.</summary>
   SCI_AUTOCGETCASEINSENSITIVEBEHAVIOUR = 2635;
 
+  SC_ORDER_PRESORTED = 0;
+  SC_ORDER_PERFORMSORT = 1;
+  SC_ORDER_CUSTOM = 2;
+
+  /// <summary>Set the way autocompletion lists are ordered.</summary>
+  SCI_AUTOCSETORDER = 2660;
+
+  /// <summary>Get the way autocompletion lists are ordered.</summary>
+  SCI_AUTOCGETORDER = 2661;
+
   /// <summary>Enlarge the document to a particular size of text bytes.</summary>
   SCI_ALLOCATE = 2446;
 
@@ -3681,6 +3691,8 @@ const
   SCE_HA_COMMENTBLOCK = 14;
   SCE_HA_COMMENTBLOCK2 = 15;
   SCE_HA_COMMENTBLOCK3 = 16;
+  SCE_HA_PRAGMA = 17;
+  SCE_HA_PREPROCESSOR = 18;
 
   /// <summary>Lexical states of SCLEX_TADS3</summary>
   SCE_T3_DEFAULT = 0;

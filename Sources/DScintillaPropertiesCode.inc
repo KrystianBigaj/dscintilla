@@ -1199,6 +1199,16 @@ begin
   Result := SendEditor(SCI_AUTOCGETCASEINSENSITIVEBEHAVIOUR, 0, 0);
 end;
 
+procedure TDScintilla.AutoCSetOrder(AOrder: Integer);
+begin
+  SendEditor(SCI_AUTOCSETORDER, AOrder, 0);
+end;
+
+function TDScintilla.AutoCGetOrder: Integer;
+begin
+  Result := SendEditor(SCI_AUTOCGETORDER, 0, 0);
+end;
+
 function TDScintilla.GetCaretSticky: Integer;
 begin
   Result := SendEditor(SCI_GETCARETSTICKY, 0, 0);

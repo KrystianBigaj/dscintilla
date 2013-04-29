@@ -754,6 +754,12 @@
     /// <summary>Get auto-completion case insensitive behaviour.</summary>
     function AutoCGetCaseInsensitiveBehaviour: Integer;
 
+    /// <summary>Set the way autocompletion lists are ordered.</summary>
+    procedure AutoCSetOrder(AOrder: Integer);
+
+    /// <summary>Get the way autocompletion lists are ordered.</summary>
+    function AutoCGetOrder: Integer;
+
     /// <summary>Can the caret preferred x position only be changed by explicit movement commands?</summary>
     function GetCaretSticky: Integer;
 
