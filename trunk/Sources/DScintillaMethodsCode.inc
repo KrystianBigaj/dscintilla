@@ -1392,7 +1392,7 @@ end;
 
 function TDScintilla.CreateLoader(ABytes: Integer): Pointer;
 begin
-  Result := SendEditor(SCI_CREATELOADER, ABytes, 0);
+  Result := Pointer(SendEditor(SCI_CREATELOADER, ABytes, 0));
 end;
 
 // procedure TDScintilla.FindIndicatorShow(AStart: Integer; AEnd: Integer);
