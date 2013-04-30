@@ -55,6 +55,7 @@ type
     FLines: TDSciLines;
 
     FStoredDocPointer: TDSciDocument;
+    FInitDefaultsDelayed: Boolean;
 
     FOnInitDefaults: TNotifyEvent;
     FOnChange: TNotifyEvent;
@@ -91,6 +92,7 @@ type
 
   protected
     procedure CreateWnd; override;
+    procedure Loaded; override;
 
     /// <summary>Initializes Scintilla control after creating window</summary>
     procedure InitDefaults; virtual;
@@ -238,7 +240,22 @@ procedure TDScintilla.CreateWnd;
 begin
   inherited CreateWnd;
 
-  DoInitDefaults;
+  // Delay calling DoInitDefaults when loading component from .dfm
+  // OnInitDefaults might not be set yet, so you can miss this event
+  FInitDefaultsDelayed := csLoading in ComponentState;
+  if not FInitDefaultsDelayed then
+    DoInitDefaults;
+end;
+
+procedure TDScintilla.Loaded;
+begin
+  inherited Loaded;
+
+  if FInitDefaultsDelayed then
+  begin
+    FInitDefaultsDelayed := False;
+    DoInitDefaults;
+  end;
 end;
 
 procedure TDScintilla.InitDefaults;
