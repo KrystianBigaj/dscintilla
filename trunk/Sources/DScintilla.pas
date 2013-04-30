@@ -43,7 +43,7 @@ interface
 uses
   DScintillaCustom, DScintillaTypes, DScintillaUtils,
 
-  SysUtils, Classes, Messages, Graphics, Controls;
+  SysUtils, Classes, Messages, Graphics, Controls, Math;
 
 type
 
@@ -104,6 +104,7 @@ type
     /// <summary>Handles notification messages from Scintilla</summary>
     procedure CNNotify(var AMessage: TWMNotify); message CN_NOTIFY; // Thanks to Marko Njezic there is no need to patch Scintilla anymore :)
 
+    procedure DoNeedShown(const ASCNotification: TDSciSCNotification); virtual;
     function DoSCNotification(const ASCNotification: TDSciSCNotification): Boolean; virtual;
 
     procedure WMCreate(var AMessage: TWMCreate); message WM_CREATE;
@@ -135,6 +136,8 @@ type
     /// <summary>Calls TWinControl.SetFocus</summary>
     procedure SetFocus; reintroduce; overload;
 
+    procedure EnsureRangeVisible(APosStart, APosEnd: Integer);
+
   published
 
     property Lines: TDSciLines read FLines write SetLines;
@@ -156,6 +159,10 @@ type
     property OnModified2: TDSciModified2Event read FOnModified2 write FOnModified2;
     property OnMacroRecord: TDSciMacroRecordEvent read FOnMacroRecord write FOnMacroRecord;
     property OnMarginClick: TDSciMarginClickEvent read FOnMarginClick write FOnMarginClick;
+
+    // Note: if you are using OnNeedShown, then you must perform similar task as in DoNeedShown
+    // In general you need to call EnsureRangeVisible(...)
+    // See: https://code.google.com/p/dscintilla/issues/detail?id=4
     property OnNeedShown: TDSciNeedShownEvent read FOnNeedShown write FOnNeedShown;
     property OnPainted: TDSciPaintedEvent read FOnPainted write FOnPainted;
     property OnUserListSelection: TDSciUserListSelectionEvent read FOnUserListSelection write FOnUserListSelection; // deprecated - use OnUserListSelection2
@@ -296,6 +303,21 @@ begin
     inherited;
 end;
 
+procedure TDScintilla.DoNeedShown(const ASCNotification: TDSciSCNotification);
+begin
+  if Assigned(FOnNeedShown) then
+    FOnNeedShown(Self, ASCNotification.position, ASCNotification.length)
+  else
+  begin
+    // Fix for: https://code.google.com/p/dscintilla/issues/detail?id=4
+    //
+    // SciTE does same thing: scite/src/SciTEBase.cxx ... case SCN_NEEDSHOWN: { ...
+    // Also docs tells that it need to be done:
+    // http://www.scintilla.org/ScintillaDoc.html#SCN_NEEDSHOWN
+    EnsureRangeVisible(ASCNotification.position, ASCNotification.position + ASCNotification.length);
+  end;
+end;
+
 function TDScintilla.DoSCNotification(const ASCNotification: TDSciSCNotification): Boolean;
 begin
   Result := False;
@@ -360,8 +382,7 @@ begin
         ASCNotification.position, ASCNotification.margin);
 
   SCN_NEEDSHOWN:
-    if Assigned(FOnNeedShown) then
-      FOnNeedShown(Self, ASCNotification.position, ASCNotification.length);
+    DoNeedShown(ASCNotification);
 
   SCN_PAINTED:
     if Assigned(FOnPainted) then
@@ -447,6 +468,17 @@ end;
 procedure TDScintilla.SetFocus;
 begin
   inherited SetFocus;
+end;
+
+procedure TDScintilla.EnsureRangeVisible(APosStart, APosEnd: Integer);
+var
+  lLineStart, lLineEnd, lLine: Integer;
+begin
+  lLineStart := SendEditor(SCI_LINEFROMPOSITION, Min(APosStart, APosEnd));
+  lLineEnd := SendEditor(SCI_LINEFROMPOSITION, Max(APosStart, APosEnd));
+
+  for lLine := lLineStart to lLineEnd do
+    SendEditor(SCI_ENSUREVISIBLE, lLine, 0);
 end;
 
 end.
