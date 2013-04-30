@@ -211,7 +211,9 @@ end;
 procedure TDScintilla.WMDestroy(var AMessage: TWMDestroy);
 begin
   // We can only store document state, if we know that window will be recreaded
-  if csRecreating in ControlState then
+  // Designer destroying window with csRecreating, but latet destroys class,
+  // so skip that case
+  if (csRecreating in ControlState) and not (csDesigning in ComponentState) then
     DoStoreDocState;
 
   inherited;
