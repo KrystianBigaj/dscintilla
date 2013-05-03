@@ -247,6 +247,10 @@ procedure TDScintilla.CreateWnd;
 begin
   inherited CreateWnd;
 
+  // Set UTF8 early, so Lines with non ANSI char loads from .dfm correctly
+  // Later in InitDefaults/OnInitDefaults can be overwritten
+  SetCodePage(SC_CP_UTF8);
+
   // Delay calling DoInitDefaults when loading component from .dfm
   // OnInitDefaults might not be set yet, so you can miss this event
   FInitDefaultsDelayed := csLoading in ComponentState;
@@ -474,11 +478,11 @@ procedure TDScintilla.EnsureRangeVisible(APosStart, APosEnd: Integer);
 var
   lLineStart, lLineEnd, lLine: Integer;
 begin
-  lLineStart := SendEditor(SCI_LINEFROMPOSITION, Min(APosStart, APosEnd));
-  lLineEnd := SendEditor(SCI_LINEFROMPOSITION, Max(APosStart, APosEnd));
+  lLineStart := LineFromPosition(Min(APosStart, APosEnd));
+  lLineEnd := LineFromPosition(Max(APosStart, APosEnd));
 
   for lLine := lLineStart to lLineEnd do
-    SendEditor(SCI_ENSUREVISIBLE, lLine, 0);
+    EnsureVisible(lLine);
 end;
 
 end.
