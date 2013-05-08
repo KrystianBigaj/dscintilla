@@ -222,7 +222,10 @@ begin
   // We can only store document state, if we know that window will be recreaded
   // Designer destroying window with csRecreating, but later destroys class,
   // so skip that case
-  if (csRecreating in ControlState) and not (csDestroying in ComponentState) then
+  if (csRecreating in ControlState) and
+    not (csDestroying in ComponentState) and
+    not (csDesigning in ComponentState)
+  then
     DoStoreDocState;
 
   inherited;
