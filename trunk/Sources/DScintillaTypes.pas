@@ -722,6 +722,7 @@ const
   INDIC_SQUIGGLELOW = 11;
   INDIC_DOTBOX = 12;
   INDIC_SQUIGGLEPIXMAP = 13;
+  INDIC_COMPOSITIONTHICK = 14;
   INDIC_MAX = 31;
   INDIC_CONTAINER = 8;
   INDIC0_MASK = $20;
@@ -1251,8 +1252,34 @@ const
   /// <summary>Switch a header line between expanded and contracted.</summary>
   SCI_TOGGLEFOLD = 2231;
 
+  SC_FOLDACTION_CONTRACT = 0;
+  SC_FOLDACTION_EXPAND = 1;
+  SC_FOLDACTION_TOGGLE = 2;
+
+  /// <summary>Expand or contract a fold header.</summary>
+  SCI_FOLDLINE = 2237;
+
+  /// <summary>Expand or contract a fold header and its children.</summary>
+  SCI_FOLDCHILDREN = 2238;
+
+  /// <summary>Expand a fold header and all children. Use the level argument instead of the line's current level.</summary>
+  SCI_EXPANDCHILDREN = 2239;
+
+  /// <summary>Expand or contract all fold headers.</summary>
+  SCI_FOLDALL = 2662;
+
   /// <summary>Ensure a particular line is visible by expanding any header line hiding it.</summary>
   SCI_ENSUREVISIBLE = 2232;
+
+  SC_AUTOMATICFOLD_SHOW = $0001;
+  SC_AUTOMATICFOLD_CLICK = $0002;
+  SC_AUTOMATICFOLD_CHANGE = $0004;
+
+  /// <summary>Set automatic folding behaviours.</summary>
+  SCI_SETAUTOMATICFOLD = 2663;
+
+  /// <summary>Get automatic folding behaviours.</summary>
+  SCI_GETAUTOMATICFOLD = 2664;
 
   SC_FOLDFLAG_LINEBEFORE_EXPANDED = $0002;
   SC_FOLDFLAG_LINEBEFORE_CONTRACTED = $0004;
@@ -2657,6 +2684,8 @@ const
   SCLEX_ECL = 105;
   SCLEX_OSCRIPT = 106;
   SCLEX_VISUALPROLOG = 107;
+  SCLEX_LITERATEHASKELL = 108;
+  SCLEX_STTXT = 109;
 
   /// <summary>When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
   /// value assigned in sequence from SCLEX_AUTOMATIC+1.</summary>
@@ -2705,6 +2734,7 @@ const
   SCE_C_TRIPLEVERBATIM = 21;
   SCE_C_HASHQUOTEDSTRING = 22;
   SCE_C_PREPROCESSORCOMMENT = 23;
+  SCE_C_PREPROCESSORCOMMENTDOC = 24;
 
   /// <summary>Lexical states for SCLEX_D</summary>
   SCE_D_DEFAULT = 0;
@@ -3693,6 +3723,10 @@ const
   SCE_HA_COMMENTBLOCK3 = 16;
   SCE_HA_PRAGMA = 17;
   SCE_HA_PREPROCESSOR = 18;
+  SCE_HA_STRINGEOL = 19;
+  SCE_HA_RESERVED_OPERATOR = 20;
+  SCE_HA_LITERATE_COMMENT = 21;
+  SCE_HA_LITERATE_CODEDELIM = 22;
 
   /// <summary>Lexical states of SCLEX_TADS3</summary>
   SCE_T3_DEFAULT = 0;
@@ -4033,6 +4067,9 @@ const
   SCE_POWERSHELL_FUNCTION = 11;
   SCE_POWERSHELL_USER1 = 12;
   SCE_POWERSHELL_COMMENTSTREAM = 13;
+  SCE_POWERSHELL_HERE_STRING = 14;
+  SCE_POWERSHELL_HERE_CHARACTER = 15;
+  SCE_POWERSHELL_COMMENTDOCKEYWORD = 16;
 
   /// <summary>Lexical state for SCLEX_MYSQL</summary>
   SCE_MYSQL_DEFAULT = 0;
@@ -4355,6 +4392,27 @@ const
   SCE_VISUALPROLOG_STRING_VERBATIM = 20;
   SCE_VISUALPROLOG_STRING_VERBATIM_SPECIAL = 21;
   SCE_VISUALPROLOG_STRING_VERBATIM_EOL = 22;
+
+  /// <summary>Lexical states for SCLEX_STTXT</summary>
+  SCE_STTXT_DEFAULT = 0;
+  SCE_STTXT_COMMENT = 1;
+  SCE_STTXT_COMMENTLINE = 2;
+  SCE_STTXT_KEYWORD = 3;
+  SCE_STTXT_TYPE = 4;
+  SCE_STTXT_FUNCTION = 5;
+  SCE_STTXT_FB = 6;
+  SCE_STTXT_NUMBER = 7;
+  SCE_STTXT_HEXNUMBER = 8;
+  SCE_STTXT_PRAGMA = 9;
+  SCE_STTXT_OPERATOR = 10;
+  SCE_STTXT_CHARACTER = 11;
+  SCE_STTXT_STRING1 = 12;
+  SCE_STTXT_STRING2 = 13;
+  SCE_STTXT_STRINGEOL = 14;
+  SCE_STTXT_IDENTIFIER = 15;
+  SCE_STTXT_DATETIME = 16;
+  SCE_STTXT_VARS = 17;
+  SCE_STTXT_PRAGMAS = 18;
 
   /// <summary>Line end types which may be used in addition to LF, CR, and CRLF
   /// SC_LINE_END_TYPE_UNICODE includes U+2028 Line Separator,

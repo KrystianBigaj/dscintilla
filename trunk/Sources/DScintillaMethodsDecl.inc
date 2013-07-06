@@ -324,6 +324,18 @@
     /// <summary>Switch a header line between expanded and contracted.</summary>
     procedure ToggleFold(ALine: Integer);
 
+    /// <summary>Expand or contract a fold header.</summary>
+    procedure FoldLine(ALine: Integer; AAction: Integer);
+
+    /// <summary>Expand or contract a fold header and its children.</summary>
+    procedure FoldChildren(ALine: Integer; AAction: Integer);
+
+    /// <summary>Expand a fold header and all children. Use the level argument instead of the line's current level.</summary>
+    procedure ExpandChildren(ALine: Integer; ALevel: Integer);
+
+    /// <summary>Expand or contract all fold headers.</summary>
+    procedure FoldAll(AAction: Integer);
+
     /// <summary>Ensure a particular line is visible by expanding any header line hiding it.</summary>
     procedure EnsureVisible(ALine: Integer);
 

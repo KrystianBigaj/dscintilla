@@ -554,6 +554,26 @@ begin
   SendEditor(SCI_TOGGLEFOLD, ALine, 0);
 end;
 
+procedure TDScintilla.FoldLine(ALine: Integer; AAction: Integer);
+begin
+  SendEditor(SCI_FOLDLINE, ALine, AAction);
+end;
+
+procedure TDScintilla.FoldChildren(ALine: Integer; AAction: Integer);
+begin
+  SendEditor(SCI_FOLDCHILDREN, ALine, AAction);
+end;
+
+procedure TDScintilla.ExpandChildren(ALine: Integer; ALevel: Integer);
+begin
+  SendEditor(SCI_EXPANDCHILDREN, ALine, ALevel);
+end;
+
+procedure TDScintilla.FoldAll(AAction: Integer);
+begin
+  SendEditor(SCI_FOLDALL, AAction, 0);
+end;
+
 procedure TDScintilla.EnsureVisible(ALine: Integer);
 begin
   SendEditor(SCI_ENSUREVISIBLE, ALine, 0);
