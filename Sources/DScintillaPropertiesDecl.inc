@@ -513,6 +513,12 @@
     /// <summary>Is a header line expanded?</summary>
     function GetFoldExpanded(ALine: Integer): Boolean;
 
+    /// <summary>Set automatic folding behaviours.</summary>
+    procedure SetAutomaticFold(AAutomaticFold: Integer);
+
+    /// <summary>Get automatic folding behaviours.</summary>
+    function GetAutomaticFold: Integer;
+
     /// <summary>Sets whether a tab pressed when caret is within indentation indents.</summary>
     procedure SetTabIndents(ATabIndents: Boolean);
 

@@ -813,6 +813,16 @@ begin
   Result := Boolean(SendEditor(SCI_GETFOLDEXPANDED, ALine, 0));
 end;
 
+procedure TDScintilla.SetAutomaticFold(AAutomaticFold: Integer);
+begin
+  SendEditor(SCI_SETAUTOMATICFOLD, AAutomaticFold, 0);
+end;
+
+function TDScintilla.GetAutomaticFold: Integer;
+begin
+  Result := SendEditor(SCI_GETAUTOMATICFOLD, 0, 0);
+end;
+
 procedure TDScintilla.SetTabIndents(ATabIndents: Boolean);
 begin
   SendEditor(SCI_SETTABINDENTS, Integer(ATabIndents), 0);
