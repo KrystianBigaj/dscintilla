@@ -1294,9 +1294,9 @@ begin
   Result := PByte(SendEditor(SCI_GETCHARACTERPOINTER, 0, 0));
 end;
 
-function TDScintilla.GetRangePointer(APosition: Integer; ARangeLength: Integer): Integer;
+function TDScintilla.GetRangePointer(APosition: Integer; ARangeLength: Integer): Pointer;
 begin
-  Result := SendEditor(SCI_GETRANGEPOINTER, APosition, ARangeLength);
+  Result := Pointer(SendEditor(SCI_GETRANGEPOINTER, APosition, ARangeLength));
 end;
 
 procedure TDScintilla.SetKeysUnicode(AKeysUnicode: Boolean);
@@ -1455,6 +1455,16 @@ end;
 function TDScintilla.AnnotationGetStyleOffset: Integer;
 begin
   Result := SendEditor(SCI_ANNOTATIONGETSTYLEOFFSET, 0, 0);
+end;
+
+procedure TDScintilla.SetMouseSelectionRectangularSwitch(AMouseSelectionRectangularSwitch: Boolean);
+begin
+  SendEditor(SCI_SETMOUSESELECTIONRECTANGULARSWITCH, Integer(AMouseSelectionRectangularSwitch), 0);
+end;
+
+function TDScintilla.GetMouseSelectionRectangularSwitch: Boolean;
+begin
+  Result := Boolean(SendEditor(SCI_GETMOUSESELECTIONRECTANGULARSWITCH, 0, 0));
 end;
 
 procedure TDScintilla.SetMultipleSelection(AMultipleSelection: Boolean);
@@ -1729,6 +1739,16 @@ end;
 procedure TDScintilla.SetCaretLineVisibleAlways(AAlwaysVisible: Boolean);
 begin
   SendEditor(SCI_SETCARETLINEVISIBLEALWAYS, Integer(AAlwaysVisible), 0);
+end;
+
+procedure TDScintilla.SetRepresentation(AEncodedCharacter: AnsiString; ARepresentation: UnicodeString);
+begin
+  FHelper.SetText(SCI_SETREPRESENTATION, Integer(FHelper.GetPtrFromAStr(AEncodedCharacter)), ARepresentation);
+end;
+
+function TDScintilla.GetRepresentation(AEncodedCharacter: AnsiString): UnicodeString;
+begin
+  FHelper.GetText(SCI_GETREPRESENTATION, Integer(FHelper.GetPtrFromAStr(AEncodedCharacter)), Result);
 end;
 
 procedure TDScintilla.SetLexer(ALexer: Integer);
