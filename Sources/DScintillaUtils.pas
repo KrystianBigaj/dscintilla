@@ -207,7 +207,7 @@ end;
 procedure TDSciUnicodeStrings.LoadFromStream(Stream: TStream;
   WideFileOptions: TWideFileOptions);
 begin
-  inherited LoadFromStream(FileName, WideFileOptions);
+  inherited LoadFromStream(Stream, WideFileOptions);
 end;
 
 procedure TDSciUnicodeStrings.SaveToFile(const FileName: TFileName;
@@ -219,7 +219,7 @@ end;
 procedure TDSciUnicodeStrings.SaveToStream(Stream: TStream;
   WideFileOptions: TWideFileOptions);
 begin
-  inherited SaveToStream(FileName, WideFileOptions);
+  inherited SaveToStream(Stream, WideFileOptions);
 end;
 
 {$IFEND}
