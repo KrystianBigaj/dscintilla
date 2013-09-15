@@ -1050,10 +1050,10 @@
     procedure SetCaretLineVisibleAlways(AAlwaysVisible: Boolean);
 
     /// <summary>Set the way a character is drawn.</summary>
-    procedure SetRepresentation(AEncodedCharacter: AnsiString; ARepresentation: UnicodeString);
+    procedure SetRepresentation(AEncodedCharacter: AnsiString; ARepresentation: AnsiString);
 
     /// <summary>Set the way a character is drawn.</summary>
-    function GetRepresentation(AEncodedCharacter: AnsiString): UnicodeString;
+    function GetRepresentation(AEncodedCharacter: AnsiString): AnsiString;
 
     /// <summary>Set the lexing language of the document.</summary>
     procedure SetLexer(ALexer: Integer);

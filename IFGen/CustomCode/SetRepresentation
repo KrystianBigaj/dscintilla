@@ -1,6 +1,6 @@
-procedure SetRepresentation(AEncodedCharacter: AnsiString; ARepresentation: UnicodeString);
-procedure TDScintilla.SetRepresentation(AEncodedCharacter: AnsiString; ARepresentation: UnicodeString);
+procedure SetRepresentation(AEncodedCharacter: AnsiString; ARepresentation: AnsiString);
+procedure TDScintilla.SetRepresentation(AEncodedCharacter: AnsiString; ARepresentation: AnsiString);
 begin
-  FHelper.SetText(SCI_SETREPRESENTATION, Integer(FHelper.GetPtrFromAStr(AEncodedCharacter)), ARepresentation);
+  FHelper.SetTextA(SCI_SETREPRESENTATION, Integer(FHelper.GetPtrFromAStr(AEncodedCharacter)), ARepresentation);
 end;
 

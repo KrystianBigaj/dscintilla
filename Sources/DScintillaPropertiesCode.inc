@@ -1741,14 +1741,14 @@ begin
   SendEditor(SCI_SETCARETLINEVISIBLEALWAYS, Integer(AAlwaysVisible), 0);
 end;
 
-procedure TDScintilla.SetRepresentation(AEncodedCharacter: AnsiString; ARepresentation: UnicodeString);
+procedure TDScintilla.SetRepresentation(AEncodedCharacter: AnsiString; ARepresentation: AnsiString);
 begin
-  FHelper.SetText(SCI_SETREPRESENTATION, Integer(FHelper.GetPtrFromAStr(AEncodedCharacter)), ARepresentation);
+  FHelper.SetTextA(SCI_SETREPRESENTATION, Integer(FHelper.GetPtrFromAStr(AEncodedCharacter)), ARepresentation);
 end;
 
-function TDScintilla.GetRepresentation(AEncodedCharacter: AnsiString): UnicodeString;
+function TDScintilla.GetRepresentation(AEncodedCharacter: AnsiString): AnsiString;
 begin
-  FHelper.GetText(SCI_GETREPRESENTATION, Integer(FHelper.GetPtrFromAStr(AEncodedCharacter)), Result);
+  FHelper.GetTextA(SCI_GETREPRESENTATION, Integer(FHelper.GetPtrFromAStr(AEncodedCharacter)), Result);
 end;
 
 procedure TDScintilla.SetLexer(ALexer: Integer);
