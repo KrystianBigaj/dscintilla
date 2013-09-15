@@ -1889,6 +1889,10 @@ const
   /// page into account. Maximum value returned is the last position in the document.</summary>
   SCI_POSITIONAFTER = 2418;
 
+  /// <summary>Given a valid document position, return a position that differs in a number
+  /// of characters. Returned value is always between 0 and last position in document.</summary>
+  SCI_POSITIONRELATIVE = 2670;
+
   /// <summary>Copy a range of text to the clipboard. Positions are clipped into the document.</summary>
   SCI_COPYRANGE = 2419;
 
@@ -2250,6 +2254,12 @@ const
   /// Return INVALID_POSITION if not close to text.</summary>
   SCI_CHARPOSITIONFROMPOINTCLOSE = 2562;
 
+  /// <summary>Set whether switching to rectangular mode while selecting with the mouse is allowed.</summary>
+  SCI_SETMOUSESELECTIONRECTANGULARSWITCH = 2668;
+
+  /// <summary>Whether switching to rectangular mode while selecting with the mouse is allowed.</summary>
+  SCI_GETMOUSESELECTIONRECTANGULARSWITCH = 2669;
+
   /// <summary>Set whether multiple selections can be made</summary>
   SCI_SETMULTIPLESELECTION = 2563;
 
@@ -2442,6 +2452,15 @@ const
 
   /// <summary>Sets the caret line to always visible.</summary>
   SCI_SETCARETLINEVISIBLEALWAYS = 2655;
+
+  /// <summary>Set the way a character is drawn.</summary>
+  SCI_SETREPRESENTATION = 2665;
+
+  /// <summary>Set the way a character is drawn.</summary>
+  SCI_GETREPRESENTATION = 2666;
+
+  /// <summary>Remove a character representation.</summary>
+  SCI_CLEARREPRESENTATION = 2667;
 
   /// <summary>Start notifying the container of all key presses and commands.</summary>
   SCI_STARTRECORD = 3001;
@@ -2686,6 +2705,7 @@ const
   SCLEX_VISUALPROLOG = 107;
   SCLEX_LITERATEHASKELL = 108;
   SCLEX_STTXT = 109;
+  SCLEX_KVIRC = 110;
 
   /// <summary>When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
   /// value assigned in sequence from SCLEX_AUTOMATIC+1.</summary>
@@ -4413,6 +4433,21 @@ const
   SCE_STTXT_DATETIME = 16;
   SCE_STTXT_VARS = 17;
   SCE_STTXT_PRAGMAS = 18;
+
+  /// <summary>Lexical states for SCLEX_KVIRC</summary>
+  SCE_KVIRC_DEFAULT = 0;
+  SCE_KVIRC_COMMENT = 1;
+  SCE_KVIRC_COMMENTBLOCK = 2;
+  SCE_KVIRC_STRING = 3;
+  SCE_KVIRC_WORD = 4;
+  SCE_KVIRC_KEYWORD = 5;
+  SCE_KVIRC_FUNCTION_KEYWORD = 6;
+  SCE_KVIRC_FUNCTION = 7;
+  SCE_KVIRC_VARIABLE = 8;
+  SCE_KVIRC_NUMBER = 9;
+  SCE_KVIRC_OPERATOR = 10;
+  SCE_KVIRC_STRING_FUNCTION = 11;
+  SCE_KVIRC_STRING_VARIABLE = 12;
 
   /// <summary>Line end types which may be used in addition to LF, CR, and CRLF
   /// SC_LINE_END_TYPE_UNICODE includes U+2028 Line Separator,

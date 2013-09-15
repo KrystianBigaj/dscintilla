@@ -1101,6 +1101,11 @@ begin
   Result := SendEditor(SCI_POSITIONAFTER, APos, 0);
 end;
 
+function TDScintilla.PositionRelative(APos: Integer; ARelative: Integer): Integer;
+begin
+  Result := SendEditor(SCI_POSITIONRELATIVE, APos, ARelative);
+end;
+
 procedure TDScintilla.CopyRange(AStart: Integer; AEnd: Integer);
 begin
   SendEditor(SCI_COPYRANGE, AStart, AEnd);
@@ -1438,6 +1443,11 @@ end;
 procedure TDScintilla.VCHomeDisplayExtend;
 begin
   SendEditor(SCI_VCHOMEDISPLAYEXTEND, 0, 0);
+end;
+
+procedure TDScintilla.ClearRepresentation(AEncodedCharacter: AnsiString);
+begin
+  SendEditor(SCI_CLEARREPRESENTATION, Integer(FHelper.GetPtrFromAStr(AEncodedCharacter)), 0);
 end;
 
 procedure TDScintilla.StartRecord;

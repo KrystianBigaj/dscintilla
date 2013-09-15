@@ -91,11 +91,12 @@ type
 
     function GetStrFromPtr(ABuf: PAnsiChar): UnicodeString;
     function GetStrFromPtrA(ABuf: PAnsiChar): AnsiString;
+    function GetPtrFromAStr(AStr: AnsiString): PAnsiChar;
 
-    function GetText(AMessage: Integer; AParam1: Integer; var AText: UnicodeString): Integer;
-    function GetTextA(AMessage: Integer; AParam1: Integer; var AText: AnsiString): Integer;
-    function SetText(AMessage: Integer; AParam1: Integer; const AText: UnicodeString): Integer;
-    function SetTextA(AMessage: Integer; AParam1: Integer; const AText: AnsiString): Integer;
+    function GetText(AMessage: Integer; AWParam: Integer; var AText: UnicodeString): Integer;
+    function GetTextA(AMessage: Integer; AWParam: Integer; var AText: AnsiString): Integer;
+    function SetText(AMessage: Integer; AWParam: Integer; const AText: UnicodeString): Integer;
+    function SetTextA(AMessage: Integer; AWParam: Integer; const AText: AnsiString): Integer;
     function GetTextLen(AMessage: Integer; var AText: UnicodeString): Integer;
     function SetTextLen(AMessage: Integer; const AText: UnicodeString): Integer;
 
@@ -243,6 +244,14 @@ begin
   Result := SendEditor(SCI_GETCODEPAGE) = SC_CP_UTF8;
 end;
 
+function TDSciHelper.GetPtrFromAStr(AStr: AnsiString): PAnsiChar;
+begin
+  if AStr = '' then
+    Result := @cDSciNull
+  else
+    Result := PAnsiChar(AStr);
+end;
+
 function TDSciHelper.GetStrFromPtr(ABuf: PAnsiChar): UnicodeString;
 begin
   if ABuf = nil then
@@ -262,53 +271,53 @@ begin
     Result:= AnsiString(ABuf);
 end;
 
-function TDSciHelper.GetText(AMessage, AParam1: Integer;
+function TDSciHelper.GetText(AMessage, AWParam: Integer;
   var AText: UnicodeString): Integer;
 var
   lBuf: PAnsiChar;
 begin
-  lBuf := AllocMem(SendEditor(AMessage, AParam1) + 1);
+  lBuf := AllocMem(SendEditor(AMessage, AWParam) + 1);
   try
-    Result := SendEditor(AMessage, AParam1, Integer(lBuf));
+    Result := SendEditor(AMessage, AWParam, Integer(lBuf));
     AText := GetStrFromPtr(lBuf);
   finally
     FreeMem(lBuf);
   end;
 end;
 
-function TDSciHelper.GetTextA(AMessage, AParam1: Integer;
+function TDSciHelper.GetTextA(AMessage, AWParam: Integer;
   var AText: AnsiString): Integer;
 var
   lBuf: PAnsiChar;
 begin
-  lBuf := AllocMem(SendEditor(AMessage, AParam1) + 1);
+  lBuf := AllocMem(SendEditor(AMessage, AWParam) + 1);
   try
-    Result := SendEditor(AMessage, AParam1, Integer(lBuf));
+    Result := SendEditor(AMessage, AWParam, Integer(lBuf));
     AText := GetStrFromPtrA(lBuf);
   finally
     FreeMem(lBuf);
   end;
 end;
 
-function TDSciHelper.SetText(AMessage, AParam1: Integer;
+function TDSciHelper.SetText(AMessage, AWParam: Integer;
   const AText: UnicodeString): Integer;
 begin
   if AText = '' then
-    Result := SendEditor(AMessage, AParam1, Integer(@cDSciNull))
+    Result := SendEditor(AMessage, AWParam, Integer(@cDSciNull))
   else
     if IsUTF8 then
-      Result := SendEditor(AMessage, AParam1, Integer(UnicodeStringToUTF8(AText)))
+      Result := SendEditor(AMessage, AWParam, Integer(UnicodeStringToUTF8(AText)))
     else
-      Result := SendEditor(AMessage, AParam1, Integer(AnsiString(AText)));
+      Result := SendEditor(AMessage, AWParam, Integer(AnsiString(AText)));
 end;
 
-function TDSciHelper.SetTextA(AMessage, AParam1: Integer;
+function TDSciHelper.SetTextA(AMessage, AWParam: Integer;
   const AText: AnsiString): Integer;
 begin
   if AText = '' then
-    Result := SendEditor(AMessage, AParam1, Integer(@cDSciNull))
+    Result := SendEditor(AMessage, AWParam, Integer(@cDSciNull))
   else
-    Result := SendEditor(AMessage, AParam1, Integer(AText));
+    Result := SendEditor(AMessage, AWParam, Integer(AText));
 end;
 
 function TDSciHelper.GetTextLen(AMessage: Integer;

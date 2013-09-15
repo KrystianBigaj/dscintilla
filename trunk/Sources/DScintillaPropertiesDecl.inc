@@ -815,7 +815,7 @@
     /// <summary>Return a read-only pointer to a range of characters in the document.
     /// May move the gap so that the range is contiguous, but will only move up
     /// to rangeLength bytes.</summary>
-    function GetRangePointer(APosition: Integer; ARangeLength: Integer): Integer;
+    function GetRangePointer(APosition: Integer; ARangeLength: Integer): Pointer;
 
     /// <summary>Always interpret keyboard input as Unicode</summary>
     procedure SetKeysUnicode(AKeysUnicode: Boolean);
@@ -909,6 +909,12 @@
 
     /// <summary>Get the start of the range of style numbers used for annotations</summary>
     function AnnotationGetStyleOffset: Integer;
+
+    /// <summary>Set whether switching to rectangular mode while selecting with the mouse is allowed.</summary>
+    procedure SetMouseSelectionRectangularSwitch(AMouseSelectionRectangularSwitch: Boolean);
+
+    /// <summary>Whether switching to rectangular mode while selecting with the mouse is allowed.</summary>
+    function GetMouseSelectionRectangularSwitch: Boolean;
 
     /// <summary>Set whether multiple selections can be made</summary>
     procedure SetMultipleSelection(AMultipleSelection: Boolean);
@@ -1042,6 +1048,12 @@
 
     /// <summary>Sets the caret line to always visible.</summary>
     procedure SetCaretLineVisibleAlways(AAlwaysVisible: Boolean);
+
+    /// <summary>Set the way a character is drawn.</summary>
+    procedure SetRepresentation(AEncodedCharacter: AnsiString; ARepresentation: UnicodeString);
+
+    /// <summary>Set the way a character is drawn.</summary>
+    function GetRepresentation(AEncodedCharacter: AnsiString): UnicodeString;
 
     /// <summary>Set the lexing language of the document.</summary>
     procedure SetLexer(ALexer: Integer);

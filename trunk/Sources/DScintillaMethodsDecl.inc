@@ -661,6 +661,10 @@
     /// page into account. Maximum value returned is the last position in the document.</summary>
     function PositionAfter(APos: Integer): Integer;
 
+    /// <summary>Given a valid document position, return a position that differs in a number
+    /// of characters. Returned value is always between 0 and last position in document.</summary>
+    function PositionRelative(APos: Integer; ARelative: Integer): Integer;
+
     /// <summary>Copy a range of text to the clipboard. Positions are clipped into the document.</summary>
     procedure CopyRange(AStart: Integer; AEnd: Integer);
 
@@ -879,6 +883,9 @@
 
     /// <summary>Like VCHomeDisplay but extending selection to new caret position.</summary>
     procedure VCHomeDisplayExtend;
+
+    /// <summary>Remove a character representation.</summary>
+    procedure ClearRepresentation(AEncodedCharacter: AnsiString);
 
     /// <summary>Start notifying the container of all key presses and commands.</summary>
     procedure StartRecord;
