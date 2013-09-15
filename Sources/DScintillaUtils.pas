@@ -60,7 +60,18 @@ type
 { TDSciUnicodeStrings }
 
 {$IF Defined(DSCI_JCLWIDESTRINGS)}
-  TDSciUnicodeStrings = JclWideStrings.TJclWideStrings;
+  TDSciUnicodeStrings = class(JclWideStrings.TJclWideStrings)
+  public
+    procedure LoadFromFile(const FileName: TFileName;
+      WideFileOptions: TWideFileOptions = [foAnsiFile]); overload;
+    procedure LoadFromStream(Stream: TStream;
+      WideFileOptions: TWideFileOptions = [foAnsiFile]); overload;
+
+    procedure SaveToFile(const FileName: TFileName;
+      WideFileOptions: TWideFileOptions = [foAnsiFile]); overload;
+    procedure SaveToStream(Stream: TStream;
+      WideFileOptions: TWideFileOptions = [foAnsiFile]); overload;
+  end;
 {$ELSE}
   TDSciUnicodeStrings = TStrings;
 {$IFEND}
@@ -181,6 +192,36 @@ function UnicodeStringToUTF8(const S: UnicodeString): UTF8String;
 begin
   Result := UTF8Encode(S);
 end;
+{$IFEND}
+
+{ TDSciUnicodeStrings }
+
+{$IF Defined(DSCI_JCLWIDESTRINGS)}
+
+procedure TDSciUnicodeStrings.LoadFromFile(const FileName: TFileName;
+  WideFileOptions: TWideFileOptions);
+begin
+  inherited LoadFromFile(FileName, WideFileOptions);
+end;
+
+procedure TDSciUnicodeStrings.LoadFromStream(Stream: TStream;
+  WideFileOptions: TWideFileOptions);
+begin
+  inherited LoadFromStream(FileName, WideFileOptions);
+end;
+
+procedure TDSciUnicodeStrings.SaveToFile(const FileName: TFileName;
+  WideFileOptions: TWideFileOptions);
+begin
+  inherited SaveToFile(FileName, WideFileOptions);
+end;
+
+procedure TDSciUnicodeStrings.SaveToStream(Stream: TStream;
+  WideFileOptions: TWideFileOptions);
+begin
+  inherited SaveToStream(FileName, WideFileOptions);
+end;
+
 {$IFEND}
 
 { TDSciHelper }
