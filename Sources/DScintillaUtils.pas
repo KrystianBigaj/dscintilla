@@ -63,14 +63,14 @@ type
   TDSciUnicodeStrings = class(JclWideStrings.TJclWideStrings)
   public
     procedure LoadFromFile(const FileName: TFileName;
-      WideFileOptions: TWideFileOptions = [foAnsiFile]); overload;
+      WideFileOptions: TWideFileOptions = [foAnsiFile]); override;
     procedure LoadFromStream(Stream: TStream;
-      WideFileOptions: TWideFileOptions = [foAnsiFile]); overload;
+      WideFileOptions: TWideFileOptions = [foAnsiFile]); override;
 
     procedure SaveToFile(const FileName: TFileName;
-      WideFileOptions: TWideFileOptions = [foAnsiFile]); overload;
+      WideFileOptions: TWideFileOptions = [foAnsiFile]); override;
     procedure SaveToStream(Stream: TStream;
-      WideFileOptions: TWideFileOptions = [foAnsiFile]); overload;
+      WideFileOptions: TWideFileOptions = [foAnsiFile]); override;
   end;
 {$ELSE}
   TDSciUnicodeStrings = TStrings;
