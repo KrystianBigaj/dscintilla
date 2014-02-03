@@ -1,0 +1,6 @@
+function SearchInTarget(const AText: UnicodeString): Integer;
+function TDScintilla.SearchInTarget(const AText: UnicodeString): Integer;
+begin
+  Result := FHelper.SetTextLen(SCI_SEARCHINTARGET, AText);
+end;
+

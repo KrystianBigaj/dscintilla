@@ -1,0 +1,6 @@
+procedure SetPunctuationChars(const ACharacters: AnsiString);
+procedure TDScintilla.SetPunctuationChars(const ACharacters: AnsiString);
+begin
+  FHelper.SetTextA(SCI_SETPUNCTUATIONCHARS, 0, ACharacters);
+end;
+

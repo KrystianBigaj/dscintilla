@@ -1,0 +1,7 @@
+procedure SetSelectionNAnchor(ASelection: Integer; APosAnchor: Integer);
+procedure %s.SetSelectionNAnchor(ASelection: Integer; APosAnchor: Integer);
+begin
+  if (ASelection >= 0) and (ASelection < GetSelections) then
+    SendEditor(SCI_SETSELECTIONNANCHOR, ASelection, APosAnchor);
+end;
+

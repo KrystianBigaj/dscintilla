@@ -1,0 +1,20 @@
+function GetStyledText(AStart, AEnd: Integer): TDSciCells;
+function TDScintilla.GetStyledText(AStart, AEnd: Integer): TDSciCells;
+var
+  lRange: TDSciTextRange;
+begin
+  if AStart >= AEnd then
+  begin
+    SetLength(Result, 0);
+    Exit;
+  end;
+
+  SetLength(Result, AEnd - AStart + 2{nul});
+
+  lRange.chrg.cpMin := AStart;
+  lRange.chrg.cpMax := AEnd;
+  lRange.lpstrText := @Result;
+
+  SendEditor(SCI_GETSTYLEDTEXT, 0, Integer(@lRange));
+end;
+

@@ -1,0 +1,6 @@
+function GetDirectPointer: Pointer;
+function %s.GetDirectPointer: Pointer;
+begin
+  Result := Pointer(SendEditor(SCI_GETDIRECTPOINTER, 0, 0));
+end;
+

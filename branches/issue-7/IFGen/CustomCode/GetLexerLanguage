@@ -1,0 +1,6 @@
+function GetLexerLanguage: UnicodeString;
+function TDScintilla.GetLexerLanguage: UnicodeString;
+begin
+  FHelper.GetText(SCI_GETLEXERLANGUAGE, 0, Result);
+end;
+

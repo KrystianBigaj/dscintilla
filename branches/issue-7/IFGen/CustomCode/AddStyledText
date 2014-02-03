@@ -1,0 +1,6 @@
+procedure AddStyledText(const ACells: TDSciCells);
+procedure TDScintilla.AddStyledText(const ACells: TDSciCells);
+begin
+  SendEditor(SCI_ADDSTYLEDTEXT, System.Length(ACells) * 2, Integer(ACells));
+end;
+

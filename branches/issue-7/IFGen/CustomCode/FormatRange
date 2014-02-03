@@ -1,0 +1,6 @@
+function FormatRange(ADraw: Boolean; var AFr: TDSciRangeToFormat): Integer;
+function TDScintilla.FormatRange(ADraw: Boolean; var AFr: TDSciRangeToFormat): Integer;
+begin
+  Result := SendEditor(SCI_FORMATRANGE, Integer(ADraw), Integer(@AFr));
+end;
+

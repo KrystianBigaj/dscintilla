@@ -1,0 +1,6 @@
+function GetWordChars: AnsiString;
+function TDScintilla.GetWordChars: AnsiString;
+begin
+  FHelper.GetTextA(SCI_GETWORDCHARS, 0, Result);
+end;
+

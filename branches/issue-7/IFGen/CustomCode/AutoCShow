@@ -1,0 +1,6 @@
+procedure AutoCShow(ALenEntered: Integer; const AItemList: UnicodeString);
+procedure TDScintilla.AutoCShow(ALenEntered: Integer; const AItemList: UnicodeString);
+begin
+  FHelper.SetText(SCI_AUTOCSHOW, ALenEntered, AItemList);
+end;
+

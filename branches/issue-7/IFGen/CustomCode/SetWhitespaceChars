@@ -1,0 +1,6 @@
+procedure SetWhitespaceChars(const ACharacters: UnicodeString);
+procedure TDScintilla.SetWhitespaceChars(const ACharacters: UnicodeString);
+begin
+  FHelper.SetText(SCI_SETWHITESPACECHARS, 0, ACharacters);
+end;
+

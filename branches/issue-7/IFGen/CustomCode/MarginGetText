@@ -1,0 +1,6 @@
+function MarginGetText(ALine: Integer): UnicodeString;
+function TDScintilla.MarginGetText(ALine: Integer): UnicodeString;
+begin
+  FHelper.GetText(SCI_MARGINGETTEXT, ALine, Result);
+end;
+
