@@ -13,6 +13,11 @@ begin
   FHelper.SetText(SCI_INSERTTEXT, APos, AText);
 end;
 
+procedure TDScintilla.ChangeInsertion(const AText: UnicodeString);
+begin
+  FHelper.SetTextLen(SCI_CHANGEINSERTION, AText);
+end;
+
 procedure TDScintilla.ClearAll;
 begin
   SendEditor(SCI_CLEARALL, 0, 0);
@@ -1353,6 +1358,11 @@ end;
 function TDScintilla.AddSelection(ACaret: Integer; AAnchor: Integer): Integer;
 begin
   Result := SendEditor(SCI_ADDSELECTION, ACaret, AAnchor);
+end;
+
+procedure TDScintilla.DropSelectionN(ASelection: Integer);
+begin
+  SendEditor(SCI_DROPSELECTIONN, ASelection, 0);
 end;
 
 procedure TDScintilla.RotateSelection;

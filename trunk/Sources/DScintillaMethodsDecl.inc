@@ -7,6 +7,9 @@
     /// <summary>Insert string at a position.</summary>
     procedure InsertText(APos: Integer; const AText: UnicodeString);
 
+    /// <summary>Change the text that is being inserted in response to SC_MOD_INSERTCHECK</summary>
+    procedure ChangeInsertion(const AText: UnicodeString);
+
     /// <summary>Delete all text in the document.</summary>
     procedure ClearAll;
 
@@ -824,6 +827,9 @@
 
     /// <summary>Add a selection</summary>
     function AddSelection(ACaret: Integer; AAnchor: Integer): Integer;
+
+    /// <summary>Drop one selection</summary>
+    procedure DropSelectionN(ASelection: Integer);
 
     /// <summary>Set the main selection to the next selection.</summary>
     procedure RotateSelection;
