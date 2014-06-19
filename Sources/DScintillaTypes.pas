@@ -249,6 +249,9 @@ const
   /// <summary>Insert string at a position.</summary>
   SCI_INSERTTEXT = 2003;
 
+  /// <summary>Change the text that is being inserted in response to SC_MOD_INSERTCHECK</summary>
+  SCI_CHANGEINSERTION = 2672;
+
   /// <summary>Delete all text in the document.</summary>
   SCI_CLEARALL = 2004;
 
@@ -416,6 +419,7 @@ const
   SC_MARK_AVAILABLE = 28;
   SC_MARK_UNDERLINE = 29;
   SC_MARK_RGBAIMAGE = 30;
+  SC_MARK_BOOKMARK = 31;
 
   SC_MARK_CHARACTER = 10000;
 
@@ -999,8 +1003,8 @@ const
   /// <summary>Returns the print colour mode.</summary>
   SCI_GETPRINTCOLOURMODE = 2149;
 
-  SCFIND_WHOLEWORD = 2;
-  SCFIND_MATCHCASE = 4;
+  SCFIND_WHOLEWORD = $2;
+  SCFIND_MATCHCASE = $4;
   SCFIND_WORDSTART = $00100000;
   SCFIND_REGEXP = $00200000;
   SCFIND_POSIX = $00400000;
@@ -1185,6 +1189,9 @@ const
   /// <summary>Retrieve the position where the caret was before displaying the call tip.</summary>
   SCI_CALLTIPPOSSTART = 2203;
 
+  /// <summary>Set the start position in order to change when backspacing removes the calltip.</summary>
+  SCI_CALLTIPSETPOSSTART = 2214;
+
   /// <summary>Highlight a segment of the definition.</summary>
   SCI_CALLTIPSETHLT = 2204;
 
@@ -1286,6 +1293,7 @@ const
   SC_FOLDFLAG_LINEAFTER_EXPANDED = $0008;
   SC_FOLDFLAG_LINEAFTER_CONTRACTED = $0010;
   SC_FOLDFLAG_LEVELNUMBERS = $0040;
+  SC_FOLDFLAG_LINESTATE = $0080;
 
   /// <summary>Set some style options for folding.</summary>
   SCI_SETFOLDFLAGS = 2233;
@@ -1323,6 +1331,7 @@ const
   SC_WRAP_NONE = 0;
   SC_WRAP_WORD = 1;
   SC_WRAP_CHAR = 2;
+  SC_WRAP_WHITESPACE = 3;
 
   /// <summary>Sets whether text is word wrapped.</summary>
   SCI_SETWRAPMODE = 2268;
@@ -2299,6 +2308,9 @@ const
   /// <summary>Add a selection</summary>
   SCI_ADDSELECTION = 2573;
 
+  /// <summary>Drop one selection</summary>
+  SCI_DROPSELECTIONN = 2671;
+
   /// <summary>Set the main selection</summary>
   SCI_SETMAINSELECTION = 2574;
 
@@ -2453,6 +2465,21 @@ const
   /// <summary>Sets the caret line to always visible.</summary>
   SCI_SETCARETLINEVISIBLEALWAYS = 2655;
 
+  /// <summary>Line end types which may be used in addition to LF, CR, and CRLF
+  /// SC_LINE_END_TYPE_UNICODE includes U+2028 Line Separator,
+  /// U+2029 Paragraph Separator, and U+0085 Next Line</summary>
+  SC_LINE_END_TYPE_DEFAULT = 0;
+  SC_LINE_END_TYPE_UNICODE = 1;
+
+  /// <summary>Set the line end types that the application wants to use. May not be used if incompatible with lexer or encoding.</summary>
+  SCI_SETLINEENDTYPESALLOWED = 2656;
+
+  /// <summary>Get the line end types currently allowed.</summary>
+  SCI_GETLINEENDTYPESALLOWED = 2657;
+
+  /// <summary>Get the line end types currently recognised. May be a subset of the allowed types due to lexer limitation.</summary>
+  SCI_GETLINEENDTYPESACTIVE = 2658;
+
   /// <summary>Set the way a character is drawn.</summary>
   SCI_SETREPRESENTATION = 2665;
 
@@ -2529,6 +2556,38 @@ const
   /// <summary>Retrieve a '\n' separated list of descriptions of the keyword sets understood by the current lexer.</summary>
   SCI_DESCRIBEKEYWORDSETS = 4017;
 
+  /// <summary>Bit set of LineEndType enumertion for which line ends beyond the standard
+  /// LF, CR, and CRLF are supported by the lexer.</summary>
+  SCI_GETLINEENDTYPESSUPPORTED = 4018;
+
+  /// <summary>Allocate a set of sub styles for a particular base style, returning start of range</summary>
+  SCI_ALLOCATESUBSTYLES = 4020;
+
+  /// <summary>The starting style number for the sub styles associated with a base style</summary>
+  SCI_GETSUBSTYLESSTART = 4021;
+
+  /// <summary>The number of sub styles associated with a base style</summary>
+  SCI_GETSUBSTYLESLENGTH = 4022;
+
+  /// <summary>For a sub style, return the base style, else return the argument.</summary>
+  SCI_GETSTYLEFROMSUBSTYLE = 4027;
+
+  /// <summary>For a secondary style, return the primary style, else return the argument.</summary>
+  SCI_GETPRIMARYSTYLEFROMSTYLE = 4028;
+
+  /// <summary>Free allocated sub styles</summary>
+  SCI_FREESUBSTYLES = 4023;
+
+  /// <summary>Set the identifiers that are shown in a particular style</summary>
+  SCI_SETIDENTIFIERS = 4024;
+
+  /// <summary>Where styles are duplicated by a feature such as active/inactive code
+  /// return the distance between the two types.</summary>
+  SCI_DISTANCETOSECONDARYSTYLES = 4025;
+
+  /// <summary>Get the set of base styles that can be extended with sub styles</summary>
+  SCI_GETSUBSTYLEBASES = 4026;
+
   /// <summary>Notifications
   /// Type of modification and the action which caused the modification.
   /// These are defined as a bit mask to make it easy to specify which notifications are wanted.
@@ -2553,7 +2612,8 @@ const
   SC_MOD_CHANGEANNOTATION = $20000;
   SC_MOD_CONTAINER = $40000;
   SC_MOD_LEXERSTATE = $80000;
-  SC_MODEVENTMASKALL = $FFFFF;
+  SC_MOD_INSERTCHECK = $100000;
+  SC_MODEVENTMASKALL = $1FFFFF;
 
   SC_UPDATE_CONTENT = $1;
   SC_UPDATE_SELECTION = $2;
@@ -2706,6 +2766,10 @@ const
   SCLEX_LITERATEHASKELL = 108;
   SCLEX_STTXT = 109;
   SCLEX_KVIRC = 110;
+  SCLEX_RUST = 111;
+  SCLEX_DMAP = 112;
+  SCLEX_AS = 113;
+  SCLEX_DMIS = 114;
 
   /// <summary>When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
   /// value assigned in sequence from SCLEX_AUTOMATIC+1.</summary>
@@ -2755,6 +2819,9 @@ const
   SCE_C_HASHQUOTEDSTRING = 22;
   SCE_C_PREPROCESSORCOMMENT = 23;
   SCE_C_PREPROCESSORCOMMENTDOC = 24;
+  SCE_C_USERLITERAL = 25;
+  SCE_C_TASKMARKER = 26;
+  SCE_C_ESCAPESEQUENCE = 27;
 
   /// <summary>Lexical states for SCLEX_D</summary>
   SCE_D_DEFAULT = 0;
@@ -3045,6 +3112,10 @@ const
   SCE_B_ERROR = 16;
   SCE_B_HEXNUMBER = 17;
   SCE_B_BINNUMBER = 18;
+  SCE_B_COMMENTBLOCK = 19;
+  SCE_B_DOCLINE = 20;
+  SCE_B_DOCBLOCK = 21;
+  SCE_B_DOCKEYWORD = 22;
 
   /// <summary>Lexical states for SCLEX_PROPERTIES</summary>
   SCE_PROPS_DEFAULT = 0;
@@ -3298,7 +3369,7 @@ const
   SCE_SCRIPTOL_CLASSNAME = 14;
   SCE_SCRIPTOL_PREPROCESSOR = 15;
 
-  /// <summary>Lexical states for SCLEX_ASM</summary>
+  /// <summary>Lexical states for SCLEX_ASM, SCLEX_AS</summary>
   SCE_ASM_DEFAULT = 0;
   SCE_ASM_COMMENT = 1;
   SCE_ASM_NUMBER = 2;
@@ -4053,7 +4124,7 @@ const
   SCE_R_INFIX = 10;
   SCE_R_INFIXEOL = 11;
 
-  /// <summary>Lexical state for SCLEX_MAGIKSF</summary>
+  /// <summary>Lexical state for SCLEX_MAGIK</summary>
   SCE_MAGIK_DEFAULT = 0;
   SCE_MAGIK_COMMENT = 1;
   SCE_MAGIK_HYPER_COMMENT = 16;
@@ -4315,7 +4386,6 @@ const
   SCE_COFFEESCRIPT_GLOBALCLASS = 19;
   SCE_COFFEESCRIPT_STRINGRAW = 20;
   SCE_COFFEESCRIPT_TRIPLEVERBATIM = 21;
-  SCE_COFFEESCRIPT_HASHQUOTEDSTRING = 22;
   SCE_COFFEESCRIPT_COMMENTBLOCK = 22;
   SCE_COFFEESCRIPT_VERBOSE_REGEX = 23;
   SCE_COFFEESCRIPT_VERBOSE_REGEX_COMMENT = 24;
@@ -4449,46 +4519,53 @@ const
   SCE_KVIRC_STRING_FUNCTION = 11;
   SCE_KVIRC_STRING_VARIABLE = 12;
 
-  /// <summary>Line end types which may be used in addition to LF, CR, and CRLF
-  /// SC_LINE_END_TYPE_UNICODE includes U+2028 Line Separator,
-  /// U+2029 Paragraph Separator, and U+0085 Next Line</summary>
-  SC_LINE_END_TYPE_DEFAULT = 0;
-  SC_LINE_END_TYPE_UNICODE = 1;
+  /// <summary>Lexical states for SCLEX_RUST</summary>
+  SCE_RUST_DEFAULT = 0;
+  SCE_RUST_COMMENTBLOCK = 1;
+  SCE_RUST_COMMENTLINE = 2;
+  SCE_RUST_COMMENTBLOCKDOC = 3;
+  SCE_RUST_COMMENTLINEDOC = 4;
+  SCE_RUST_NUMBER = 5;
+  SCE_RUST_WORD = 6;
+  SCE_RUST_WORD2 = 7;
+  SCE_RUST_WORD3 = 8;
+  SCE_RUST_WORD4 = 9;
+  SCE_RUST_WORD5 = 10;
+  SCE_RUST_WORD6 = 11;
+  SCE_RUST_WORD7 = 12;
+  SCE_RUST_STRING = 13;
+  SCE_RUST_STRINGR = 14;
+  SCE_RUST_CHARACTER = 15;
+  SCE_RUST_OPERATOR = 16;
+  SCE_RUST_IDENTIFIER = 17;
+  SCE_RUST_LIFETIME = 18;
+  SCE_RUST_MACRO = 19;
+  SCE_RUST_LEXERROR = 20;
 
-  /// <summary>Set the line end types that the application wants to use. May not be used if incompatible with lexer or encoding.</summary>
-  SCI_SETLINEENDTYPESALLOWED = 2656;
+  /// <summary>Lexical states for SCLEX_DMAP</summary>
+  SCE_DMAP_DEFAULT = 0;
+  SCE_DMAP_COMMENT = 1;
+  SCE_DMAP_NUMBER = 2;
+  SCE_DMAP_STRING1 = 3;
+  SCE_DMAP_STRING2 = 4;
+  SCE_DMAP_STRINGEOL = 5;
+  SCE_DMAP_OPERATOR = 6;
+  SCE_DMAP_IDENTIFIER = 7;
+  SCE_DMAP_WORD = 8;
+  SCE_DMAP_WORD2 = 9;
+  SCE_DMAP_WORD3 = 10;
 
-  /// <summary>Get the line end types currently allowed.</summary>
-  SCI_GETLINEENDTYPESALLOWED = 2657;
-
-  /// <summary>Get the line end types currently recognised. May be a subset of the allowed types due to lexer limitation.</summary>
-  SCI_GETLINEENDTYPESACTIVE = 2658;
-
-  /// <summary>Bit set of LineEndType enumertion for which line ends beyond the standard
-  /// LF, CR, and CRLF are supported by the lexer.</summary>
-  SCI_GETLINEENDTYPESSUPPORTED = 4018;
-
-  /// <summary>Allocate a set of sub styles for a particular base style, returning start of range</summary>
-  SCI_ALLOCATESUBSTYLES = 4020;
-
-  /// <summary>The starting style number for the sub styles associated with a base style</summary>
-  SCI_GETSUBSTYLESSTART = 4021;
-
-  /// <summary>The number of sub styles associated with a base style</summary>
-  SCI_GETSUBSTYLESLENGTH = 4022;
-
-  /// <summary>Free allocated sub styles</summary>
-  SCI_FREESUBSTYLES = 4023;
-
-  /// <summary>Set the identifiers that are shown in a particular style</summary>
-  SCI_SETIDENTIFIERS = 4024;
-
-  /// <summary>Where styles are duplicated by a feature such as active/inactive code
-  /// return the distance between the two types.</summary>
-  SCI_DISTANCETOSECONDARYSTYLES = 4025;
-
-  /// <summary>Get the set of base styles that can be extended with sub styles</summary>
-  SCI_GETSUBSTYLEBASES = 4026;
+  /// <summary>Lexical states for SCLEX_DMIS</summary>
+  SCE_DMIS_DEFAULT = 0;
+  SCE_DMIS_COMMENT = 1;
+  SCE_DMIS_STRING = 2;
+  SCE_DMIS_NUMBER = 3;
+  SCE_DMIS_KEYWORD = 4;
+  SCE_DMIS_MAJORWORD = 5;
+  SCE_DMIS_MINORWORD = 6;
+  SCE_DMIS_UNSUPPORTED_MAJOR = 7;
+  SCE_DMIS_UNSUPPORTED_MINOR = 8;
+  SCE_DMIS_LABEL = 9;
 
   /// <summary>Deprecated in 2.21
   /// The SC_CP_DBCS value can be used to indicate a DBCS mode for GTK+.</summary>

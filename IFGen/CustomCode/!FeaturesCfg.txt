@@ -701,3 +701,7 @@ GetRangePointer=Hidden~1
 ClearRepresentation=Hidden~1
 SetRepresentation=Hidden~1
 GetRepresentation=Hidden~1
+CallTipSetPosStart=Hidden~1
+DropSelectionN=Hidden~1
+GetStyleFromSubStyle=Hidden~1
+GetPrimaryStyleFromStyle=Hidden~1

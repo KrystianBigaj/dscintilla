@@ -472,6 +472,9 @@
     /// <summary>Get the search flags used by SearchInTarget.</summary>
     function GetSearchFlags: Integer;
 
+    /// <summary>Set the start position in order to change when backspacing removes the calltip.</summary>
+    procedure CallTipSetPosStart(APosStart: Integer);
+
     /// <summary>Set the background colour for the call tip.</summary>
     procedure CallTipSetBack(ABack: TColor);
 
@@ -1049,6 +1052,15 @@
     /// <summary>Sets the caret line to always visible.</summary>
     procedure SetCaretLineVisibleAlways(AAlwaysVisible: Boolean);
 
+    /// <summary>Set the line end types that the application wants to use. May not be used if incompatible with lexer or encoding.</summary>
+    procedure SetLineEndTypesAllowed(ALineEndBitSet: Integer);
+
+    /// <summary>Get the line end types currently allowed.</summary>
+    function GetLineEndTypesAllowed: Integer;
+
+    /// <summary>Get the line end types currently recognised. May be a subset of the allowed types due to lexer limitation.</summary>
+    function GetLineEndTypesActive: Integer;
+
     /// <summary>Set the way a character is drawn.</summary>
     procedure SetRepresentation(AEncodedCharacter: AnsiString; ARepresentation: AnsiString);
 
@@ -1075,15 +1087,6 @@
     /// Return the length of the text.</summary>
     function GetLexerLanguage: UnicodeString;
 
-    /// <summary>Set the line end types that the application wants to use. May not be used if incompatible with lexer or encoding.</summary>
-    procedure SetLineEndTypesAllowed(ALineEndBitSet: Integer);
-
-    /// <summary>Get the line end types currently allowed.</summary>
-    function GetLineEndTypesAllowed: Integer;
-
-    /// <summary>Get the line end types currently recognised. May be a subset of the allowed types due to lexer limitation.</summary>
-    function GetLineEndTypesActive: Integer;
-
     /// <summary>Bit set of LineEndType enumertion for which line ends beyond the standard
     /// LF, CR, and CRLF are supported by the lexer.</summary>
     function GetLineEndTypesSupported: Integer;
@@ -1093,6 +1096,12 @@
 
     /// <summary>The number of sub styles associated with a base style</summary>
     function GetSubStylesLength(AStyleBase: Integer): Integer;
+
+    /// <summary>For a sub style, return the base style, else return the argument.</summary>
+    function GetStyleFromSubStyle(ASubStyle: Integer): Integer;
+
+    /// <summary>For a secondary style, return the primary style, else return the argument.</summary>
+    function GetPrimaryStyleFromStyle(AStyle: Integer): Integer;
 
     /// <summary>Set the identifiers that are shown in a particular style</summary>
     procedure SetIdentifiers(AStyle: Integer; const AIdentifiers: AnsiString);

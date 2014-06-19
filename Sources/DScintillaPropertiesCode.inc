@@ -748,6 +748,11 @@ begin
   Result := SendEditor(SCI_GETSEARCHFLAGS, 0, 0);
 end;
 
+procedure TDScintilla.CallTipSetPosStart(APosStart: Integer);
+begin
+  SendEditor(SCI_CALLTIPSETPOSSTART, APosStart, 0);
+end;
+
 procedure TDScintilla.CallTipSetBack(ABack: TColor);
 begin
   SendEditor(SCI_CALLTIPSETBACK, Integer(ABack), 0);
@@ -1741,6 +1746,21 @@ begin
   SendEditor(SCI_SETCARETLINEVISIBLEALWAYS, Integer(AAlwaysVisible), 0);
 end;
 
+procedure TDScintilla.SetLineEndTypesAllowed(ALineEndBitSet: Integer);
+begin
+  SendEditor(SCI_SETLINEENDTYPESALLOWED, ALineEndBitSet, 0);
+end;
+
+function TDScintilla.GetLineEndTypesAllowed: Integer;
+begin
+  Result := SendEditor(SCI_GETLINEENDTYPESALLOWED, 0, 0);
+end;
+
+function TDScintilla.GetLineEndTypesActive: Integer;
+begin
+  Result := SendEditor(SCI_GETLINEENDTYPESACTIVE, 0, 0);
+end;
+
 procedure TDScintilla.SetRepresentation(AEncodedCharacter: AnsiString; ARepresentation: AnsiString);
 begin
   FHelper.SetTextA(SCI_SETREPRESENTATION, Integer(FHelper.GetPtrFromAStr(AEncodedCharacter)), ARepresentation);
@@ -1785,21 +1805,6 @@ begin
   FHelper.GetText(SCI_GETLEXERLANGUAGE, 0, Result);
 end;
 
-procedure TDScintilla.SetLineEndTypesAllowed(ALineEndBitSet: Integer);
-begin
-  SendEditor(SCI_SETLINEENDTYPESALLOWED, ALineEndBitSet, 0);
-end;
-
-function TDScintilla.GetLineEndTypesAllowed: Integer;
-begin
-  Result := SendEditor(SCI_GETLINEENDTYPESALLOWED, 0, 0);
-end;
-
-function TDScintilla.GetLineEndTypesActive: Integer;
-begin
-  Result := SendEditor(SCI_GETLINEENDTYPESACTIVE, 0, 0);
-end;
-
 function TDScintilla.GetLineEndTypesSupported: Integer;
 begin
   Result := SendEditor(SCI_GETLINEENDTYPESSUPPORTED, 0, 0);
@@ -1813,6 +1818,16 @@ end;
 function TDScintilla.GetSubStylesLength(AStyleBase: Integer): Integer;
 begin
   Result := SendEditor(SCI_GETSUBSTYLESLENGTH, AStyleBase, 0);
+end;
+
+function TDScintilla.GetStyleFromSubStyle(ASubStyle: Integer): Integer;
+begin
+  Result := SendEditor(SCI_GETSTYLEFROMSUBSTYLE, ASubStyle, 0);
+end;
+
+function TDScintilla.GetPrimaryStyleFromStyle(AStyle: Integer): Integer;
+begin
+  Result := SendEditor(SCI_GETPRIMARYSTYLEFROMSTYLE, AStyle, 0);
 end;
 
 procedure TDScintilla.SetIdentifiers(AStyle: Integer; const AIdentifiers: AnsiString);
