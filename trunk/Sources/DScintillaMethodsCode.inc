@@ -58,11 +58,11 @@ begin
     Exit;
   end;
 
-  SetLength(Result, AEnd - AStart + 2{nul});
+  SetLength(Result, AEnd - AStart + 1{nul});
 
   lRange.chrg.cpMin := AStart;
   lRange.chrg.cpMax := AEnd;
-  lRange.lpstrText := @Result;
+  lRange.lpstrText := @Result[0];
 
   SendEditor(SCI_GETSTYLEDTEXT, 0, Integer(@lRange));
 end;
