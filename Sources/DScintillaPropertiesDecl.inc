@@ -881,7 +881,7 @@
     function GetMarginOptions: Integer;
 
     /// <summary>Set the annotation text for a line</summary>
-    procedure AnnotationSetText(ALine: Integer; const AText: UnicodeString);
+    procedure AnnotationSetText(ALine: Integer; const AText: UnicodeString); overload;
 
     /// <summary>Get the annotation text for a line</summary>
     function AnnotationGetText(ALine: Integer): UnicodeString;
@@ -1121,4 +1121,7 @@
     /// In palette mode, Scintilla uses the environment's palette calls to display
     /// more colours. This may lead to ugly displays.</summary>
     // procedure SetUsePalette(AUsePalette: Boolean);
+
+    /// <summary>Clear the annotation text for a line</summary>
+    procedure AnnotationSetText(ALine: Integer); overload;
 

@@ -94,6 +94,7 @@ resourcestring
 
 const
   cSCI_IFACE = 'Scintilla.iface';
+  cDSCI_IFACE = 'DScintilla.iface';
   cSCI_TYPES = '..\Sources\DScintillaTypes.pas';
   cSCI_API = '..\Sources\DScintilla.pas';
   cSCI_API_INCs = '..\Sources\DScintilla';
@@ -496,7 +497,7 @@ begin
   try
     FreeAndNil(FSciGen);
 
-    FSciGen := GetDelphiCode(cSCI_IFACE);
+    FSciGen := GetDelphiCode(cSCI_IFACE, cDSCI_IFACE);
 
     memIFace.Lines.LoadFromFile(cSCI_IFACE);
     lFile := TStringList.Create;

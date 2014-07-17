@@ -135,7 +135,7 @@ type
     class function GetIsCustomFile(AName: String): Boolean;
   end;
 
-function GetDelphiCode(ASciIFaceFile: String): TSciGen;
+function GetDelphiCode(ASciIFaceFile, ASciIFaceFileCustom: String): TSciGen;
 
 function GetCustomFile(AName: String): String;
 
@@ -158,7 +158,7 @@ begin
   Result := Format(rsCustomsCode, [AName]);
 end;
 
-function GetDelphiCode(ASciIFaceFile: String): TSciGen;
+function GetDelphiCode(ASciIFaceFile, ASciIFaceFileCustom: String): TSciGen;
 type
   TTokenType = (ttNull, ttSpace, ttString, ttInt, ttHex, ttBraceOpen, ttBraceClose, ttEqual, ttComma,
     ttComment, ttDocComment);
@@ -464,8 +464,11 @@ var
     ExceptToken([ttInt]);
     lCodeItem.ItemIndex := lToken;
 
-    lCodeItem.ConstName := Format('SCI_%s', [UpperCase(lCodeItem.ItemName)]);
-    AddConst(lCodeItem.ConstName, lCodeItem.ItemIndex, False, 2);
+    if lCodeItem.ItemIndex <> '0' then
+    begin
+      lCodeItem.ConstName := Format('SCI_%s', [UpperCase(lCodeItem.ItemName)]);
+      AddConst(lCodeItem.ConstName, lCodeItem.ItemIndex, False, 2);
+    end;
 
     ExceptToken([ttBraceOpen]);
 
@@ -547,31 +550,37 @@ var
     SkipLine;
   end;
 
+  procedure ParseFile(AFileName: String);
+  begin
+    lLine := '';
+    lLineIdx := 0;
+
+    lToken := '';
+    lTokenType := ttNull;
+    lTokenIdx := 1;
+
+    lLastLineVar := False;
+
+    lIn.LoadFromFile(AFileName);
+
+    while NextLine do
+      ParseLine;
+
+  end;
+
 begin
-  lLine := '';
-  lLineIdx := 0;
-
-  lToken := '';
-  lTokenType := ttNull;
-  lTokenIdx := 1;
-
-  lLastLineVar := False;
-
   Result := TSciGen.Create;
   try
     lRes := Result;
 
     lIn := TStringList.Create;
     try
-      lIn.LoadFromFile(ASciIFaceFile);
-
-      while NextLine do
-        ParseLine;
+      ParseFile(ASciIFaceFile);
+      ParseFile(ASciIFaceFileCustom);
 
 {$IFNDEF SIMPLE_WRAPPER}
       Result.SecondPass;
 {$ENDIF}
-
     finally
       lIn.Free;
     end;

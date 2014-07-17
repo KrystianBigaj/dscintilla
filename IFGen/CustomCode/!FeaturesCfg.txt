@@ -142,6 +142,7 @@ FindText=Param1Enum~TKBSciFindOptionSet|Hidden~1
 GetSelAlpha=DefaultValue~256|Hidden~1
 GetCaretLineBackAlpha=DefaultValue~256|Hidden~1
 AnnotationSetText=Param2Enum~String|Hidden~1
+AnnotationSetText2=Param2Enum~String|Hidden~1
 AnnotationGetText=ReturnEnum~String|Hidden~1
 UndoAction=EnumSet~1
 AddUndoAction=Param2Enum~TKBSciUndoActionFlagsSet|Hidden~1
