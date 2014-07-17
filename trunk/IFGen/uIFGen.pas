@@ -463,12 +463,10 @@ var
 
     ExceptToken([ttInt]);
     lCodeItem.ItemIndex := lToken;
+    lCodeItem.ConstName := Format('SCI_%s', [UpperCase(lCodeItem.ItemName)]);
 
     if lCodeItem.ItemIndex <> '0' then
-    begin
-      lCodeItem.ConstName := Format('SCI_%s', [UpperCase(lCodeItem.ItemName)]);
       AddConst(lCodeItem.ConstName, lCodeItem.ItemIndex, False, 2);
-    end;
 
     ExceptToken([ttBraceOpen]);
 
