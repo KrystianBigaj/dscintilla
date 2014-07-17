@@ -1855,3 +1855,8 @@ end;
 //   SendEditor(SCI_SETUSEPALETTE, Integer(AUsePalette), 0);
 // end;
 
+procedure TDScintilla.AnnotationSetText(ALine: Integer);
+begin
+  SendEditor(SCI_ANNOTATIONSETTEXT, ALine, 0);
+end;
+
