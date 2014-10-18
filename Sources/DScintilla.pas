@@ -58,6 +58,9 @@ type
     FInitDefaultsDelayed: Boolean;
 
     FOnInitDefaults: TNotifyEvent;
+    FOnStoreDocState: TNotifyEvent;
+    FOnRestoreDocState: TNotifyEvent;
+
     FOnChange: TNotifyEvent;
     FOnSCNotificationEvent: TDSciNotificationEvent;
 
@@ -94,9 +97,12 @@ type
     procedure CreateWnd; override;
     procedure Loaded; override;
 
-    /// <summary>Initializes Scintilla control after creating window</summary>
+    /// <summary>Initializes Scintilla control after creating or recreating window</summary>
     procedure InitDefaults; virtual;
     procedure DoInitDefaults;
+
+    procedure DoStoreDocState; virtual;
+    procedure DoRestoreDocState; virtual;
 
     /// <summary>Handles SCEN_CHANGE message from Scintilla</summary>
     procedure CNCommand(var AMessage: TWMCommand); message CN_COMMAND;
@@ -109,9 +115,6 @@ type
 
     procedure WMCreate(var AMessage: TWMCreate); message WM_CREATE;
     procedure WMDestroy(var AMessage: TWMDestroy); message WM_DESTROY;
-
-    procedure DoStoreDocState; virtual;
-    procedure DoRestoreDocState; virtual;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -142,7 +145,13 @@ type
 
     property Lines: TDSciLines read FLines write SetLines;
 
+    // Called after when window is created or recreated
     property OnInitDefaults: TNotifyEvent read FOnInitDefaults write FOnInitDefaults;
+
+    // OnStoreDocState/OnRestoreDocState are called when window is recreated
+    // You can store/restore document state (for example caret/scroll position)
+    property OnStoreDocState: TNotifyEvent read FOnStoreDocState write FOnStoreDocState;
+    property OnRestoreDocState: TNotifyEvent read FOnRestoreDocState write FOnRestoreDocState;
 
     // Scintilla events - see documentation at http://www.scintilla.org/ScintillaDoc.html#Notifications
 
@@ -233,6 +242,9 @@ end;
 
 procedure TDScintilla.DoStoreDocState;
 begin
+  if Assigned(FOnStoreDocState) then
+    FOnStoreDocState(Self);
+
   FStoredDocPointer := GetDocPointer;
   if FStoredDocPointer <> nil then
     AddRefDocument(FStoredDocPointer);
@@ -244,6 +256,9 @@ begin
 
   ReleaseDocument(FStoredDocPointer);
   FStoredDocPointer := nil;
+
+  if Assigned(OnRestoreDocState) then
+    OnRestoreDocState(Self);
 end;
 
 procedure TDScintilla.CreateWnd;
