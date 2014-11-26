@@ -1,0 +1,6 @@
+procedure ChangeInsertion(const AText: UnicodeString);
+procedure TDScintilla.ChangeInsertion(const AText: UnicodeString);
+begin
+  FHelper.SetTextLen(SCI_CHANGEINSERTION, AText);
+end;
+

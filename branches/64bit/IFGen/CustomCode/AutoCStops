@@ -1,0 +1,6 @@
+procedure AutoCStops(const ACharacterSet: UnicodeString);
+procedure TDScintilla.AutoCStops(const ACharacterSet: UnicodeString);
+begin
+  FHelper.SetText(SCI_AUTOCSTOPS, 0, ACharacterSet);
+end;
+

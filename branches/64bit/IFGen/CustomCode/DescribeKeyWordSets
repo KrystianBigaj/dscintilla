@@ -1,0 +1,6 @@
+function DescribeKeyWordSets: UnicodeString;
+function TDScintilla.DescribeKeyWordSets: UnicodeString;
+begin
+  FHelper.GetText(SCI_DESCRIBEKEYWORDSETS, 0, Result);
+end;
+

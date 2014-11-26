@@ -1,0 +1,6 @@
+function ReplaceTargetRE(const AText: UnicodeString): Integer;
+function TDScintilla.ReplaceTargetRE(const AText: UnicodeString): Integer;
+begin
+  Result := FHelper.SetTextLen(SCI_REPLACETARGETRE, AText);
+end;
+

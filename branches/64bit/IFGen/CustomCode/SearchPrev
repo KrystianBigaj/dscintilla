@@ -1,0 +1,6 @@
+function SearchPrev(AFlags: Integer; const AText: UnicodeString): Integer;
+function TDScintilla.SearchPrev(AFlags: Integer; const AText: UnicodeString): Integer;
+begin
+  Result := FHelper.SetText(SCI_SEARCHPREV, AFlags, AText);
+end;
+
