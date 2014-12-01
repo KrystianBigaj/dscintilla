@@ -55,7 +55,7 @@ type
 { TDSciSendEditor }
 
   TDSciSendEditor = function(AMessage: Integer;
-    WParam: Integer = 0; LParam: Integer = 0): Integer of object;
+    WParam: WPARAM = 0; LParam: LPARAM = 0): LRESULT of object;
 
 { TDSciDocument }
 
@@ -135,8 +135,8 @@ type
     length: Integer;                // SCN_MODIFIED
     linesAdded: Integer;            // SCN_MODIFIED
     message: Integer;               // SCN_MACRORECORD
-    wParam: Integer;                // SCN_MACRORECORD
-    lParam: Integer;                // SCN_MACRORECORD
+    wParam: WPARAM;                 // SCN_MACRORECORD
+    lParam: LPARAM;                 // SCN_MACRORECORD
     line: Integer;                  // SCN_MODIFIED
     foldLevelNow: Integer;          // SCN_MODIFIED
     foldLevelPrev: Integer;         // SCN_MODIFIED
