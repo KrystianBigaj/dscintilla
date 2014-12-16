@@ -43,15 +43,17 @@ interface
 uses
   DScintillaCustom, DScintillaTypes, DScintillaUtils,
 
-  SysUtils, Classes, Messages, Graphics, Controls, Math, Windows;
+  Windows, SysUtils, Classes, Messages, Graphics, Controls, Math;
 
 type
 
 { TDScintilla }
 
-  {$IFDEF XE2_UP}
+
+  // XE2+
+  {$IF CompilerVersion > 23}
   [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
-  {$ENDIF}
+  {$IFEND}
 
   TDScintilla = class(TDScintillaCustom)
   private

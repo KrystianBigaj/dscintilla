@@ -57,6 +57,12 @@ const
 
 type
 
+// Native(U)Int types under D2007-D2009 are buggy.
+// I'm not sure about, D2010-XE, but they are 32bit only.
+{$IF CompilerVersion < 23}
+  NativeInt = Integer;
+{$IFEND}
+
 { TDSciUnicodeStrings }
 
 {$IF Defined(DSCI_JCLWIDESTRINGS)}
