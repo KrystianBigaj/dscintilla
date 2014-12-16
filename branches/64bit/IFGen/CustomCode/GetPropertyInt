@@ -4,6 +4,6 @@ begin
   if AKey = '' then
     Result := ADefault
   else
-    Result := SendEditor(SCI_GETPROPERTYINT, Integer(AnsiString(AKey)), ADefault);
+    Result := SendEditor(SCI_GETPROPERTYINT, WPARAM(AnsiString(AKey)), ADefault);
 end;
 

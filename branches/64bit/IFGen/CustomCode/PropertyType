@@ -4,6 +4,6 @@ begin
   if AName = '' then
     Result := -1
   else
-    Result := SendEditor(SCI_PROPERTYTYPE, Integer(UnicodeStringToUTF8(AName)), 0);
+    Result := SendEditor(SCI_PROPERTYTYPE, LPARAM(UnicodeStringToUTF8(AName)), 0);
 end;
 
