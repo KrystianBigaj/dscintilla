@@ -31,6 +31,9 @@ package DScintillaRuntime;
 
 requires
   rtl,
+{$IFNDEF UNICODE}
+  Jcl,
+{$ENDIF}
   vcl;
 
 contains
