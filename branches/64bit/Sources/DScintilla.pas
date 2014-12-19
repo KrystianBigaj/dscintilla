@@ -50,9 +50,8 @@ type
 
 { TDScintilla }
 
-
   // XE2+
-  {$IF CompilerVersion > 23}
+  {$IF CompilerVersion >= 23}
   [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
   {$IFEND}
 
