@@ -4,6 +4,6 @@ begin
   if AKey = '' then
     Result := ''
   else
-    FHelper.GetText(SCI_GETPROPERTY, Integer(AnsiString(AKey)), Result);
+    FHelper.GetText(SCI_GETPROPERTY, LPARAM(AnsiString(AKey)), Result);
 end;
 

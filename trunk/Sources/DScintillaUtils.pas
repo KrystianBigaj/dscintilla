@@ -11,15 +11,17 @@
  * for the specific language governing rights and limitations under the
  * License.
  *
- * The Original Code is Krystian Bigaj code.
+ * The Original Code is DScintillaUtils.pas
  *
  * The Initial Developer of the Original Code is Krystian Bigaj.
  *
- * Portions created by the Initial Developer are Copyright (C) 2010
+ * Portions created by the Initial Developer are Copyright (C) 2010-2014
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *   (none)
+ * - Michal Gajek
+ * - Marko Njezic
+ * - Michael Staszewski
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -50,12 +52,18 @@ uses
   JclWideStrings,
 {$IFEND}
 
-  SysUtils, Classes;
+  SysUtils, Classes, Windows;
 
 const
   cDSciNull: AnsiChar = #0;
 
 type
+
+// Native(U)Int types under D2007-D2009 are buggy.
+// I'm not sure about, D2010-XE, but they are 32bit only.
+{$IF CompilerVersion < 23}
+  NativeInt = Integer;
+{$IFEND}
 
 { TDSciUnicodeStrings }
 
@@ -85,7 +93,7 @@ type
     constructor Create(ASendEditor: TDSciSendEditor);
 
     function SendEditor(AMessage: Integer;
-      WParam: Integer = 0; LParam: Integer = 0): Integer;
+      WParam: WPARAM = 0; LParam: LPARAM = 0): LRESULT;
 
     function IsUTF8: Boolean;
 
@@ -234,7 +242,7 @@ begin
   inherited Create;
 end;
 
-function TDSciHelper.SendEditor(AMessage, WParam, LParam: Integer): Integer;
+function TDSciHelper.SendEditor(AMessage: Integer; WParam: WPARAM; LParam: LPARAM): LRESULT;
 begin
   Result := FSendEditor(AMessage, WParam, LParam);
 end;
@@ -278,7 +286,7 @@ var
 begin
   lBuf := AllocMem(SendEditor(AMessage, AWParam) + 1);
   try
-    Result := SendEditor(AMessage, AWParam, Integer(lBuf));
+    Result := SendEditor(AMessage, AWParam, LPARAM(lBuf));
     AText := GetStrFromPtr(lBuf);
   finally
     FreeMem(lBuf);
@@ -292,7 +300,7 @@ var
 begin
   lBuf := AllocMem(SendEditor(AMessage, AWParam) + 1);
   try
-    Result := SendEditor(AMessage, AWParam, Integer(lBuf));
+    Result := SendEditor(AMessage, AWParam, LPARAM(lBuf));
     AText := GetStrFromPtrA(lBuf);
   finally
     FreeMem(lBuf);
@@ -303,34 +311,34 @@ function TDSciHelper.SetText(AMessage, AWParam: Integer;
   const AText: UnicodeString): Integer;
 begin
   if AText = '' then
-    Result := SendEditor(AMessage, AWParam, Integer(@cDSciNull))
+    Result := SendEditor(AMessage, AWParam, LPARAM(@cDSciNull))
   else
     if IsUTF8 then
-      Result := SendEditor(AMessage, AWParam, Integer(UnicodeStringToUTF8(AText)))
+      Result := SendEditor(AMessage, AWParam, LPARAM(UnicodeStringToUTF8(AText)))
     else
-      Result := SendEditor(AMessage, AWParam, Integer(AnsiString(AText)));
+      Result := SendEditor(AMessage, AWParam, LPARAM(AnsiString(AText)));
 end;
 
 function TDSciHelper.SetTextA(AMessage, AWParam: Integer;
   const AText: AnsiString): Integer;
 begin
   if AText = '' then
-    Result := SendEditor(AMessage, AWParam, Integer(@cDSciNull))
+    Result := SendEditor(AMessage, AWParam, LPARAM(@cDSciNull))
   else
-    Result := SendEditor(AMessage, AWParam, Integer(AText));
+    Result := SendEditor(AMessage, AWParam, LPARAM(AText));
 end;
 
 function TDSciHelper.GetTextLen(AMessage: Integer;
   var AText: UnicodeString): Integer;
 var
   lBuf: PAnsiChar;
-  lLen: Integer;
+  lLen: NativeInt;
 begin
   lLen := SendEditor(AMessage);
 
   lBuf := AllocMem(lLen + 1);
   try
-    Result := SendEditor(AMessage, lLen + 1, Integer(lBuf));
+    Result := SendEditor(AMessage, lLen + 1, LPARAM(lBuf));
     AText := GetStrFromPtr(lBuf);
   finally
     FreeMem(lBuf);
@@ -344,16 +352,16 @@ var
   lAnsi: AnsiString;
 begin
   if AText = '' then
-    Result := SendEditor(AMessage, 0, Integer(@cDSciNull))
+    Result := SendEditor(AMessage, 0, LPARAM(@cDSciNull))
   else
     if IsUTF8 then
     begin
       lUTF8 := UnicodeStringToUTF8(AText);
-      Result := SendEditor(AMessage, System.Length(lUTF8), Integer(lUTF8));
+      Result := SendEditor(AMessage, System.Length(lUTF8), LPARAM(lUTF8));
     end else
     begin
       lAnsi := AnsiString(AText);
-      Result := SendEditor(AMessage, System.Length(lAnsi), Integer(lAnsi));
+      Result := SendEditor(AMessage, System.Length(lAnsi), LPARAM(lAnsi));
     end;
 end;
 
@@ -395,13 +403,13 @@ end;
 function TDSciLines.GetTextStr: UnicodeString;
 var
   lBuf: PAnsiChar;
-  lLen: Integer;
+  lLen: NativeInt;
 begin
   lLen := FHelper.SendEditor(SCI_GETLENGTH);
 
   lBuf := AllocMem(lLen + 1);
   try
-    FHelper.SendEditor(SCI_GETTEXT, lLen + 1, Integer(lBuf));
+    FHelper.SendEditor(SCI_GETTEXT, lLen + 1, LPARAM(lBuf));
     Result := FHelper.GetStrFromPtr(lBuf);
   finally
     FreeMem(lBuf);
@@ -446,7 +454,7 @@ begin
   lBuf := AllocMem(lTextRange.chrg.cpMax - lTextRange.chrg.cpMin  + 1);
   try
     lTextRange.lpstrText := PAnsiChar(lBuf);
-    FHelper.SendEditor(SCI_GETTEXTRANGE, 0, Integer(@lTextRange));
+    FHelper.SendEditor(SCI_GETTEXTRANGE, 0, LPARAM(@lTextRange));
     Result := FHelper.GetStrFromPtr(lBuf);
   finally
     FreeMem(lBuf);

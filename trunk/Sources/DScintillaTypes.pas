@@ -11,15 +11,17 @@
  * for the specific language governing rights and limitations under the
  * License.
  *
- * The Original Code is Krystian Bigaj code.
+ * The Original Code is DScintillaTypes.pas
  *
  * The Initial Developer of the Original Code is Krystian Bigaj.
  *
- * Portions created by the Initial Developer are Copyright (C) 2010
+ * Portions created by the Initial Developer are Copyright (C) 2010-2014
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *   (none)
+ * - Michal Gajek
+ * - Marko Njezic
+ * - Michael Staszewski
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -55,7 +57,7 @@ type
 { TDSciSendEditor }
 
   TDSciSendEditor = function(AMessage: Integer;
-    WParam: Integer = 0; LParam: Integer = 0): Integer of object;
+    WParam: WPARAM = 0; LParam: LPARAM = 0): LRESULT of object;
 
 { TDSciDocument }
 
@@ -135,8 +137,8 @@ type
     length: Integer;                // SCN_MODIFIED
     linesAdded: Integer;            // SCN_MODIFIED
     message: Integer;               // SCN_MACRORECORD
-    wParam: Integer;                // SCN_MACRORECORD
-    lParam: Integer;                // SCN_MACRORECORD
+    wParam: WPARAM;                 // SCN_MACRORECORD
+    lParam: LPARAM;                 // SCN_MACRORECORD
     line: Integer;                  // SCN_MODIFIED
     foldLevelNow: Integer;          // SCN_MODIFIED
     foldLevelPrev: Integer;         // SCN_MODIFIED

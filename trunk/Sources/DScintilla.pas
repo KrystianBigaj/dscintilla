@@ -11,16 +11,17 @@
  * for the specific language governing rights and limitations under the
  * License.
  *
- * The Original Code is Krystian Bigaj code.
+ * The Original Code is DScintilla.pas
  *
  * The Initial Developer of the Original Code is Krystian Bigaj.
  *
- * Portions created by the Initial Developer are Copyright (C) 2010-2013
+ * Portions created by the Initial Developer are Copyright (C) 2010-2014
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
  * - Michal Gajek
  * - Marko Njezic
+ * - Michael Staszewski
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -43,11 +44,16 @@ interface
 uses
   DScintillaCustom, DScintillaTypes, DScintillaUtils,
 
-  SysUtils, Classes, Messages, Graphics, Controls, Math;
+  Windows, SysUtils, Classes, Messages, Graphics, Controls, Math;
 
 type
 
 { TDScintilla }
+
+  // XE2+
+  {$IF CompilerVersion >= 23}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$IFEND}
 
   TDScintilla = class(TDScintillaCustom)
   private

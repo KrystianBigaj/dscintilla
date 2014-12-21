@@ -4,6 +4,6 @@ begin
   if AName = '' then
     Result := ''
   else
-    FHelper.GetText(SCI_DESCRIBEPROPERTY, Integer(UnicodeStringToUTF8(AName)), Result);
+    FHelper.GetText(SCI_DESCRIBEPROPERTY, LPARAM(UnicodeStringToUTF8(AName)), Result);
 end;
 
