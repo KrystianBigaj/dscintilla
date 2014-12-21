@@ -93,7 +93,7 @@ type
     /// <summary>Sends message to Scintilla control.
     /// For list of commands see DScintillaTypes.pas and documentation at:
     /// http://www.scintilla.org/ScintillaDoc.html</summary>
-    function SendEditor(AMessage: Integer; WParam: WPARAM = 0; LParam: LPARAM = 0): LRESULT;
+    function SendEditor(AMessage: Integer; WParam: WPARAM = 0; LParam: LPARAM = 0): LRESULT; virtual;
 
   published
 
