@@ -1,6 +1,0 @@
-function GetSelText: UnicodeString;
-function TDScintilla.GetSelText: UnicodeString;
-begin
-  FHelper.GetText(SCI_GETSELTEXT, 0, Result);
-end;
-

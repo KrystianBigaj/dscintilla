@@ -1,6 +1,0 @@
-function GetPunctuationChars: AnsiString;
-function TDScintilla.GetPunctuationChars: AnsiString;
-begin
-  FHelper.GetTextA(SCI_GETPUNCTUATIONCHARS, 0, Result);
-end;
-

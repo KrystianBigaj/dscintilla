@@ -1,6 +1,0 @@
-procedure AutoCSetFillUps(const ACharacterSet: UnicodeString);
-procedure TDScintilla.AutoCSetFillUps(const ACharacterSet: UnicodeString);
-begin
-  FHelper.SetText(SCI_AUTOCSETFILLUPS, 0, ACharacterSet);
-end;
-

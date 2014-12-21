@@ -1,9 +1,0 @@
-procedure CallTipShow(APos: Integer; const ADefinition: UnicodeString);
-procedure TDScintilla.CallTipShow(APos: Integer; const ADefinition: UnicodeString);
-begin
-  if ADefinition = '' then
-    CallTipCancel
-  else
-    FHelper.SetText(SCI_CALLTIPSHOW, APos, ADefinition);
-end;
-

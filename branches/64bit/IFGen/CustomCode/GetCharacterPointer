@@ -1,6 +1,0 @@
-function GetCharacterPointer: PByte;
-function TDScintilla.GetCharacterPointer: PByte;
-begin
-  Result := PByte(SendEditor(SCI_GETCHARACTERPOINTER, 0, 0));
-end;
-

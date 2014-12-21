@@ -1,6 +1,0 @@
-procedure UserListShow(AListType: Integer; const AItemList: UnicodeString);
-procedure TDScintilla.UserListShow(AListType: Integer; const AItemList: UnicodeString);
-begin
-  FHelper.SetText(SCI_USERLISTSHOW, AListType, AItemList);
-end;
-

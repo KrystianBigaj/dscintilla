@@ -1,6 +1,0 @@
-procedure InsertText(APos: Integer; const AText: UnicodeString);
-procedure TDScintilla.InsertText(APos: Integer; const AText: UnicodeString);
-begin
-  FHelper.SetText(SCI_INSERTTEXT, APos, AText);
-end;
-

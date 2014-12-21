@@ -1,6 +1,0 @@
-function GetCurLine(var AText: UnicodeString): Integer;
-function TDScintilla.GetCurLine(var AText: UnicodeString): Integer;
-begin
-  Result := FHelper.GetTextLen(SCI_GETCURLINE, AText);
-end;
-

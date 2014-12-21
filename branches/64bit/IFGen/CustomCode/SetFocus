@@ -1,6 +1,0 @@
-procedure SetFocus(AFocus: Boolean); reintroduce; overload;
-procedure TDScintilla.SetFocus(AFocus: Boolean);
-begin
-  SendEditor(SCI_SETFOCUS, Integer(AFocus), 0);
-end;
-

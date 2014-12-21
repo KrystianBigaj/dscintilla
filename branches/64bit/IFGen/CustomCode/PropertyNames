@@ -1,6 +1,0 @@
-function PropertyNames: UnicodeString;
-function TDScintilla.PropertyNames: UnicodeString;
-begin
-  FHelper.GetText(SCI_PROPERTYNAMES, 0, Result);
-end;
-

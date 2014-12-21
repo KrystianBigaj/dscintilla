@@ -1,2 +1,0 @@
-# Clear the annotation text for a line
-set void AnnotationSetText2=0(int line,)
