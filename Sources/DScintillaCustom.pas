@@ -11,16 +11,17 @@
  * for the specific language governing rights and limitations under the
  * License.
  *
- * The Original Code is Krystian Bigaj code.
+ * The Original Code is DScintillaCustom.pas
  *
  * The Initial Developer of the Original Code is Krystian Bigaj.
  *
- * Portions created by the Initial Developer are Copyright (C) 2010-2013
+ * Portions created by the Initial Developer are Copyright (C) 2010-2014
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
  * - Michal Gajek
  * - Marko Njezic
+ * - Michael Staszewski
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -53,7 +54,7 @@ type
 
   TDScintillaMethod = (smWindows, smDirect);
 
-  TDScintillaFunction = function(APointer: Pointer; AMessage: Integer; WParam: Integer; LParam: Integer): Integer; cdecl;
+  TDScintillaFunction = function(APointer: Pointer; AMessage: Integer; WParam: WPARAM; LParam: LPARAM): LRESULT; cdecl;
 
   TDScintillaCustom = class(TWinControl)
   private
@@ -92,7 +93,7 @@ type
     /// <summary>Sends message to Scintilla control.
     /// For list of commands see DScintillaTypes.pas and documentation at:
     /// http://www.scintilla.org/ScintillaDoc.html</summary>
-    function SendEditor(AMessage: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+    function SendEditor(AMessage: Integer; WParam: WPARAM = 0; LParam: LPARAM = 0): LRESULT;
 
   published
 
@@ -342,7 +343,7 @@ begin
   end;
 end;
 
-function TDScintillaCustom.SendEditor(AMessage: Integer; WParam: Integer; LParam: Integer): Integer;
+function TDScintillaCustom.SendEditor(AMessage: Integer; WParam: WPARAM; LParam: LPARAM): LRESULT;
 begin
   HandleNeeded;
 
