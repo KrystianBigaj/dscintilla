@@ -478,7 +478,7 @@ end;
 
 procedure TDScintilla.SetText(const AText: UnicodeString);
 begin
-  FHelper.SetTextLen(SCI_SETTEXT, AText);
+  FHelper.SetText(SCI_SETTEXT, 0, AText);
 end;
 
 function TDScintilla.GetText: UnicodeString;
