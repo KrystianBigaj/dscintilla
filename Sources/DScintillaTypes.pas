@@ -46,6 +46,12 @@ uses
 
 type
 
+// Native(U)Int types under D2007-D2009 are buggy.
+// I'm not sure about, D2010-XE, but they are 32bit only.
+{$IF CompilerVersion < 23}
+  NativeInt = Integer;
+{$IFEND}
+
 {$IF CompilerVersion < 20}
   UnicodeString = WideString;
 {$IFEND}
@@ -57,7 +63,7 @@ type
 { TDSciSendEditor }
 
   TDSciSendEditor = function(AMessage: Integer;
-    WParam: WPARAM = 0; LParam: LPARAM = 0): LRESULT of object;
+    WParam: NativeInt = 0; LParam: NativeInt = 0): NativeInt of object;
 
 { TDSciDocument }
 
@@ -137,8 +143,8 @@ type
     length: Integer;                // SCN_MODIFIED
     linesAdded: Integer;            // SCN_MODIFIED
     message: Integer;               // SCN_MACRORECORD
-    wParam: WPARAM;                 // SCN_MACRORECORD
-    lParam: LPARAM;                 // SCN_MACRORECORD
+    wParam: NativeInt;                 // SCN_MACRORECORD
+    lParam: NativeInt;                 // SCN_MACRORECORD
     line: Integer;                  // SCN_MODIFIED
     foldLevelNow: Integer;          // SCN_MODIFIED
     foldLevelPrev: Integer;         // SCN_MODIFIED

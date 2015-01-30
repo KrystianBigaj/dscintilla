@@ -165,7 +165,7 @@ end;
 
 procedure TDScintilla.StyleSetFont(AStyle: Integer; const AFontName: UnicodeString);
 begin
-  SendEditor(SCI_STYLESETFONT, AStyle, LPARAM(AnsiString(AFontName)));
+  SendEditor(SCI_STYLESETFONT, AStyle, NativeInt(AnsiString(AFontName)));
 end;
 
 procedure TDScintilla.StyleSetEOLFilled(AStyle: Integer; AFilled: Boolean);
@@ -1784,7 +1784,7 @@ end;
 procedure TDScintilla.SetProperty(const AKey: UnicodeString; const AValue: UnicodeString);
 begin
   if AKey <> '' then
-    SendEditor(SCI_SETPROPERTY, WPARAM(AnsiString(AKey)), LPARAM(AnsiString(AValue)));
+    SendEditor(SCI_SETPROPERTY, NativeInt(AnsiString(AKey)), NativeInt(AnsiString(AValue)));
 end;
 
 function TDScintilla.GetPropertyInt(const AKey: UnicodeString; ADefault: Integer): Integer;
@@ -1792,7 +1792,7 @@ begin
   if AKey = '' then
     Result := ADefault
   else
-    Result := SendEditor(SCI_GETPROPERTYINT, WPARAM(AnsiString(AKey)), ADefault);
+    Result := SendEditor(SCI_GETPROPERTYINT, NativeInt(AnsiString(AKey)), ADefault);
 end;
 
 function TDScintilla.GetStyleBitsNeeded: Integer;

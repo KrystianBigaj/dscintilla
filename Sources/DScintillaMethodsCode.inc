@@ -179,7 +179,7 @@ end;
 
 procedure TDScintilla.MarkerDefinePixmap(AMarkerNumber: Integer; const APixmap: TBytes);
 begin
-  SendEditor(SCI_MARKERDEFINEPIXMAP, AMarkerNumber, LPARAM(APixmap));
+  SendEditor(SCI_MARKERDEFINEPIXMAP, AMarkerNumber, NativeInt(APixmap));
 end;
 
 procedure TDScintilla.MarkerAddSet(ALine: Integer; ASet: Integer);
@@ -300,7 +300,7 @@ end;
 procedure TDScintilla.RegisterImage(AType: Integer; const AXpmData: TBytes);
 begin
   if Length(AXpmData) > 0 then
-    SendEditor(SCI_REGISTERIMAGE, AType, LPARAM(AXpmData));
+    SendEditor(SCI_REGISTERIMAGE, AType, NativeInt(AXpmData));
 end;
 
 procedure TDScintilla.ClearRegisteredImages;
@@ -1482,12 +1482,12 @@ end;
 
 procedure TDScintilla.SetLexerLanguage(const ALanguage: UnicodeString);
 begin
-  SendEditor(SCI_SETLEXERLANGUAGE, 0, LPARAM(AnsiString(ALanguage)));
+  SendEditor(SCI_SETLEXERLANGUAGE, 0, NativeInt(AnsiString(ALanguage)));
 end;
 
 procedure TDScintilla.LoadLexerLibrary(const APath: UnicodeString);
 begin
-  SendEditor(SCI_LOADLEXERLIBRARY, 0, LPARAM(AnsiString(APath)));
+  SendEditor(SCI_LOADLEXERLIBRARY, 0, NativeInt(AnsiString(APath)));
 end;
 
 function TDScintilla.GetProperty(const AKey: UnicodeString): UnicodeString;
@@ -1495,7 +1495,7 @@ begin
   if AKey = '' then
     Result := ''
   else
-    FHelper.GetText(SCI_GETPROPERTY, LPARAM(AnsiString(AKey)), Result);
+    FHelper.GetText(SCI_GETPROPERTY, NativeInt(AnsiString(AKey)), Result);
 end;
 
 function TDScintilla.GetPropertyExpanded(const AKey: UnicodeString): UnicodeString;
@@ -1503,7 +1503,7 @@ begin
   if AKey = '' then
     Result := ''
   else
-    FHelper.GetText(SCI_GETPROPERTYEXPANDED, LPARAM(AnsiString(AKey)), Result);
+    FHelper.GetText(SCI_GETPROPERTYEXPANDED, NativeInt(AnsiString(AKey)), Result);
 end;
 
 function TDScintilla.PrivateLexerCall(AOperation: Integer; APointer: Integer): Integer;
@@ -1521,7 +1521,7 @@ begin
   if AName = '' then
     Result := -1
   else
-    Result := SendEditor(SCI_PROPERTYTYPE, LPARAM(UnicodeStringToUTF8(AName)), 0);
+    Result := SendEditor(SCI_PROPERTYTYPE, NativeInt(UnicodeStringToUTF8(AName)), 0);
 end;
 
 function TDScintilla.DescribeProperty(AName: UnicodeString): UnicodeString;
@@ -1529,7 +1529,7 @@ begin
   if AName = '' then
     Result := ''
   else
-    FHelper.GetText(SCI_DESCRIBEPROPERTY, LPARAM(UnicodeStringToUTF8(AName)), Result);
+    FHelper.GetText(SCI_DESCRIBEPROPERTY, NativeInt(UnicodeStringToUTF8(AName)), Result);
 end;
 
 function TDScintilla.DescribeKeyWordSets: UnicodeString;

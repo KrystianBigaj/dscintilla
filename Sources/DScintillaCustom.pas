@@ -42,6 +42,8 @@ unit DScintillaCustom;
 interface
 
 uses
+  DScintillaTypes,
+  
   Windows, Classes, SysUtils, Controls, Messages;
 
 const
@@ -54,7 +56,7 @@ type
 
   TDScintillaMethod = (smWindows, smDirect);
 
-  TDScintillaFunction = function(APointer: Pointer; AMessage: Integer; WParam: WPARAM; LParam: LPARAM): LRESULT; cdecl;
+  TDScintillaFunction = function(APointer: Pointer; AMessage: Integer; WParam: NativeInt; LParam: NativeInt): NativeInt; cdecl;
 
   TDScintillaCustom = class(TWinControl)
   private
@@ -93,7 +95,7 @@ type
     /// <summary>Sends message to Scintilla control.
     /// For list of commands see DScintillaTypes.pas and documentation at:
     /// http://www.scintilla.org/ScintillaDoc.html</summary>
-    function SendEditor(AMessage: Integer; WParam: WPARAM = 0; LParam: LPARAM = 0): LRESULT; virtual;
+    function SendEditor(AMessage: Integer; WParam: NativeInt = 0; LParam: NativeInt = 0): NativeInt; virtual;
 
   published
 
@@ -343,7 +345,7 @@ begin
   end;
 end;
 
-function TDScintillaCustom.SendEditor(AMessage: Integer; WParam: WPARAM; LParam: LPARAM): LRESULT;
+function TDScintillaCustom.SendEditor(AMessage: Integer; WParam: NativeInt; LParam: NativeInt): NativeInt;
 begin
   HandleNeeded;
 
