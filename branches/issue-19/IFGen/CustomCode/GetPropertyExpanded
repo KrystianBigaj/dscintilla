@@ -1,0 +1,9 @@
+function GetPropertyExpanded(const AKey: UnicodeString): UnicodeString;
+function TDScintilla.GetPropertyExpanded(const AKey: UnicodeString): UnicodeString;
+begin
+  if AKey = '' then
+    Result := ''
+  else
+    FHelper.GetText(SCI_GETPROPERTYEXPANDED, LPARAM(AnsiString(AKey)), Result);
+end;
+

@@ -1,0 +1,6 @@
+function AutoCGetTypeSeparator: AnsiChar;
+function TDScintilla.AutoCGetTypeSeparator: AnsiChar;
+begin
+  Result := AnsiChar(SendEditor(SCI_AUTOCGETTYPESEPARATOR, 0, 0));
+end;
+

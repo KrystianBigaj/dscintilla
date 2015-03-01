@@ -1,0 +1,6 @@
+procedure AutoCSetTypeSeparator(ASeparatorCharacter: AnsiChar);
+procedure TDScintilla.AutoCSetTypeSeparator(ASeparatorCharacter: AnsiChar);
+begin
+  SendEditor(SCI_AUTOCSETTYPESEPARATOR, Integer(ASeparatorCharacter), 0);
+end;
+

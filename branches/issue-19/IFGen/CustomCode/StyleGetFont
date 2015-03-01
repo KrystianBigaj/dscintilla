@@ -1,0 +1,6 @@
+function StyleGetFont(AStyle: Integer): UnicodeString;
+function TDScintilla.StyleGetFont(AStyle: Integer): UnicodeString;
+begin
+  FHelper.GetText(SCI_STYLEGETFONT, AStyle, Result);
+end;
+

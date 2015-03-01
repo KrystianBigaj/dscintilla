@@ -1,0 +1,6 @@
+procedure LoadLexerLibrary(const APath: UnicodeString);
+procedure TDScintilla.LoadLexerLibrary(const APath: UnicodeString);
+begin
+  SendEditor(SCI_LOADLEXERLIBRARY, 0, LPARAM(AnsiString(APath)));
+end;
+

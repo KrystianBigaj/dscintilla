@@ -1,0 +1,9 @@
+function DescribeProperty(AName: UnicodeString): UnicodeString;
+function TDScintilla.DescribeProperty(AName: UnicodeString): UnicodeString;
+begin
+  if AName = '' then
+    Result := ''
+  else
+    FHelper.GetText(SCI_DESCRIBEPROPERTY, LPARAM(UnicodeStringToUTF8(AName)), Result);
+end;
+

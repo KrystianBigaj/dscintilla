@@ -1,0 +1,6 @@
+function GetTag(ATagNumber: Integer): UnicodeString;
+function TDScintilla.GetTag(ATagNumber: Integer): UnicodeString;
+begin
+  FHelper.GetText(SCI_GETTAG, ATagNumber, Result);
+end;
+

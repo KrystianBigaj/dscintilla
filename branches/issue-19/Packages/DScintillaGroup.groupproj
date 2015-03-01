@@ -1,0 +1,48 @@
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+		<PropertyGroup>
+			<ProjectGuid>{0EC9CCD8-FE97-4209-9CA5-1F95711B4B39}</ProjectGuid>
+		</PropertyGroup>
+		<ItemGroup>
+			<Projects Include="DScintillaRuntime.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="DScintillaDesign.dproj">
+				<Dependencies>DScintillaRuntime.dproj</Dependencies>
+			</Projects>
+		</ItemGroup>
+		<ProjectExtensions>
+			<Borland.Personality>Default.Personality.12</Borland.Personality>
+			<Borland.ProjectType/>
+			<BorlandProject>
+				<Default.Personality/>
+			</BorlandProject>
+		</ProjectExtensions>
+		<Target Name="DScintillaRuntime">
+			<MSBuild Projects="DScintillaRuntime.dproj"/>
+		</Target>
+		<Target Name="DScintillaRuntime:Clean">
+			<MSBuild Targets="Clean" Projects="DScintillaRuntime.dproj"/>
+		</Target>
+		<Target Name="DScintillaRuntime:Make">
+			<MSBuild Targets="Make" Projects="DScintillaRuntime.dproj"/>
+		</Target>
+		<Target DependsOnTargets="DScintillaRuntime" Name="DScintillaDesign">
+			<MSBuild Projects="DScintillaDesign.dproj"/>
+		</Target>
+		<Target DependsOnTargets="DScintillaRuntime:Clean" Name="DScintillaDesign:Clean">
+			<MSBuild Targets="Clean" Projects="DScintillaDesign.dproj"/>
+		</Target>
+		<Target DependsOnTargets="DScintillaRuntime:Make" Name="DScintillaDesign:Make">
+			<MSBuild Targets="Make" Projects="DScintillaDesign.dproj"/>
+		</Target>
+		<Target Name="Build">
+			<CallTarget Targets="DScintillaRuntime;DScintillaDesign"/>
+		</Target>
+		<Target Name="Clean">
+			<CallTarget Targets="DScintillaRuntime:Clean;DScintillaDesign:Clean"/>
+		</Target>
+		<Target Name="Make">
+			<CallTarget Targets="DScintillaRuntime:Make;DScintillaDesign:Make"/>
+		</Target>
+		<Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+	</Project>

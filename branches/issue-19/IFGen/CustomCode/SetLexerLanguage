@@ -1,0 +1,6 @@
+procedure SetLexerLanguage(const ALanguage: UnicodeString);
+procedure TDScintilla.SetLexerLanguage(const ALanguage: UnicodeString);
+begin
+  SendEditor(SCI_SETLEXERLANGUAGE, 0, LPARAM(AnsiString(ALanguage)));
+end;
+

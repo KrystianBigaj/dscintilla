@@ -1,0 +1,6 @@
+procedure AutoCSelect(const AText: UnicodeString);
+procedure TDScintilla.AutoCSelect(const AText: UnicodeString);
+begin
+  FHelper.SetText(SCI_AUTOCSELECT, 0, AText);
+end;
+

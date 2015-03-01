@@ -1,0 +1,7 @@
+procedure RegisterImage(AType: Integer; const AXpmData: TBytes);
+procedure TDScintilla.RegisterImage(AType: Integer; const AXpmData: TBytes);
+begin
+  if Length(AXpmData) > 0 then
+    SendEditor(SCI_REGISTERIMAGE, AType, LPARAM(AXpmData));
+end;
+

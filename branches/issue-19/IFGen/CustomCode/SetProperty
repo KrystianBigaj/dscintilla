@@ -1,0 +1,7 @@
+procedure SetProperty(const AKey: UnicodeString; const AValue: UnicodeString);
+procedure TDScintilla.SetProperty(const AKey: UnicodeString; const AValue: UnicodeString);
+begin
+  if AKey <> '' then
+    SendEditor(SCI_SETPROPERTY, WPARAM(AnsiString(AKey)), LPARAM(AnsiString(AValue)));
+end;
+
