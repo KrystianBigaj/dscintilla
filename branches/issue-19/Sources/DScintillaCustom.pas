@@ -233,12 +233,18 @@ end;
 procedure TDScintillaCustom.DoStoreWnd;
 begin
   FStoredWnd.Visible := Visible;
-
   FStoredWnd.WindowHandle := WindowHandle;
-  WindowHandle := 0;
 
-  ShowWindow(FStoredWnd.WindowHandle, SW_HIDE);
+  // Simulate messages passed by DestroyWindow
+  SetWindowPos(WindowHandle, 0, 0, 0, 0, 0,
+    SWP_HIDEWINDOW or SWP_NOACTIVATE or SWP_NOSIZE or SWP_NOMOVE or SWP_NOZORDER);
   Windows.SetParent(FStoredWnd.WindowHandle, 0);
+
+  // Self.WindowHandle must be set because of UpdateBounds called from WMWindowPosChanged
+  // We cannot set csDestroyingHandle to prevent this isse,
+  // as it's a private field of TWinControl.
+  // SetParent and SetWindowPos calls WMWindowPosChanged
+  WindowHandle := 0;
 
   // TODO: WNDProc?
 end;
