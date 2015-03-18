@@ -237,7 +237,7 @@ begin
   FStoredWnd.WindowHandle := WindowHandle;
   WindowHandle := 0;
 
-  ShowWindow(WindowHandle, SW_HIDE);
+  ShowWindow(FStoredWnd.WindowHandle, SW_HIDE);
   Windows.SetParent(FStoredWnd.WindowHandle, 0);
 
   // TODO: WNDProc?
@@ -288,10 +288,10 @@ end;
 
 procedure TDScintillaCustom.DestroyWindowHandle;
 begin
-  if (csDestroying in ComponentState) or (csDesigning in ComponentState) then
+//  if (csDestroying in ComponentState) or (csDesigning in ComponentState) then
     inherited DestroyWindowHandle
-  else
-    DoStoreWnd;
+//  else
+//    DoStoreWnd;
 end;
 
 procedure TDScintillaCustom.WMCreate(var AMessage: TWMCreate);
