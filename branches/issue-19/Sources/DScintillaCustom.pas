@@ -288,10 +288,10 @@ end;
 
 procedure TDScintillaCustom.DestroyWindowHandle;
 begin
-//  if (csDestroying in ComponentState) or (csDesigning in ComponentState) then
+  if (csDestroying in ComponentState) or (csDesigning in ComponentState) then
     inherited DestroyWindowHandle
-//  else
-//    DoStoreWnd;
+  else
+    DoStoreWnd;
 end;
 
 procedure TDScintillaCustom.WMCreate(var AMessage: TWMCreate);
