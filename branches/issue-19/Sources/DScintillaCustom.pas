@@ -244,6 +244,8 @@ begin
 end;
 
 procedure TDScintillaCustom.DoRestoreWnd(const Params: TCreateParams);
+var
+  lFlags: UINT;
 begin
   WindowHandle := FStoredWnd.WindowHandle;
   FStoredWnd.WindowHandle:= 0;
@@ -252,8 +254,13 @@ begin
 
   Windows.SetParent(WindowHandle, Params.WndParent);
 
+  lFlags := SWP_FRAMECHANGED or SWP_NOACTIVATE or SWP_NOCOPYBITS or
+    SWP_NOOWNERZORDER or SWP_NOZORDER;
   if FStoredWnd.Visible then
-    ShowWindow(WindowHandle, SW_SHOW);
+    lFlags := lFlags or SWP_SHOWWINDOW;
+
+  // Restore previous size and position (similar as it's done by CreateWindowEx)
+  SetWindowPos(WindowHandle, 0, Params.X, Params.Y, Params.Width, Params.Height, lFlags);
 end;
 
 procedure TDScintillaCustom.CreateWnd;
