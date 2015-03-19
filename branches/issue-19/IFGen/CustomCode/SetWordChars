@@ -1,6 +1,0 @@
-procedure SetWordChars(const ACharacters: AnsiString);
-procedure TDScintilla.SetWordChars(const ACharacters: AnsiString);
-begin
-  FHelper.SetTextA(SCI_SETWORDCHARS, 0, ACharacters);
-end;
-

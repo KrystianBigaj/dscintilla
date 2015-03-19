@@ -1,6 +1,0 @@
-function GetDirectFunction: TDScintillaFunction;
-function %s.GetDirectFunction: TDScintillaFunction;
-begin
-  Result := TDScintillaFunction(SendEditor(SCI_GETDIRECTFUNCTION, 0, 0));
-end;
-

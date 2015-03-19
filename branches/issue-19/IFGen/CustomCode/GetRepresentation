@@ -1,6 +1,0 @@
-function GetRepresentation(AEncodedCharacter: AnsiString): AnsiString;
-function TDScintilla.GetRepresentation(AEncodedCharacter: AnsiString): AnsiString;
-begin
-  FHelper.GetTextA(SCI_GETREPRESENTATION, Integer(FHelper.GetPtrFromAStr(AEncodedCharacter)), Result);
-end;
-

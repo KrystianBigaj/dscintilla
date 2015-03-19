@@ -1,6 +1,0 @@
-procedure ClearRepresentation(AEncodedCharacter: AnsiString);
-procedure TDScintilla.ClearRepresentation(AEncodedCharacter: AnsiString);
-begin
-  SendEditor(SCI_CLEARREPRESENTATION, Integer(FHelper.GetPtrFromAStr(AEncodedCharacter)), 0);
-end;
-

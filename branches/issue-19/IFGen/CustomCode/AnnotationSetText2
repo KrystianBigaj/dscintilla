@@ -1,6 +1,0 @@
-procedure AnnotationSetText(ALine: Integer); overload;
-procedure TDScintilla.AnnotationSetText(ALine: Integer);
-begin
-  SendEditor(SCI_ANNOTATIONSETTEXT, ALine, 0);
-end;
-

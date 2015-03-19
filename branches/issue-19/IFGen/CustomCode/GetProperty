@@ -1,9 +1,0 @@
-function GetProperty(const AKey: UnicodeString): UnicodeString;
-function TDScintilla.GetProperty(const AKey: UnicodeString): UnicodeString;
-begin
-  if AKey = '' then
-    Result := ''
-  else
-    FHelper.GetText(SCI_GETPROPERTY, LPARAM(AnsiString(AKey)), Result);
-end;
-

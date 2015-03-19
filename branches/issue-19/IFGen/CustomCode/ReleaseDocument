@@ -1,7 +1,0 @@
-procedure ReleaseDocument(ADoc: TDSciDocument);
-procedure TDScintilla.ReleaseDocument(ADoc: TDSciDocument);
-begin
-  if ADoc <> nil then
-    SendEditor(SCI_RELEASEDOCUMENT, 0, Integer(ADoc));
-end;
-

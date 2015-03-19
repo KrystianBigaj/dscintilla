@@ -1,7 +1,0 @@
-procedure AddRefDocument(ADoc: TDSciDocument);
-procedure TDScintilla.AddRefDocument(ADoc: TDSciDocument);
-begin
-  if ADoc <>  nil then
-    SendEditor(SCI_ADDREFDOCUMENT, 0, Integer(ADoc));
-end;
-

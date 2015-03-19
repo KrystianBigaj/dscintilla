@@ -1,6 +1,0 @@
-function TextWidth(AStyle: Integer; const AText: UnicodeString): Integer;
-function TDScintilla.TextWidth(AStyle: Integer; const AText: UnicodeString): Integer;
-begin
-  Result := FHelper.SetText(SCI_TEXTWIDTH, AStyle, AText);
-end;
-

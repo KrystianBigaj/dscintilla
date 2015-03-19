@@ -1,6 +1,0 @@
-procedure ReplaceSel(const AText: UnicodeString);
-procedure TDScintilla.ReplaceSel(const AText: UnicodeString);
-begin
-  FHelper.SetText(SCI_REPLACESEL, 0, AText);
-end;
-

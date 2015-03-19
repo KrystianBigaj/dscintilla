@@ -1,8 +1,0 @@
-function MarginGetStyles(ALine: Integer): TDSciStyles;
-function TDScintilla.MarginGetStyles(ALine: Integer): TDSciStyles;
-begin
-  SetLength(Result, SendEditor(SCI_MARGINGETSTYLES, ALine));
-  if Length(Result) > 0 then
-    SendEditor(SCI_MARGINGETSTYLES, ALine, Integer(Result));
-end;
-

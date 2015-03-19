@@ -1,6 +1,0 @@
-procedure MarkerDefinePixmap(AMarkerNumber: Integer; const APixmap: TBytes);
-procedure TDScintilla.MarkerDefinePixmap(AMarkerNumber: Integer; const APixmap: TBytes);
-begin
-  SendEditor(SCI_MARKERDEFINEPIXMAP, AMarkerNumber, LPARAM(APixmap));
-end;
-

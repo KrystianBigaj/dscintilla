@@ -1,7 +1,0 @@
-procedure SetSelectionNCaretVirtualSpace(ASelection: Integer; ASpace: Integer);
-procedure %s.SetSelectionNCaretVirtualSpace(ASelection: Integer; ASpace: Integer);
-begin
-  if (ASelection >= 0) and (ASelection < GetSelections) then
-    SendEditor(SCI_SETSELECTIONNCARETVIRTUALSPACE, ASelection, ASpace);
-end;
-

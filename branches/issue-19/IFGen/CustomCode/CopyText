@@ -1,5 +1,0 @@
-procedure CopyText(const AText: UnicodeString);
-procedure TDScintilla.CopyText(const AText: UnicodeString);
-begin
-  FHelper.SetTextLen(SCI_COPYTEXT, AText);
-end;

@@ -1,9 +1,0 @@
-function PropertyType(AName: UnicodeString): Integer;
-function TDScintilla.PropertyType(AName: UnicodeString): Integer;
-begin
-  if AName = '' then
-    Result := -1
-  else
-    Result := SendEditor(SCI_PROPERTYTYPE, LPARAM(UnicodeStringToUTF8(AName)), 0);
-end;
-
