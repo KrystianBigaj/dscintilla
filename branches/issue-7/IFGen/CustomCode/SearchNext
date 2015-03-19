@@ -1,6 +1,0 @@
-function SearchNext(AFlags: Integer; const AText: UnicodeString): Integer;
-function TDScintilla.SearchNext(AFlags: Integer; const AText: UnicodeString): Integer;
-begin
-  Result := FHelper.SetText(SCI_SEARCHNEXT, AFlags, AText);
-end;
-

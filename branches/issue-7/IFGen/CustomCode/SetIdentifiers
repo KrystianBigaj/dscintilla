@@ -1,6 +1,0 @@
-procedure SetIdentifiers(AStyle: Integer; const AIdentifiers: AnsiString);
-procedure TDScintilla.SetIdentifiers(AStyle: Integer; const AIdentifiers: AnsiString);
-begin
-  FHelper.SetTextA(SCI_SETIDENTIFIERS, AStyle, AIdentifiers);
-end;
-

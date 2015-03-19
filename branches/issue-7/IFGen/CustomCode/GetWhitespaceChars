@@ -1,6 +1,0 @@
-function GetWhitespaceChars: AnsiString;
-function TDScintilla.GetWhitespaceChars: AnsiString;
-begin
-  FHelper.GetTextA(SCI_GETWHITESPACECHARS, 0, Result);
-end;
-

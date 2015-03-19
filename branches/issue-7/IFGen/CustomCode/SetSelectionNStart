@@ -1,7 +1,0 @@
-procedure SetSelectionNStart(ASelection: Integer; APos: Integer);
-procedure %s.SetSelectionNStart(ASelection: Integer; APos: Integer);
-begin
-  if (ASelection >= 0) and (ASelection < GetSelections) then
-    SendEditor(SCI_SETSELECTIONNSTART, ASelection, APos);
-end;
-

@@ -1,9 +1,0 @@
-function GetSelectionNAnchor(ASelection: Integer): Integer;
-function %s.GetSelectionNAnchor(ASelection: Integer): Integer;
-begin
-  if (ASelection >= 0) and (ASelection < GetSelections) then
-    Result := SendEditor(SCI_GETSELECTIONNANCHOR, ASelection, 0)
-  else
-    Result := INVALID_POSITION;
-end;
-
