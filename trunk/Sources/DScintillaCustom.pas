@@ -15,7 +15,7 @@
  *
  * The Initial Developer of the Original Code is Krystian Bigaj.
  *
- * Portions created by the Initial Developer are Copyright (C) 2010-2014
+ * Portions created by the Initial Developer are Copyright (C) 2010-2015
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
@@ -52,6 +52,11 @@ const
 
 type
 
+  TDScintillaWnd = record
+    WindowHandle: HWND;
+    Visible: Boolean;
+  end;
+
 { TDScintillaCustom }
 
   TDScintillaMethod = (smWindows, smDirect);
@@ -67,16 +72,23 @@ type
     FDirectFunction: TDScintillaFunction;
     FAccessMethod: TDScintillaMethod;
 
+    FStoredWnd: TDScintillaWnd;
+
     procedure SetSciDllModule(const Value: String);
 
     procedure LoadSciLibraryIfNeeded;
     procedure FreeSciLibrary;
 
+    procedure DoStoreWnd;
+    procedure DoRestoreWnd(const Params: TCreateParams);
+
   protected
     procedure CreateWnd; override;
     procedure CreateParams(var Params: TCreateParams); override;
 
-    procedure RecreateWndIf;
+    function IsRecreatingWnd: Boolean;
+    procedure CreateWindowHandle(const Params: TCreateParams); override;
+    procedure DestroyWindowHandle; override;
 
     procedure WMCreate(var AMessage: TWMCreate); message WM_CREATE;
     procedure WMDestroy(var AMessage: TWMDestroy); message WM_DESTROY;
@@ -177,6 +189,12 @@ end;
 
 destructor TDScintillaCustom.Destroy;
 begin
+  if IsRecreatingWnd then
+  begin
+    WindowHandle := FStoredWnd.WindowHandle;
+    FStoredWnd.WindowHandle := 0;
+  end;
+
   inherited Destroy;
 
   FreeSciLibrary;
@@ -189,7 +207,7 @@ begin
 
   FSciDllModule := Value;
 
-  RecreateWndIf;
+  RecreateWnd;
 end;
 
 procedure TDScintillaCustom.LoadSciLibraryIfNeeded;
@@ -212,6 +230,45 @@ begin
   end;
 end;
 
+procedure TDScintillaCustom.DoStoreWnd;
+begin
+  FStoredWnd.Visible := Visible;
+  FStoredWnd.WindowHandle := WindowHandle;
+
+  // Simulate messages passed by DestroyWindow
+  SetWindowPos(WindowHandle, 0, 0, 0, 0, 0,
+    SWP_HIDEWINDOW or SWP_NOACTIVATE or SWP_NOSIZE or SWP_NOMOVE or SWP_NOZORDER);
+  Windows.SetParent(FStoredWnd.WindowHandle, 0);
+
+  // Self.WindowHandle must be set because of UpdateBounds called from WMWindowPosChanged
+  // We cannot set csDestroyingHandle to prevent this isse,
+  // as it's a private field of TWinControl.
+  // SetParent and SetWindowPos calls WMWindowPosChanged
+  WindowHandle := 0;
+
+  // TODO: WNDProc?
+end;
+
+procedure TDScintillaCustom.DoRestoreWnd(const Params: TCreateParams);
+var
+  lFlags: UINT;
+begin
+  WindowHandle := FStoredWnd.WindowHandle;
+  FStoredWnd.WindowHandle:= 0;
+
+  // TODO: WNDProc?
+
+  Windows.SetParent(WindowHandle, Params.WndParent);
+
+  lFlags := SWP_FRAMECHANGED or SWP_NOACTIVATE or SWP_NOCOPYBITS or
+    SWP_NOOWNERZORDER or SWP_NOZORDER;
+  if FStoredWnd.Visible then
+    lFlags := lFlags or SWP_SHOWWINDOW;
+
+  // Restore previous size and position (similar as it's done by CreateWindowEx)
+  SetWindowPos(WindowHandle, 0, Params.X, Params.Y, Params.Width, Params.Height, lFlags);
+end;
+
 procedure TDScintillaCustom.CreateWnd;
 begin
   // Load Scintilla if not loaded already.
@@ -229,10 +286,25 @@ begin
   CreateSubClass(Params, 'SCINTILLA');
 end;
 
-procedure TDScintillaCustom.RecreateWndIf;
+function TDScintillaCustom.IsRecreatingWnd: Boolean;
 begin
-  if HandleAllocated then
-    RecreateWnd;
+  Result := FStoredWnd.WindowHandle <> 0;
+end;
+
+procedure TDScintillaCustom.CreateWindowHandle(const Params: TCreateParams);
+begin
+  if IsRecreatingWnd then
+    DoRestoreWnd(Params)
+  else
+    inherited CreateWindowHandle(Params);
+end;
+
+procedure TDScintillaCustom.DestroyWindowHandle;
+begin
+  if (csDestroying in ComponentState) or (csDesigning in ComponentState) then
+    inherited DestroyWindowHandle
+  else
+    DoStoreWnd;
 end;
 
 procedure TDScintillaCustom.WMCreate(var AMessage: TWMCreate);

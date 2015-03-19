@@ -15,7 +15,7 @@
  *
  * The Initial Developer of the Original Code is Krystian Bigaj.
  *
- * Portions created by the Initial Developer are Copyright (C) 2010-2014
+ * Portions created by the Initial Developer are Copyright (C) 2010-2015
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
@@ -60,7 +60,6 @@ type
     FHelper: TDSciHelper;
     FLines: TDSciLines;
 
-    FStoredDocPointer: TDSciDocument;
     FInitDefaultsDelayed: Boolean;
 
     FOnInitDefaults: TNotifyEvent;
@@ -107,9 +106,6 @@ type
     procedure InitDefaults; virtual;
     procedure DoInitDefaults;
 
-    procedure DoStoreDocState; virtual;
-    procedure DoRestoreDocState; virtual;
-
     /// <summary>Handles SCEN_CHANGE message from Scintilla</summary>
     procedure CNCommand(var AMessage: TWMCommand); message CN_COMMAND;
 
@@ -118,9 +114,6 @@ type
 
     procedure DoNeedShown(const ASCNotification: TDSciSCNotification); virtual;
     function DoSCNotification(const ASCNotification: TDSciSCNotification): Boolean; virtual;
-
-    procedure WMCreate(var AMessage: TWMCreate); message WM_CREATE;
-    procedure WMDestroy(var AMessage: TWMDestroy); message WM_DESTROY;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -154,8 +147,7 @@ type
     // Called after when window is created or recreated
     property OnInitDefaults: TNotifyEvent read FOnInitDefaults write FOnInitDefaults;
 
-    // OnStoreDocState/OnRestoreDocState are called when window is recreated
-    // You can store/restore document state (for example caret/scroll position)
+    // Deprecated
     property OnStoreDocState: TNotifyEvent read FOnStoreDocState write FOnStoreDocState;
     property OnRestoreDocState: TNotifyEvent read FOnRestoreDocState write FOnRestoreDocState;
 
@@ -210,8 +202,6 @@ end;
 
 destructor TDScintilla.Destroy;
 begin
-  Assert(FStoredDocPointer = nil);
-
   inherited Destroy;
 
   FreeAndNil(FLines);
@@ -223,63 +213,26 @@ begin
   FLines.Assign(Value);
 end;
 
-procedure TDScintilla.WMCreate(var AMessage: TWMCreate);
-begin
-  inherited;
-
-  // Restore document state, if it was stored in WMDestroy
-  if FStoredDocPointer <> nil then
-    DoRestoreDocState;
-end;
-
-procedure TDScintilla.WMDestroy(var AMessage: TWMDestroy);
-begin
-  // We can only store document state, if we know that window will be recreaded
-  // Designer destroying window with csRecreating, but later destroys class,
-  // so skip that case
-  if {$IF Defined(csRecreating)}(csRecreating in ControlState) and{$IFEND}
-    not (csDestroying in ComponentState) and
-    not (csDesigning in ComponentState)
-  then
-    DoStoreDocState;
-
-  inherited;
-end;
-
-procedure TDScintilla.DoStoreDocState;
-begin
-  if Assigned(FOnStoreDocState) then
-    FOnStoreDocState(Self);
-
-  FStoredDocPointer := GetDocPointer;
-  if FStoredDocPointer <> nil then
-    AddRefDocument(FStoredDocPointer);
-end;
-
-procedure TDScintilla.DoRestoreDocState;
-begin
-  SetDocPointer(FStoredDocPointer);
-
-  ReleaseDocument(FStoredDocPointer);
-  FStoredDocPointer := nil;
-
-  if Assigned(OnRestoreDocState) then
-    OnRestoreDocState(Self);
-end;
-
 procedure TDScintilla.CreateWnd;
+var
+  lIsRecreating: Boolean;
 begin
+  lIsRecreating := IsRecreatingWnd;
+
   inherited CreateWnd;
 
-  // Set UTF8 early, so Lines with non ANSI char loads from .dfm correctly
-  // Later in InitDefaults/OnInitDefaults can be overwritten
-  SetCodePage(SC_CP_UTF8);
+  if not lIsRecreating then
+  begin
+    // Set UTF8 early, so Lines with non ANSI char loads from .dfm correctly
+    // Later in InitDefaults/OnInitDefaults can be overwritten
+    SetCodePage(SC_CP_UTF8);
 
-  // Delay calling DoInitDefaults when loading component from .dfm
-  // OnInitDefaults might not be set yet, so you can miss this event
-  FInitDefaultsDelayed := csLoading in ComponentState;
-  if not FInitDefaultsDelayed then
-    DoInitDefaults;
+    // Delay calling DoInitDefaults when loading component from .dfm
+    // OnInitDefaults might not be set yet, so you can miss this event
+    FInitDefaultsDelayed := csLoading in ComponentState;
+    if not FInitDefaultsDelayed then
+      DoInitDefaults;
+  end;
 end;
 
 procedure TDScintilla.Loaded;
