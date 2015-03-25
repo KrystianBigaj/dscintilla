@@ -179,6 +179,8 @@ begin
 
   inherited Create(AOwner);
 
+  // TDScintilla cannot use csAcceptsControls, because painting is performed by
+  // scintilla, so it doesn't support non-handle controls (like TLabel)
   ControlStyle := ControlStyle
     + [csOpaque, csClickEvents, csDoubleClicks, csCaptureMouse, csReflector]
     - [csSetCaption, csAcceptsControls];
@@ -335,7 +337,8 @@ end;
 
 procedure TDScintillaCustom.WMEraseBkgnd(var AMessage: TWmEraseBkgnd);
 begin
-  if csDesigning in ComponentState then
+  // WMEraseBkgnd required when DoubleBuffered=True (Issue 23)
+  if (csDesigning in ComponentState) or DoubleBuffered then
     inherited
   else
     // Erase background not performed, prevent flickering
@@ -366,8 +369,22 @@ begin
                      // a PAINSTRUCT* from the OCX
   *)
 
-  if {(csDesigning in ComponentState) and} (TMessage(AMessage).Msg = WM_PAINT) and (TMessage(AMessage).WParam <> 0) then
-    TMessage(AMessage).WParam := 0;
+  if (TMessage(AMessage).Msg = WM_PAINT) and (TWMPaint(AMessage).DC <> 0) then
+  begin
+    // Issue 23: Painting problems when DoubleBuffered is True
+    //
+    // VCL sends WM_PAINT with wParam=DC when it wants to paint on specific DC (like when using DoubleBuffered).
+    // However Scintilla threats wParam as a PAINTSTRUCT (OCX related problem).
+    // Previously there was a workaround to set wParam:=0, because it caused AVs in IDE.
+    // Now instead of this workaround simulate painting by WM_PRINTCLIENT, as it expects in wParam=DC.
+    // Scintilla handles that message - see: http://sourceforge.net/p/scintilla/feature-requests/173/
+    TMessage(AMessage).Msg := WM_PRINTCLIENT;
+    // TWMPrintClient(AMessage).DC are same as a TWMPaint(AMessage).DC
+
+    // WM_PRINTCLIENT flags are not used now, but pass at least PRF_CLIENT for
+    // possible future changes in Scintilla
+    TWMPrintClient(AMessage).Flags := PRF_CLIENT;
+  end;
 
   inherited;
 end;
