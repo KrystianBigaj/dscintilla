@@ -24,4 +24,4 @@ After installation you should have a TDScintilla VCL component installed in your
 === Info
 
 E-mail: krystian.bigaj@gmail.com
-Project page: http://code.google.com/p/dscintilla/
+Project page: https://github.com/krystianbigaj/dscintilla
