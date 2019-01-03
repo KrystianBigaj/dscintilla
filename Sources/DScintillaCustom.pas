@@ -107,7 +107,7 @@ type
     /// <summary>Sends message to Scintilla control.
     /// For list of commands see DScintillaTypes.pas and documentation at:
     /// http://www.scintilla.org/ScintillaDoc.html</summary>
-    function SendEditor(AMessage: Integer; WParam: NativeInt = 0; LParam: NativeInt = 0): NativeInt; virtual;
+    function SendEditor(AMessage: UINT; WParam: WPARAM = 0; LParam: LPARAM = 0): LRESULT; virtual;
 
   published
 
@@ -434,7 +434,7 @@ begin
   end;
 end;
 
-function TDScintillaCustom.SendEditor(AMessage: Integer; WParam: NativeInt; LParam: NativeInt): NativeInt;
+function TDScintillaCustom.SendEditor(AMessage: UINT; WParam: WPARAM; LParam: LPARAM): LRESULT;
 begin
   HandleNeeded;
 

@@ -50,6 +50,7 @@ type
 // I'm not sure about, D2010-XE, but they are 32bit only.
 {$IF CompilerVersion < 23}
   NativeInt = Integer;
+  NativeUInt = Cardinal;
 {$IFEND}
 
 {$IF CompilerVersion < 20}
@@ -62,8 +63,8 @@ type
 
 { TDSciSendEditor }
 
-  TDSciSendEditor = function(AMessage: Integer;
-    WParam: NativeInt = 0; LParam: NativeInt = 0): NativeInt of object;
+  TDSciSendEditor = function(AMessage: UINT;
+    WParam: WPARAM = 0; LParam: LPARAM = 0): LRESULT of object;
 
 { TDSciDocument }
 
@@ -87,8 +88,8 @@ type
 { TDSciCharacterRange }
 
   TDSciCharacterRange = record
-    cpMin: Integer;
-    cpMax: Integer;
+    cpMin: Long;  // Will change to be 64-bit compatible at some point according to the 3.6.0 release notes
+    cpMax: Long;  // Will change to be 64-bit compatible at some point according to the 3.6.0 release notes
   end;
 
 { TDSciTextRange }
@@ -126,7 +127,7 @@ type
   PDSciSCNotification = ^TDSciSCNotification;
   TDSciSCNotification = record
     NotifyHeader: TDSciNotifyHeader;
-    position: Integer;
+    position: NativeInt;
 	  // SCN_STYLENEEDED, SCN_DOUBLECLICK, SCN_MODIFIED, SCN_MARGINCLICK,
 	  // SCN_NEEDSHOWN, SCN_DWELLSTART, SCN_DWELLEND, SCN_CALLTIPCLICK,
 	  // SCN_HOTSPOTCLICK, SCN_HOTSPOTDOUBLECLICK, SCN_HOTSPOTRELEASECLICK,
@@ -138,23 +139,23 @@ type
 	  // SCN_KEY, SCN_DOUBLECLICK, SCN_HOTSPOTCLICK, SCN_HOTSPOTDOUBLECLICK,
 	  // SCN_HOTSPOTRELEASECLICK, SCN_INDICATORCLICK, SCN_INDICATORRELEASE,
 
-    modificationType: Integer;      // SCN_MODIFIED
-    text: PAnsiChar;                // SCN_MODIFIED
-    length: Integer;                // SCN_MODIFIED
-    linesAdded: Integer;            // SCN_MODIFIED
-    message: Integer;               // SCN_MACRORECORD
-    wParam: NativeInt;                 // SCN_MACRORECORD
-    lParam: NativeInt;                 // SCN_MACRORECORD
-    line: Integer;                  // SCN_MODIFIED
-    foldLevelNow: Integer;          // SCN_MODIFIED
-    foldLevelPrev: Integer;         // SCN_MODIFIED
-    margin: Integer;                // SCN_MARGINCLICK
-    listType: Integer;              // SCN_USERLISTSELECTION
-    x: Integer;                     // SCN_DWELLSTART, SCN_DWELLEND
-    y: Integer;                     // SCN_DWELLSTART, SCN_DWELLEND
-    token: Integer;                 // SCN_MODIFIED with SC_MOD_CONTAINER
-    annotationLinesAdded: Integer;	// SCN_MODIFIED with SC_MOD_CHANGEANNOTATION
-    updated: Integer;	              // SCN_UPDATEUI
+    modificationType: Integer;          // SCN_MODIFIED
+    text: PAnsiChar;                    // SCN_MODIFIED
+    length: NativeInt;               // SCN_MODIFIED
+    linesAdded: NativeInt;           // SCN_MODIFIED
+    message: Integer;                   // SCN_MACRORECORD
+    wParam: NativeUInt;                 // SCN_MACRORECORD
+    lParam: NativeInt;                  // SCN_MACRORECORD
+    line: NativeInt;                 // SCN_MODIFIED
+    foldLevelNow: Integer;              // SCN_MODIFIED
+    foldLevelPrev: Integer;             // SCN_MODIFIED
+    margin: Integer;                    // SCN_MARGINCLICK
+    listType: Integer;                  // SCN_USERLISTSELECTION
+    x: Integer;                         // SCN_DWELLSTART, SCN_DWELLEND
+    y: Integer;                         // SCN_DWELLSTART, SCN_DWELLEND
+    token: Integer;                     // SCN_MODIFIED with SC_MOD_CONTAINER
+    annotationLinesAdded: NativeInt; // SCN_MODIFIED with SC_MOD_CHANGEANNOTATION
+    updated: Integer;	                  // SCN_UPDATEUI
   end;
 
 { TDScintilla events - http://www.scintilla.org/ScintillaDoc.html#Notifications }
@@ -162,7 +163,7 @@ type
   TDSciNotificationEvent = procedure(ASender: TObject; const ASCN: TDSciSCNotification;
     var AHandled: Boolean) of object;
 
-  TDSciStyleNeededEvent = procedure(ASender: TObject; APosition: Integer) of object;
+  TDSciStyleNeededEvent = procedure(ASender: TObject; APosition: NativeInt) of object;
   TDSciCharAddedEvent = procedure(ASender: TObject; ACh: Integer) of object;
   TDSciSavePointReachedEvent = procedure(ASender: TObject) of object;
   TDSciSavePointLeftEvent = procedure(ASender: TObject) of object;
@@ -171,29 +172,29 @@ type
   // evt  Key=2005(Integer ch; Integer modifiers)
   // evt  DoubleClick=2006()
   TDSciUpdateUIEvent = procedure(ASender: TObject; AUpdated: Integer) of object;
-  TDSciModifiedEvent = procedure(ASender: TObject; APosition: Integer; AModificationType: Integer;
-    AText: UnicodeString; ALength: Integer; ALinesAdded: Integer; ALine: Integer;
+  TDSciModifiedEvent = procedure(ASender: TObject; APosition: NativeInt; AModificationType: Integer;
+    AText: UnicodeString; ALength: NativeInt; ALinesAdded: NativeInt; ALine: NativeInt;
     AFoldLevelNow: Integer; AFoldLevelPrev: Integer) of object;
-  TDSciModified2Event = procedure(ASender: TObject; APosition: Integer; AModificationType: Integer;
-    AText: UnicodeString; ALength: Integer; ALinesAdded: Integer; ALine: Integer;
+  TDSciModified2Event = procedure(ASender: TObject; APosition: NativeInt; AModificationType: Integer;
+    AText: UnicodeString; ALength: NativeInt; ALinesAdded: NativeInt; ALine: NativeInt;
     AFoldLevelNow: Integer; AFoldLevelPrev: Integer;
-    AToken: Integer; AAnnotationLinesAdded: Integer) of object;
-  TDSciMacroRecordEvent = procedure(ASender: TObject; AMessage: Integer; AWParam: Integer; ALParam: Integer) of object;
-  TDSciMarginClickEvent = procedure(ASender: TObject; AModifiers: Integer; APosition: Integer; AMargin: Integer) of object;
-  TDSciNeedShownEvent = procedure(ASender: TObject; APosition: Integer; ALength: Integer) of object;
+    AToken: Integer; AAnnotationLinesAdded: NativeInt) of object;
+  TDSciMacroRecordEvent = procedure(ASender: TObject; AMessage: Integer; AWParam: NativeInt; ALParam: NativeUInt) of object;
+  TDSciMarginClickEvent = procedure(ASender: TObject; AModifiers: Integer; APosition: NativeInt; AMargin: Integer) of object;
+  TDSciNeedShownEvent = procedure(ASender: TObject; APosition: NativeInt; ALength: NativeInt) of object;
   TDSciPaintedEvent = procedure(ASender: TObject) of object;
   TDSciUserListSelectionEvent = procedure(ASender: TObject; AListType: Integer; AText: UnicodeString) of object;
-  TDSciUserListSelection2Event = procedure(ASender: TObject; AListType: Integer; AText: UnicodeString; APosition: Integer) of object;
+  TDSciUserListSelection2Event = procedure(ASender: TObject; AListType: Integer; AText: UnicodeString; APosition: NativeInt) of object;
   TDSciDwellStartEvent = procedure(ASender: TObject; APosition, X, Y: Integer) of object;
   TDSciDwellEndEvent = procedure(ASender: TObject; APosition, X, Y: Integer) of object;
   TDSciZoomEvent = procedure(ASender: TObject) of object;
-  TDSciHotSpotClickEvent = procedure(ASender: TObject; AModifiers: Integer; APosition: Integer) of object;
-  TDSciHotSpotDoubleClickEvent = procedure(ASender: TObject; AModifiers: Integer; APosition: Integer) of object;
-  TDSciHotSpotReleaseClickEvent = procedure(ASender: TObject; AModifiers: Integer; APosition: Integer) of object;
-  TDSciCallTipClickEvent = procedure(ASender: TObject; APosition: Integer) of object;
-  TDSciAutoCSelectionEvent = procedure(ASender: TObject; AText: UnicodeString; APosition: Integer) of object;
-  TDSciIndicatorClickEvent = procedure(ASender: TObject; AModifiers: Integer; APosition: Integer) of object;
-  TDSciIndicatorReleaseEvent = procedure(ASender: TObject; AModifiers: Integer; APosition: Integer) of object;
+  TDSciHotSpotClickEvent = procedure(ASender: TObject; AModifiers: Integer; APosition: NativeInt) of object;
+  TDSciHotSpotDoubleClickEvent = procedure(ASender: TObject; AModifiers: Integer; APosition: NativeInt) of object;
+  TDSciHotSpotReleaseClickEvent = procedure(ASender: TObject; AModifiers: Integer; APosition: NativeInt) of object;
+  TDSciCallTipClickEvent = procedure(ASender: TObject; APosition: NativeInt) of object;
+  TDSciAutoCSelectionEvent = procedure(ASender: TObject; AText: UnicodeString; APosition: NativeInt) of object;
+  TDSciIndicatorClickEvent = procedure(ASender: TObject; AModifiers: Integer; APosition: NativeInt) of object;
+  TDSciIndicatorReleaseEvent = procedure(ASender: TObject; AModifiers: Integer; APosition: NativeInt) of object;
   TDSciAutoCCancelledEvent = procedure(ASender: TObject) of object;
   TDSciAutoCCharDeletedEvent = procedure(ASender: TObject) of object;
 

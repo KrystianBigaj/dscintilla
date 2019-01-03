@@ -1,17 +1,17 @@
     /// <summary>Returns the number of bytes in the document.</summary>
-    function GetLength: Integer;
+    function GetLength: NativeInt;
 
     /// <summary>Returns the character byte at the position.</summary>
-    function GetCharAt(APos: Integer): Integer;
+    function GetCharAt(APos: NativeInt): Integer;
 
     /// <summary>Returns the position of the caret.</summary>
-    function GetCurrentPos: Integer;
+    function GetCurrentPos: NativeInt;
 
     /// <summary>Returns the position of the opposite end of the selection to the caret.</summary>
-    function GetAnchor: Integer;
+    function GetAnchor: NativeInt;
 
     /// <summary>Returns the style byte at the position.</summary>
-    function GetStyleAt(APos: Integer): Integer;
+    function GetStyleAt(APos: NativeInt): Integer;
 
     /// <summary>Choose between collecting actions into the undo
     /// history and discarding them.</summary>
@@ -29,10 +29,10 @@
 
     /// <summary>Set the selection anchor to a position. The anchor is the opposite
     /// end of the selection from the caret.</summary>
-    procedure SetAnchor(APosAnchor: Integer);
+    procedure SetAnchor(APosAnchor: NativeInt);
 
     /// <summary>Retrieve the position of the last correctly styled character.</summary>
-    function GetEndStyled: Integer;
+    function GetEndStyled: NativeInt;
 
     /// <summary>Retrieve the current end of line mode - one of CRLF, CR, or LF.</summary>
     function GetEOLMode: Integer;
@@ -234,13 +234,13 @@
     function GetStyleBits: Integer;
 
     /// <summary>Used to hold extra styling information for each line.</summary>
-    procedure SetLineState(ALine: Integer; AState: Integer);
+    procedure SetLineState(ALine: NativeInt; AState: Integer);
 
     /// <summary>Retrieve the extra styling information for a line.</summary>
-    function GetLineState(ALine: Integer): Integer;
+    function GetLineState(ALine: NativeInt): Integer;
 
     /// <summary>Retrieve the last line number that has line state.</summary>
-    function GetMaxLineState: Integer;
+    function GetMaxLineState: NativeInt;
 
     /// <summary>Is the background of the line containing the caret in a different colour?</summary>
     function GetCaretLineVisible: Boolean;
@@ -337,16 +337,16 @@
     function GetUseTabs: Boolean;
 
     /// <summary>Change the indentation of a line to a number of columns.</summary>
-    procedure SetLineIndentation(ALine: Integer; AIndentSize: Integer);
+    procedure SetLineIndentation(ALine: NativeInt; AIndentSize: Integer);
 
     /// <summary>Retrieve the number of columns that a line is indented.</summary>
-    function GetLineIndentation(ALine: Integer): Integer;
+    function GetLineIndentation(ALine: NativeInt): Integer;
 
     /// <summary>Retrieve the position before the first non indentation character on a line.</summary>
-    function GetLineIndentPosition(ALine: Integer): Integer;
+    function GetLineIndentPosition(ALine: NativeInt): NativeInt;
 
     /// <summary>Retrieve the column number of a position, taking tab width into account.</summary>
-    function GetColumn(APos: Integer): Integer;
+    function GetColumn(APos: NativeInt): NativeInt;
 
     /// <summary>Show or hide the horizontal scroll bar.</summary>
     procedure SetHScrollBar(AShow: Boolean);
@@ -368,7 +368,7 @@
     function GetHighlightGuide: Integer;
 
     /// <summary>Get the position after the last visible characters on a line.</summary>
-    function GetLineEndPosition(ALine: Integer): Integer;
+    function GetLineEndPosition(ALine: NativeInt): NativeInt;
 
     /// <summary>Get the code page used to interpret the bytes of the document as characters.</summary>
     function GetCodePage: Integer;
@@ -380,19 +380,19 @@
     function GetReadOnly: Boolean;
 
     /// <summary>Sets the position of the caret.</summary>
-    procedure SetCurrentPos(APos: Integer);
+    procedure SetCurrentPos(APos: NativeInt);
 
     /// <summary>Sets the position that starts the selection - this becomes the anchor.</summary>
-    procedure SetSelectionStart(APos: Integer);
+    procedure SetSelectionStart(APos: NativeInt);
 
     /// <summary>Returns the position at the start of the selection.</summary>
-    function GetSelectionStart: Integer;
+    function GetSelectionStart: NativeInt;
 
     /// <summary>Sets the position that ends the selection - this becomes the currentPosition.</summary>
-    procedure SetSelectionEnd(APos: Integer);
+    procedure SetSelectionEnd(APos: NativeInt);
 
     /// <summary>Returns the position at the end of the selection.</summary>
-    function GetSelectionEnd: Integer;
+    function GetSelectionEnd: NativeInt;
 
     /// <summary>Sets the print magnification added to the point size of each style for printing.</summary>
     procedure SetPrintMagnification(AMagnification: Integer);
@@ -407,10 +407,10 @@
     function GetPrintColourMode: Integer;
 
     /// <summary>Retrieve the display line at the top of the display.</summary>
-    function GetFirstVisibleLine: Integer;
+    function GetFirstVisibleLine: NativeInt;
 
     /// <summary>Returns the number of lines in the document. There is always at least one.</summary>
-    function GetLineCount: Integer;
+    function GetLineCount: NativeInt;
 
     /// <summary>Sets the size in pixels of the left margin.</summary>
     procedure SetMarginLeft(APixelWidth: Integer);
@@ -431,7 +431,7 @@
     procedure SetReadOnly(AReadOnly: Boolean);
 
     /// <summary>Retrieve the number of characters in the document.</summary>
-    function GetTextLength: Integer;
+    function GetTextLength: NativeInt;
 
     /// <summary>Retrieve a pointer to a function that processes messages for this Scintilla.</summary>
     function GetDirectFunction: TDScintillaFunction;
@@ -454,17 +454,17 @@
 
     /// <summary>Sets the position that starts the target which is used for updating the
     /// document without affecting the scroll position.</summary>
-    procedure SetTargetStart(APos: Integer);
+    procedure SetTargetStart(APos: NativeInt);
 
     /// <summary>Get the position that starts the target.</summary>
-    function GetTargetStart: Integer;
+    function GetTargetStart: NativeInt;
 
     /// <summary>Sets the position that ends the target which is used for updating the
     /// document without affecting the scroll position.</summary>
-    procedure SetTargetEnd(APos: Integer);
+    procedure SetTargetEnd(APos: NativeInt);
 
     /// <summary>Get the position that ends the target.</summary>
-    function GetTargetEnd: Integer;
+    function GetTargetEnd: NativeInt;
 
     /// <summary>Set the search flags used by SearchInTarget.</summary>
     procedure SetSearchFlags(AFlags: Integer);
@@ -473,7 +473,7 @@
     function GetSearchFlags: Integer;
 
     /// <summary>Set the start position in order to change when backspacing removes the calltip.</summary>
-    procedure CallTipSetPosStart(APosStart: Integer);
+    procedure CallTipSetPosStart(APosStart: NativeInt);
 
     /// <summary>Set the background colour for the call tip.</summary>
     procedure CallTipSetBack(ABack: TColor);
@@ -493,28 +493,28 @@
     /// <summary>Set the fold level of a line.
     /// This encodes an integer level along with flags indicating whether the
     /// line is a header and whether it is effectively white space.</summary>
-    procedure SetFoldLevel(ALine: Integer; ALevel: Integer);
+    procedure SetFoldLevel(ALine: NativeInt; ALevel: Integer);
 
     /// <summary>Retrieve the fold level of a line.</summary>
-    function GetFoldLevel(ALine: Integer): Integer;
+    function GetFoldLevel(ALine: NativeInt): Integer;
 
     /// <summary>Find the last child line of a header line.</summary>
-    function GetLastChild(ALine: Integer; ALevel: Integer): Integer;
+    function GetLastChild(ALine: NativeInt; ALevel: Integer): NativeInt;
 
     /// <summary>Find the parent line of a child line.</summary>
-    function GetFoldParent(ALine: Integer): Integer;
+    function GetFoldParent(ALine: NativeInt): NativeInt;
 
     /// <summary>Is a line visible?</summary>
-    function GetLineVisible(ALine: Integer): Boolean;
+    function GetLineVisible(ALine: NativeInt): Boolean;
 
     /// <summary>Are all lines visible?</summary>
     function GetAllLinesVisible: Boolean;
 
     /// <summary>Show the children of a header line.</summary>
-    procedure SetFoldExpanded(ALine: Integer; AExpanded: Boolean);
+    procedure SetFoldExpanded(ALine: NativeInt; AExpanded: Boolean);
 
     /// <summary>Is a header line expanded?</summary>
-    function GetFoldExpanded(ALine: Integer): Boolean;
+    function GetFoldExpanded(ALine: NativeInt): Boolean;
 
     /// <summary>Set automatic folding behaviours.</summary>
     procedure SetAutomaticFold(AAutomaticFold: Integer);
@@ -617,7 +617,7 @@
     function GetFontQuality: Integer;
 
     /// <summary>Scroll so that a display line is at the top of the display.</summary>
-    procedure SetFirstVisibleLine(ALineDisplay: Integer);
+    procedure SetFirstVisibleLine(ALineDisplay: NativeInt);
 
     /// <summary>Change the effect of pasting when there are multiple selections.</summary>
     procedure SetMultiPaste(AMultiPaste: Integer);
@@ -806,10 +806,10 @@
     function GetIndicatorValue: Integer;
 
     /// <summary>Set number of entries in position cache</summary>
-    procedure SetPositionCache(ASize: Integer);
+    procedure SetPositionCache(ASize: NativeInt);
 
     /// <summary>How many entries are allocated to the position cache?</summary>
-    function GetPositionCache: Integer;
+    function GetPositionCache: NativeInt;
 
     /// <summary>Compact the document buffer and return a read-only pointer to the
     /// characters in the document.</summary>
@@ -818,7 +818,7 @@
     /// <summary>Return a read-only pointer to a range of characters in the document.
     /// May move the gap so that the range is contiguous, but will only move up
     /// to rangeLength bytes.</summary>
-    function GetRangePointer(APosition: Integer; ARangeLength: Integer): Pointer;
+    function GetRangePointer(APosition: NativeInt; ARangeLength: NativeInt): Pointer;
 
     /// <summary>Always interpret keyboard input as Unicode</summary>
     procedure SetKeysUnicode(AKeysUnicode: Boolean);
@@ -851,22 +851,22 @@
     function GetExtraDescent: Integer;
 
     /// <summary>Set the text in the text margin for a line</summary>
-    procedure MarginSetText(ALine: Integer; const AText: UnicodeString);
+    procedure MarginSetText(ALine: NativeInt; const AText: UnicodeString);
 
     /// <summary>Get the text in the text margin for a line</summary>
-    function MarginGetText(ALine: Integer): UnicodeString;
+    function MarginGetText(ALine: NativeInt): UnicodeString;
 
     /// <summary>Set the style number for the text margin for a line</summary>
-    procedure MarginSetStyle(ALine: Integer; AStyle: Integer);
+    procedure MarginSetStyle(ALine: NativeInt; AStyle: Integer);
 
     /// <summary>Get the style number for the text margin for a line</summary>
-    function MarginGetStyle(ALine: Integer): Integer;
+    function MarginGetStyle(ALine: NativeInt): Integer;
 
     /// <summary>Set the style in the text margin for a line</summary>
-    procedure MarginSetStyles(ALine: Integer; const AStyles: TDSciStyles);
+    procedure MarginSetStyles(ALine: NativeInt; const AStyles: TDSciStyles);
 
     /// <summary>Get the styles in the text margin for a line</summary>
-    function MarginGetStyles(ALine: Integer): TDSciStyles;
+    function MarginGetStyles(ALine: NativeInt): TDSciStyles;
 
     /// <summary>Get the start of the range of style numbers used for margin text</summary>
     procedure MarginSetStyleOffset(AStyle: Integer);
@@ -881,25 +881,25 @@
     function GetMarginOptions: Integer;
 
     /// <summary>Set the annotation text for a line</summary>
-    procedure AnnotationSetText(ALine: Integer; const AText: UnicodeString); overload;
+    procedure AnnotationSetText(ALine: NativeInt; const AText: UnicodeString); overload;
 
     /// <summary>Get the annotation text for a line</summary>
-    function AnnotationGetText(ALine: Integer): UnicodeString;
+    function AnnotationGetText(ALine: NativeInt): UnicodeString;
 
     /// <summary>Set the style number for the annotations for a line</summary>
-    procedure AnnotationSetStyle(ALine: Integer; AStyle: Integer);
+    procedure AnnotationSetStyle(ALine: NativeInt; AStyle: Integer);
 
     /// <summary>Get the style number for the annotations for a line</summary>
-    function AnnotationGetStyle(ALine: Integer): Integer;
+    function AnnotationGetStyle(ALine: NativeInt): Integer;
 
     /// <summary>Set the annotation styles for a line</summary>
-    procedure AnnotationSetStyles(ALine: Integer; const AStyles: TDSciStyles);
+    procedure AnnotationSetStyles(ALine: NativeInt; const AStyles: TDSciStyles);
 
     /// <summary>Get the annotation styles for a line</summary>
-    function AnnotationGetStyles(ALine: Integer): TDSciStyles;
+    function AnnotationGetStyles(ALine: NativeInt): TDSciStyles;
 
     /// <summary>Get the number of annotation lines for a line</summary>
-    function AnnotationGetLines(ALine: Integer): Integer;
+    function AnnotationGetLines(ALine: NativeInt): Integer;
 
     /// <summary>Set the visibility for the annotations for a view</summary>
     procedure AnnotationSetVisible(AVisible: Integer);
@@ -944,60 +944,60 @@
     function GetAdditionalCaretsVisible: Boolean;
 
     /// <summary>How many selections are there?</summary>
-    function GetSelections: Integer;
+    function GetSelections: NativeInt;
 
     /// <summary>Is every selected range empty?</summary>
     function GetSelectionEmpty: Boolean;
 
     /// <summary>Set the main selection</summary>
-    procedure SetMainSelection(ASelection: Integer);
+    procedure SetMainSelection(ASelection: NativeInt);
 
     /// <summary>Which selection is the main selection</summary>
-    function GetMainSelection: Integer;
+    function GetMainSelection: NativeInt;
 
-    procedure SetSelectionNCaret(ASelection: Integer; APos: Integer);
+    procedure SetSelectionNCaret(ASelection: NativeInt; APos: NativeInt);
 
-    function GetSelectionNCaret(ASelection: Integer): Integer;
+    function GetSelectionNCaret(ASelection: NativeInt): NativeInt;
 
-    procedure SetSelectionNAnchor(ASelection: Integer; APosAnchor: Integer);
+    procedure SetSelectionNAnchor(ASelection: NativeInt; APosAnchor: NativeInt);
 
-    function GetSelectionNAnchor(ASelection: Integer): Integer;
+    function GetSelectionNAnchor(ASelection: NativeInt): NativeInt;
 
-    procedure SetSelectionNCaretVirtualSpace(ASelection: Integer; ASpace: Integer);
+    procedure SetSelectionNCaretVirtualSpace(ASelection: NativeInt; ASpace: NativeInt);
 
-    function GetSelectionNCaretVirtualSpace(ASelection: Integer): Integer;
+    function GetSelectionNCaretVirtualSpace(ASelection: NativeInt): NativeInt;
 
-    procedure SetSelectionNAnchorVirtualSpace(ASelection: Integer; ASpace: Integer);
+    procedure SetSelectionNAnchorVirtualSpace(ASelection: NativeInt; ASpace: NativeInt);
 
-    function GetSelectionNAnchorVirtualSpace(ASelection: Integer): Integer;
+    function GetSelectionNAnchorVirtualSpace(ASelection: NativeInt): NativeInt;
 
     /// <summary>Sets the position that starts the selection - this becomes the anchor.</summary>
-    procedure SetSelectionNStart(ASelection: Integer; APos: Integer);
+    procedure SetSelectionNStart(ASelection: NativeInt; APos: NativeInt);
 
     /// <summary>Returns the position at the start of the selection.</summary>
-    function GetSelectionNStart(ASelection: Integer): Integer;
+    function GetSelectionNStart(ASelection: NativeInt): NativeInt;
 
     /// <summary>Sets the position that ends the selection - this becomes the currentPosition.</summary>
-    procedure SetSelectionNEnd(ASelection: Integer; APos: Integer);
+    procedure SetSelectionNEnd(ASelection: NativeInt; APos: NativeInt);
 
     /// <summary>Returns the position at the end of the selection.</summary>
-    function GetSelectionNEnd(ASelection: Integer): Integer;
+    function GetSelectionNEnd(ASelection: NativeInt): NativeInt;
 
-    procedure SetRectangularSelectionCaret(APos: Integer);
+    procedure SetRectangularSelectionCaret(APos: NativeInt);
 
-    function GetRectangularSelectionCaret: Integer;
+    function GetRectangularSelectionCaret: NativeInt;
 
-    procedure SetRectangularSelectionAnchor(APosAnchor: Integer);
+    procedure SetRectangularSelectionAnchor(APosAnchor: NativeInt);
 
-    function GetRectangularSelectionAnchor: Integer;
+    function GetRectangularSelectionAnchor: NativeInt;
 
-    procedure SetRectangularSelectionCaretVirtualSpace(ASpace: Integer);
+    procedure SetRectangularSelectionCaretVirtualSpace(ASpace: NativeInt);
 
-    function GetRectangularSelectionCaretVirtualSpace: Integer;
+    function GetRectangularSelectionCaretVirtualSpace: NativeInt;
 
-    procedure SetRectangularSelectionAnchorVirtualSpace(ASpace: Integer);
+    procedure SetRectangularSelectionAnchorVirtualSpace(ASpace: NativeInt);
 
-    function GetRectangularSelectionAnchorVirtualSpace: Integer;
+    function GetRectangularSelectionAnchorVirtualSpace: NativeInt;
 
     procedure SetVirtualSpaceOptions(AVirtualSpaceOptions: Integer);
 
@@ -1123,5 +1123,5 @@
     // procedure SetUsePalette(AUsePalette: Boolean);
 
     /// <summary>Clear the annotation text for a line</summary>
-    procedure AnnotationSetText(ALine: Integer); overload;
+    procedure AnnotationSetText(ALine: NativeInt); overload;
 
