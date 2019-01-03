@@ -95,12 +95,12 @@ type
     function GetStrFromPtrA(ABuf: PAnsiChar): AnsiString;
     function GetPtrFromAStr(AStr: AnsiString): PAnsiChar;
 
-    function GetText(AMessage: Integer; AWParam: Integer; var AText: UnicodeString): Integer;
-    function GetTextA(AMessage: Integer; AWParam: Integer; var AText: AnsiString): Integer;
-    function SetText(AMessage: Integer; AWParam: Integer; const AText: UnicodeString): Integer;
-    function SetTextA(AMessage: Integer; AWParam: Integer; const AText: AnsiString): Integer;
-    function GetTextLen(AMessage: Integer; var AText: UnicodeString): Integer;
-    function SetTextLen(AMessage: Integer; const AText: UnicodeString): Integer;
+    function GetText(AMessage: Integer; AWParam: WPARAM; var AText: UnicodeString): Integer;
+    function GetTextA(AMessage: Integer; AWParam: WPARAM; var AText: AnsiString): Integer;
+    function SetText(AMessage: Integer; AWParam: WPARAM; const AText: UnicodeString): Integer;
+    function SetTextA(AMessage: Integer; AWParam: WPARAM; const AText: AnsiString): Integer;
+    function GetTextLen(AMessage: Integer; var AText: UnicodeString): NativeInt;
+    function SetTextLen(AMessage: Integer; const AText: UnicodeString): NativeInt;
 
     function SetTargetLine(ALine: Integer): Boolean;
   end;
@@ -273,57 +273,57 @@ begin
     Result:= AnsiString(ABuf);
 end;
 
-function TDSciHelper.GetText(AMessage, AWParam: Integer;
+function TDSciHelper.GetText(AMessage: Integer; AWParam: WPARAM;
   var AText: UnicodeString): Integer;
 var
   lBuf: PAnsiChar;
 begin
   lBuf := AllocMem(SendEditor(AMessage, AWParam) + 1);
   try
-    Result := SendEditor(AMessage, AWParam, NativeInt(lBuf));
+    Result := SendEditor(AMessage, AWParam, LPARAM(lBuf));
     AText := GetStrFromPtr(lBuf);
   finally
     FreeMem(lBuf);
   end;
 end;
 
-function TDSciHelper.GetTextA(AMessage, AWParam: Integer;
+function TDSciHelper.GetTextA(AMessage: Integer; AWParam: WPARAM;
   var AText: AnsiString): Integer;
 var
   lBuf: PAnsiChar;
 begin
   lBuf := AllocMem(SendEditor(AMessage, AWParam) + 1);
   try
-    Result := SendEditor(AMessage, AWParam, NativeInt(lBuf));
+    Result := SendEditor(AMessage, AWParam, LPARAM(lBuf));
     AText := GetStrFromPtrA(lBuf);
   finally
     FreeMem(lBuf);
   end;
 end;
 
-function TDSciHelper.SetText(AMessage, AWParam: Integer;
+function TDSciHelper.SetText(AMessage: Integer; AWParam: WPARAM;
   const AText: UnicodeString): Integer;
 begin
   if AText = '' then
-    Result := SendEditor(AMessage, AWParam, NativeInt(@cDSciNull))
+    Result := SendEditor(AMessage, AWParam, LPARAM(@cDSciNull))
   else
     if IsUTF8 then
-      Result := SendEditor(AMessage, AWParam, NativeInt(UnicodeStringToUTF8(AText)))
+      Result := SendEditor(AMessage, AWParam, LPARAM(UnicodeStringToUTF8(AText)))
     else
-      Result := SendEditor(AMessage, AWParam, NativeInt(AnsiString(AText)));
+      Result := SendEditor(AMessage, AWParam, LPARAM(AnsiString(AText)));
 end;
 
-function TDSciHelper.SetTextA(AMessage, AWParam: Integer;
+function TDSciHelper.SetTextA(AMessage: Integer; AWParam: WPARAM;
   const AText: AnsiString): Integer;
 begin
   if AText = '' then
-    Result := SendEditor(AMessage, AWParam, NativeInt(@cDSciNull))
+    Result := SendEditor(AMessage, AWParam, LPARAM(@cDSciNull))
   else
-    Result := SendEditor(AMessage, AWParam, NativeInt(AText));
+    Result := SendEditor(AMessage, AWParam, LPARAM(AText));
 end;
 
 function TDSciHelper.GetTextLen(AMessage: Integer;
-  var AText: UnicodeString): Integer;
+  var AText: UnicodeString): NativeInt;
 var
   lBuf: PAnsiChar;
   lLen: NativeInt;
@@ -332,7 +332,7 @@ begin
 
   lBuf := AllocMem(lLen + 1);
   try
-    Result := SendEditor(AMessage, lLen + 1, NativeInt(lBuf));
+    Result := SendEditor(AMessage, lLen + 1, LPARAM(lBuf));
     AText := GetStrFromPtr(lBuf);
   finally
     FreeMem(lBuf);
@@ -340,22 +340,22 @@ begin
 end;
 
 function TDSciHelper.SetTextLen(AMessage: Integer;
-  const AText: UnicodeString): Integer;
+  const AText: UnicodeString): NativeInt;
 var
   lUTF8: UTF8String;
   lAnsi: AnsiString;
 begin
   if AText = '' then
-    Result := SendEditor(AMessage, 0, NativeInt(@cDSciNull))
+    Result := SendEditor(AMessage, 0, LPARAM(@cDSciNull))
   else
     if IsUTF8 then
     begin
       lUTF8 := UnicodeStringToUTF8(AText);
-      Result := SendEditor(AMessage, System.Length(lUTF8), NativeInt(lUTF8));
+      Result := SendEditor(AMessage, System.Length(lUTF8), LPARAM(lUTF8));
     end else
     begin
       lAnsi := AnsiString(AText);
-      Result := SendEditor(AMessage, System.Length(lAnsi), NativeInt(lAnsi));
+      Result := SendEditor(AMessage, System.Length(lAnsi), LPARAM(lAnsi));
     end;
 end;
 

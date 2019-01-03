@@ -1,24 +1,24 @@
-function TDScintilla.GetLength: Integer;
+function TDScintilla.GetLength: NativeInt;
 begin
   Result := SendEditor(SCI_GETLENGTH, 0, 0);
 end;
 
-function TDScintilla.GetCharAt(APos: Integer): Integer;
+function TDScintilla.GetCharAt(APos: NativeInt): Integer;
 begin
   Result := SendEditor(SCI_GETCHARAT, APos, 0);
 end;
 
-function TDScintilla.GetCurrentPos: Integer;
+function TDScintilla.GetCurrentPos: NativeInt;
 begin
   Result := SendEditor(SCI_GETCURRENTPOS, 0, 0);
 end;
 
-function TDScintilla.GetAnchor: Integer;
+function TDScintilla.GetAnchor: NativeInt;
 begin
   Result := SendEditor(SCI_GETANCHOR, 0, 0);
 end;
 
-function TDScintilla.GetStyleAt(APos: Integer): Integer;
+function TDScintilla.GetStyleAt(APos: NativeInt): Integer;
 begin
   Result := SendEditor(SCI_GETSTYLEAT, APos, 0);
 end;
@@ -43,12 +43,12 @@ begin
   SendEditor(SCI_SETVIEWWS, AViewWS, 0);
 end;
 
-procedure TDScintilla.SetAnchor(APosAnchor: Integer);
+procedure TDScintilla.SetAnchor(APosAnchor: NativeInt);
 begin
   SendEditor(SCI_SETANCHOR, APosAnchor, 0);
 end;
 
-function TDScintilla.GetEndStyled: Integer;
+function TDScintilla.GetEndStyled: NativeInt;
 begin
   Result := SendEditor(SCI_GETENDSTYLED, 0, 0);
 end;
@@ -373,17 +373,17 @@ begin
   Result := SendEditor(SCI_GETSTYLEBITS, 0, 0);
 end;
 
-procedure TDScintilla.SetLineState(ALine: Integer; AState: Integer);
+procedure TDScintilla.SetLineState(ALine: NativeInt; AState: Integer);
 begin
   SendEditor(SCI_SETLINESTATE, ALine, AState);
 end;
 
-function TDScintilla.GetLineState(ALine: Integer): Integer;
+function TDScintilla.GetLineState(ALine: NativeInt): Integer;
 begin
   Result := SendEditor(SCI_GETLINESTATE, ALine, 0);
 end;
 
-function TDScintilla.GetMaxLineState: Integer;
+function TDScintilla.GetMaxLineState: NativeInt;
 begin
   Result := SendEditor(SCI_GETMAXLINESTATE, 0, 0);
 end;
@@ -528,22 +528,22 @@ begin
   Result := Boolean(SendEditor(SCI_GETUSETABS, 0, 0));
 end;
 
-procedure TDScintilla.SetLineIndentation(ALine: Integer; AIndentSize: Integer);
+procedure TDScintilla.SetLineIndentation(ALine: NativeInt; AIndentSize: Integer);
 begin
   SendEditor(SCI_SETLINEINDENTATION, ALine, AIndentSize);
 end;
 
-function TDScintilla.GetLineIndentation(ALine: Integer): Integer;
+function TDScintilla.GetLineIndentation(ALine: NativeInt): Integer;
 begin
   Result := SendEditor(SCI_GETLINEINDENTATION, ALine, 0);
 end;
 
-function TDScintilla.GetLineIndentPosition(ALine: Integer): Integer;
+function TDScintilla.GetLineIndentPosition(ALine: NativeInt): NativeInt;
 begin
   Result := SendEditor(SCI_GETLINEINDENTPOSITION, ALine, 0);
 end;
 
-function TDScintilla.GetColumn(APos: Integer): Integer;
+function TDScintilla.GetColumn(APos: NativeInt): NativeInt;
 begin
   Result := SendEditor(SCI_GETCOLUMN, APos, 0);
 end;
@@ -578,7 +578,7 @@ begin
   Result := SendEditor(SCI_GETHIGHLIGHTGUIDE, 0, 0);
 end;
 
-function TDScintilla.GetLineEndPosition(ALine: Integer): Integer;
+function TDScintilla.GetLineEndPosition(ALine: NativeInt): NativeInt;
 begin
   Result := SendEditor(SCI_GETLINEENDPOSITION, ALine, 0);
 end;
@@ -598,27 +598,27 @@ begin
   Result := Boolean(SendEditor(SCI_GETREADONLY, 0, 0));
 end;
 
-procedure TDScintilla.SetCurrentPos(APos: Integer);
+procedure TDScintilla.SetCurrentPos(APos: NativeInt);
 begin
   SendEditor(SCI_SETCURRENTPOS, APos, 0);
 end;
 
-procedure TDScintilla.SetSelectionStart(APos: Integer);
+procedure TDScintilla.SetSelectionStart(APos: NativeInt);
 begin
   SendEditor(SCI_SETSELECTIONSTART, APos, 0);
 end;
 
-function TDScintilla.GetSelectionStart: Integer;
+function TDScintilla.GetSelectionStart: NativeInt;
 begin
   Result := SendEditor(SCI_GETSELECTIONSTART, 0, 0);
 end;
 
-procedure TDScintilla.SetSelectionEnd(APos: Integer);
+procedure TDScintilla.SetSelectionEnd(APos: NativeInt);
 begin
   SendEditor(SCI_SETSELECTIONEND, APos, 0);
 end;
 
-function TDScintilla.GetSelectionEnd: Integer;
+function TDScintilla.GetSelectionEnd: NativeInt;
 begin
   Result := SendEditor(SCI_GETSELECTIONEND, 0, 0);
 end;
@@ -643,12 +643,12 @@ begin
   Result := SendEditor(SCI_GETPRINTCOLOURMODE, 0, 0);
 end;
 
-function TDScintilla.GetFirstVisibleLine: Integer;
+function TDScintilla.GetFirstVisibleLine: NativeInt;
 begin
   Result := SendEditor(SCI_GETFIRSTVISIBLELINE, 0, 0);
 end;
 
-function TDScintilla.GetLineCount: Integer;
+function TDScintilla.GetLineCount: NativeInt;
 begin
   Result := SendEditor(SCI_GETLINECOUNT, 0, 0);
 end;
@@ -683,7 +683,7 @@ begin
   SendEditor(SCI_SETREADONLY, Integer(AReadOnly), 0);
 end;
 
-function TDScintilla.GetTextLength: Integer;
+function TDScintilla.GetTextLength: NativeInt;
 begin
   Result := SendEditor(SCI_GETTEXTLENGTH, 0, 0);
 end;
@@ -718,22 +718,22 @@ begin
   Result := SendEditor(SCI_GETCARETWIDTH, 0, 0);
 end;
 
-procedure TDScintilla.SetTargetStart(APos: Integer);
+procedure TDScintilla.SetTargetStart(APos: NativeInt);
 begin
   SendEditor(SCI_SETTARGETSTART, APos, 0);
 end;
 
-function TDScintilla.GetTargetStart: Integer;
+function TDScintilla.GetTargetStart: NativeInt;
 begin
   Result := SendEditor(SCI_GETTARGETSTART, 0, 0);
 end;
 
-procedure TDScintilla.SetTargetEnd(APos: Integer);
+procedure TDScintilla.SetTargetEnd(APos: NativeInt);
 begin
   SendEditor(SCI_SETTARGETEND, APos, 0);
 end;
 
-function TDScintilla.GetTargetEnd: Integer;
+function TDScintilla.GetTargetEnd: NativeInt;
 begin
   Result := SendEditor(SCI_GETTARGETEND, 0, 0);
 end;
@@ -748,7 +748,7 @@ begin
   Result := SendEditor(SCI_GETSEARCHFLAGS, 0, 0);
 end;
 
-procedure TDScintilla.CallTipSetPosStart(APosStart: Integer);
+procedure TDScintilla.CallTipSetPosStart(APosStart: NativeInt);
 begin
   SendEditor(SCI_CALLTIPSETPOSSTART, APosStart, 0);
 end;
@@ -778,27 +778,27 @@ begin
   SendEditor(SCI_CALLTIPSETPOSITION, Integer(AAbove), 0);
 end;
 
-procedure TDScintilla.SetFoldLevel(ALine: Integer; ALevel: Integer);
+procedure TDScintilla.SetFoldLevel(ALine: NativeInt; ALevel: Integer);
 begin
   SendEditor(SCI_SETFOLDLEVEL, ALine, ALevel);
 end;
 
-function TDScintilla.GetFoldLevel(ALine: Integer): Integer;
+function TDScintilla.GetFoldLevel(ALine: NativeInt): Integer;
 begin
   Result := SendEditor(SCI_GETFOLDLEVEL, ALine, 0);
 end;
 
-function TDScintilla.GetLastChild(ALine: Integer; ALevel: Integer): Integer;
+function TDScintilla.GetLastChild(ALine: NativeInt; ALevel: Integer): NativeInt;
 begin
   Result := SendEditor(SCI_GETLASTCHILD, ALine, ALevel);
 end;
 
-function TDScintilla.GetFoldParent(ALine: Integer): Integer;
+function TDScintilla.GetFoldParent(ALine: NativeInt): NativeInt;
 begin
   Result := SendEditor(SCI_GETFOLDPARENT, ALine, 0);
 end;
 
-function TDScintilla.GetLineVisible(ALine: Integer): Boolean;
+function TDScintilla.GetLineVisible(ALine: NativeInt): Boolean;
 begin
   Result := Boolean(SendEditor(SCI_GETLINEVISIBLE, ALine, 0));
 end;
@@ -808,12 +808,12 @@ begin
   Result := Boolean(SendEditor(SCI_GETALLLINESVISIBLE, 0, 0));
 end;
 
-procedure TDScintilla.SetFoldExpanded(ALine: Integer; AExpanded: Boolean);
+procedure TDScintilla.SetFoldExpanded(ALine: NativeInt; AExpanded: Boolean);
 begin
   SendEditor(SCI_SETFOLDEXPANDED, ALine, Integer(AExpanded));
 end;
 
-function TDScintilla.GetFoldExpanded(ALine: Integer): Boolean;
+function TDScintilla.GetFoldExpanded(ALine: NativeInt): Boolean;
 begin
   Result := Boolean(SendEditor(SCI_GETFOLDEXPANDED, ALine, 0));
 end;
@@ -978,7 +978,7 @@ begin
   Result := SendEditor(SCI_GETFONTQUALITY, 0, 0);
 end;
 
-procedure TDScintilla.SetFirstVisibleLine(ALineDisplay: Integer);
+procedure TDScintilla.SetFirstVisibleLine(ALineDisplay: NativeInt);
 begin
   SendEditor(SCI_SETFIRSTVISIBLELINE, ALineDisplay, 0);
 end;
@@ -1284,12 +1284,12 @@ begin
   Result := SendEditor(SCI_GETINDICATORVALUE, 0, 0);
 end;
 
-procedure TDScintilla.SetPositionCache(ASize: Integer);
+procedure TDScintilla.SetPositionCache(ASize: NativeInt);
 begin
   SendEditor(SCI_SETPOSITIONCACHE, ASize, 0);
 end;
 
-function TDScintilla.GetPositionCache: Integer;
+function TDScintilla.GetPositionCache: NativeInt;
 begin
   Result := SendEditor(SCI_GETPOSITIONCACHE, 0, 0);
 end;
@@ -1299,7 +1299,7 @@ begin
   Result := PByte(SendEditor(SCI_GETCHARACTERPOINTER, 0, 0));
 end;
 
-function TDScintilla.GetRangePointer(APosition: Integer; ARangeLength: Integer): Pointer;
+function TDScintilla.GetRangePointer(APosition: NativeInt; ARangeLength: NativeInt): Pointer;
 begin
   Result := Pointer(SendEditor(SCI_GETRANGEPOINTER, APosition, ARangeLength));
 end;
@@ -1354,32 +1354,32 @@ begin
   Result := SendEditor(SCI_GETEXTRADESCENT, 0, 0);
 end;
 
-procedure TDScintilla.MarginSetText(ALine: Integer; const AText: UnicodeString);
+procedure TDScintilla.MarginSetText(ALine: NativeInt; const AText: UnicodeString);
 begin
   FHelper.SetText(SCI_MARGINSETTEXT, ALine, AText);
 end;
 
-function TDScintilla.MarginGetText(ALine: Integer): UnicodeString;
+function TDScintilla.MarginGetText(ALine: NativeInt): UnicodeString;
 begin
   FHelper.GetText(SCI_MARGINGETTEXT, ALine, Result);
 end;
 
-procedure TDScintilla.MarginSetStyle(ALine: Integer; AStyle: Integer);
+procedure TDScintilla.MarginSetStyle(ALine: NativeInt; AStyle: Integer);
 begin
   SendEditor(SCI_MARGINSETSTYLE, ALine, AStyle);
 end;
 
-function TDScintilla.MarginGetStyle(ALine: Integer): Integer;
+function TDScintilla.MarginGetStyle(ALine: NativeInt): Integer;
 begin
   Result := SendEditor(SCI_MARGINGETSTYLE, ALine, 0);
 end;
 
-procedure TDScintilla.MarginSetStyles(ALine: Integer; const AStyles: TDSciStyles);
+procedure TDScintilla.MarginSetStyles(ALine: NativeInt; const AStyles: TDSciStyles);
 begin
   SendEditor(SCI_MARGINSETSTYLES, ALine, Integer(AStyles));
 end;
 
-function TDScintilla.MarginGetStyles(ALine: Integer): TDSciStyles;
+function TDScintilla.MarginGetStyles(ALine: NativeInt): TDSciStyles;
 begin
   SetLength(Result, SendEditor(SCI_MARGINGETSTYLES, ALine));
   if Length(Result) > 0 then
@@ -1406,38 +1406,38 @@ begin
   Result := SendEditor(SCI_GETMARGINOPTIONS, 0, 0);
 end;
 
-procedure TDScintilla.AnnotationSetText(ALine: Integer; const AText: UnicodeString);
+procedure TDScintilla.AnnotationSetText(ALine: NativeInt; const AText: UnicodeString);
 begin
   FHelper.SetText(SCI_ANNOTATIONSETTEXT, ALine, AText);
 end;
 
-function TDScintilla.AnnotationGetText(ALine: Integer): UnicodeString;
+function TDScintilla.AnnotationGetText(ALine: NativeInt): UnicodeString;
 begin
   FHelper.SetText(SCI_ANNOTATIONGETTEXT, ALine, Result);
 end;
-procedure TDScintilla.AnnotationSetStyle(ALine: Integer; AStyle: Integer);
+procedure TDScintilla.AnnotationSetStyle(ALine: NativeInt; AStyle: Integer);
 begin
   SendEditor(SCI_ANNOTATIONSETSTYLE, ALine, AStyle);
 end;
 
-function TDScintilla.AnnotationGetStyle(ALine: Integer): Integer;
+function TDScintilla.AnnotationGetStyle(ALine: NativeInt): Integer;
 begin
   Result := SendEditor(SCI_ANNOTATIONGETSTYLE, ALine, 0);
 end;
 
-procedure TDScintilla.AnnotationSetStyles(ALine: Integer; const AStyles: TDSciStyles);
+procedure TDScintilla.AnnotationSetStyles(ALine: NativeInt; const AStyles: TDSciStyles);
 begin
   SendEditor(SCI_ANNOTATIONSETSTYLES, ALine, Integer(AStyles));
 end;
 
-function TDScintilla.AnnotationGetStyles(ALine: Integer): TDSciStyles;
+function TDScintilla.AnnotationGetStyles(ALine: NativeInt): TDSciStyles;
 begin
   SetLength(Result, SendEditor(SCI_ANNOTATIONGETSTYLES, ALine));
   if Length(Result) > 0 then
     SendEditor(SCI_ANNOTATIONGETSTYLES, ALine, Integer(Result));
 end;
 
-function TDScintilla.AnnotationGetLines(ALine: Integer): Integer;
+function TDScintilla.AnnotationGetLines(ALine: NativeInt): Integer;
 begin
   Result := SendEditor(SCI_ANNOTATIONGETLINES, ALine, 0);
 end;
@@ -1512,7 +1512,7 @@ begin
   Result := Boolean(SendEditor(SCI_GETADDITIONALCARETSVISIBLE, 0, 0));
 end;
 
-function TDScintilla.GetSelections: Integer;
+function TDScintilla.GetSelections: NativeInt;
 begin
   Result := SendEditor(SCI_GETSELECTIONS, 0, 0);
 end;
@@ -1522,23 +1522,23 @@ begin
   Result := Boolean(SendEditor(SCI_GETSELECTIONEMPTY, 0, 0));
 end;
 
-procedure TDScintilla.SetMainSelection(ASelection: Integer);
+procedure TDScintilla.SetMainSelection(ASelection: NativeInt);
 begin
   SendEditor(SCI_SETMAINSELECTION, ASelection, 0);
 end;
 
-function TDScintilla.GetMainSelection: Integer;
+function TDScintilla.GetMainSelection: NativeInt;
 begin
   Result := SendEditor(SCI_GETMAINSELECTION, 0, 0);
 end;
 
-procedure TDScintilla.SetSelectionNCaret(ASelection: Integer; APos: Integer);
+procedure TDScintilla.SetSelectionNCaret(ASelection: NativeInt; APos: NativeInt);
 begin
   if (ASelection >= 0) and (ASelection < GetSelections) then
     SendEditor(SCI_SETSELECTIONNCARET, ASelection, APos);
 end;
 
-function TDScintilla.GetSelectionNCaret(ASelection: Integer): Integer;
+function TDScintilla.GetSelectionNCaret(ASelection: NativeInt): NativeInt;
 begin
   if (ASelection >= 0) and (ASelection < GetSelections) then
     Result := SendEditor(SCI_GETSELECTIONNCARET, ASelection, 0)
@@ -1546,13 +1546,13 @@ begin
     Result := INVALID_POSITION;
 end;
 
-procedure TDScintilla.SetSelectionNAnchor(ASelection: Integer; APosAnchor: Integer);
+procedure TDScintilla.SetSelectionNAnchor(ASelection: NativeInt; APosAnchor: NativeInt);
 begin
   if (ASelection >= 0) and (ASelection < GetSelections) then
     SendEditor(SCI_SETSELECTIONNANCHOR, ASelection, APosAnchor);
 end;
 
-function TDScintilla.GetSelectionNAnchor(ASelection: Integer): Integer;
+function TDScintilla.GetSelectionNAnchor(ASelection: NativeInt): NativeInt;
 begin
   if (ASelection >= 0) and (ASelection < GetSelections) then
     Result := SendEditor(SCI_GETSELECTIONNANCHOR, ASelection, 0)
@@ -1560,13 +1560,13 @@ begin
     Result := INVALID_POSITION;
 end;
 
-procedure TDScintilla.SetSelectionNCaretVirtualSpace(ASelection: Integer; ASpace: Integer);
+procedure TDScintilla.SetSelectionNCaretVirtualSpace(ASelection: NativeInt; ASpace: NativeInt);
 begin
   if (ASelection >= 0) and (ASelection < GetSelections) then
     SendEditor(SCI_SETSELECTIONNCARETVIRTUALSPACE, ASelection, ASpace);
 end;
 
-function TDScintilla.GetSelectionNCaretVirtualSpace(ASelection: Integer): Integer;
+function TDScintilla.GetSelectionNCaretVirtualSpace(ASelection: NativeInt): NativeInt;
 begin
   if (ASelection >= 0) and (ASelection < GetSelections) then
     Result := SendEditor(SCI_GETSELECTIONNCARETVIRTUALSPACE, ASelection, 0)
@@ -1574,13 +1574,13 @@ begin
     Result := INVALID_POSITION;
 end;
 
-procedure TDScintilla.SetSelectionNAnchorVirtualSpace(ASelection: Integer; ASpace: Integer);
+procedure TDScintilla.SetSelectionNAnchorVirtualSpace(ASelection: NativeInt; ASpace: NativeInt);
 begin
   if (ASelection >= 0) and (ASelection < GetSelections) then
     SendEditor(SCI_SETSELECTIONNANCHORVIRTUALSPACE, ASelection, ASpace);
 end;
 
-function TDScintilla.GetSelectionNAnchorVirtualSpace(ASelection: Integer): Integer;
+function TDScintilla.GetSelectionNAnchorVirtualSpace(ASelection: NativeInt): NativeInt;
 begin
   if (ASelection >= 0) and (ASelection < GetSelections) then
     Result := SendEditor(SCI_GETSELECTIONNANCHORVIRTUALSPACE, ASelection, 0)
@@ -1588,13 +1588,13 @@ begin
     Result := INVALID_POSITION;
 end;
 
-procedure TDScintilla.SetSelectionNStart(ASelection: Integer; APos: Integer);
+procedure TDScintilla.SetSelectionNStart(ASelection: NativeInt; APos: NativeInt);
 begin
   if (ASelection >= 0) and (ASelection < GetSelections) then
     SendEditor(SCI_SETSELECTIONNSTART, ASelection, APos);
 end;
 
-function TDScintilla.GetSelectionNStart(ASelection: Integer): Integer;
+function TDScintilla.GetSelectionNStart(ASelection: NativeInt): NativeInt;
 begin
   if (ASelection >= 0) and (ASelection < GetSelections) then
     Result := SendEditor(SCI_GETSELECTIONNSTART, ASelection, 0)
@@ -1602,13 +1602,13 @@ begin
     Result := INVALID_POSITION;
 end;
 
-procedure TDScintilla.SetSelectionNEnd(ASelection: Integer; APos: Integer);
+procedure TDScintilla.SetSelectionNEnd(ASelection: NativeInt; APos: NativeInt);
 begin
   if (ASelection >= 0) and (ASelection < GetSelections) then
     SendEditor(SCI_SETSELECTIONNEND, ASelection, APos);
 end;
 
-function TDScintilla.GetSelectionNEnd(ASelection: Integer): Integer;
+function TDScintilla.GetSelectionNEnd(ASelection: NativeInt): NativeInt;
 begin
   if (ASelection >= 0) and (ASelection < GetSelections) then
     Result := SendEditor(SCI_GETSELECTIONNEND, ASelection, 0)
@@ -1616,42 +1616,42 @@ begin
     Result := INVALID_POSITION;
 end;
 
-procedure TDScintilla.SetRectangularSelectionCaret(APos: Integer);
+procedure TDScintilla.SetRectangularSelectionCaret(APos: NativeInt);
 begin
   SendEditor(SCI_SETRECTANGULARSELECTIONCARET, APos, 0);
 end;
 
-function TDScintilla.GetRectangularSelectionCaret: Integer;
+function TDScintilla.GetRectangularSelectionCaret: NativeInt;
 begin
   Result := SendEditor(SCI_GETRECTANGULARSELECTIONCARET, 0, 0);
 end;
 
-procedure TDScintilla.SetRectangularSelectionAnchor(APosAnchor: Integer);
+procedure TDScintilla.SetRectangularSelectionAnchor(APosAnchor: NativeInt);
 begin
   SendEditor(SCI_SETRECTANGULARSELECTIONANCHOR, APosAnchor, 0);
 end;
 
-function TDScintilla.GetRectangularSelectionAnchor: Integer;
+function TDScintilla.GetRectangularSelectionAnchor: NativeInt;
 begin
   Result := SendEditor(SCI_GETRECTANGULARSELECTIONANCHOR, 0, 0);
 end;
 
-procedure TDScintilla.SetRectangularSelectionCaretVirtualSpace(ASpace: Integer);
+procedure TDScintilla.SetRectangularSelectionCaretVirtualSpace(ASpace: NativeInt);
 begin
   SendEditor(SCI_SETRECTANGULARSELECTIONCARETVIRTUALSPACE, ASpace, 0);
 end;
 
-function TDScintilla.GetRectangularSelectionCaretVirtualSpace: Integer;
+function TDScintilla.GetRectangularSelectionCaretVirtualSpace: NativeInt;
 begin
   Result := SendEditor(SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
 end;
 
-procedure TDScintilla.SetRectangularSelectionAnchorVirtualSpace(ASpace: Integer);
+procedure TDScintilla.SetRectangularSelectionAnchorVirtualSpace(ASpace: NativeInt);
 begin
   SendEditor(SCI_SETRECTANGULARSELECTIONANCHORVIRTUALSPACE, ASpace, 0);
 end;
 
-function TDScintilla.GetRectangularSelectionAnchorVirtualSpace: Integer;
+function TDScintilla.GetRectangularSelectionAnchorVirtualSpace: NativeInt;
 begin
   Result := SendEditor(SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
 end;
@@ -1855,7 +1855,7 @@ end;
 //   SendEditor(SCI_SETUSEPALETTE, Integer(AUsePalette), 0);
 // end;
 
-procedure TDScintilla.AnnotationSetText(ALine: Integer);
+procedure TDScintilla.AnnotationSetText(ALine: NativeInt);
 begin
   SendEditor(SCI_ANNOTATIONSETTEXT, ALine, 0);
 end;
