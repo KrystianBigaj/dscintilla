@@ -165,7 +165,7 @@ end;
 
 procedure TDScintilla.StyleSetFont(AStyle: Integer; const AFontName: UnicodeString);
 begin
-  SendEditor(SCI_STYLESETFONT, AStyle, NativeInt(AnsiString(AFontName)));
+  FHelper.SetText(SCI_STYLESETFONT, AStyle, AFontName);
 end;
 
 procedure TDScintilla.StyleSetEOLFilled(AStyle: Integer; AFilled: Boolean);
